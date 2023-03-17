@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="postHtml" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-BR" prefix="og: http://ogp.me/ns#"&gt;
+&lt;head&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;link rel="preload" href="https://use.fontawesome.com/releases/v5.0.8/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin&gt;
+    &lt;link rel="preload" href="https://use.fontawesome.com/releases/v5.0.8/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin&gt;
+    &lt;link rel="preload" href="https://use.fontawesome.com/releases/v5.0.8/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin&gt;
+    &lt;link rel="manifest" href="https://www.confiraconcursos.com.br/manifest.json"&gt;
+    &lt;link rel="profile" href="http://gmpg.org/xfn/11" /&gt;
+    &lt;title&gt;%titulo%&lt;/title&gt;
+    &lt;link rel='stylesheet' id='wp-block-library-css' href='https://www.confiraconcursos.com.br/wp-includes/css/dist/block-library/style.min.css' type='text/css' media='all' /&gt;
+    &lt;link rel='stylesheet' id='cc-style-css' href='https://www.confiraconcursos.com.br/wp-content/themes/ConfiraConcursos2021/style.css' type='text/css' media='all' /&gt;
+    &lt;style type="text/css" media="screen"&gt;
+     body{background-color:#ffffff}  a { color: #1711c2;} a:hover { color: #36b6d6; } .template { background: white; display: flex; margin: 20px;} .content { margin: 20px auto; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body id="top" class="post-template-default single single-post postid-52049 single-format-standard lazy-enabled"&gt;
+    &lt;div class="template"&gt;&lt;div class="content"&gt;&lt;div id="crumbs" class="breadcrumbs" typeof="BreadcrumbList" vocab="http://schema.org/"&gt;&lt;span property="itemListElement" typeof="ListItem"&gt;&lt;a property="item" typeof="WebPage" title="Inicio Confira Concursos" href="https://www.confiraconcursos.com.br"&gt;&lt;span property="name"&gt;Início&lt;/span&gt;&lt;/a&gt;&lt;meta property="position" content="1"&gt;&lt;/span&gt; &lt;span class="delimiter"&gt;&lt;i class="fas fa-chevron-right"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span property="itemListElement" typeof="ListItem"&gt;&lt;span property="name"&gt;&lt;a property="item" typeof="WebPage" href="#"&gt;&lt;span property="name"&gt;%catpai%&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;meta property="position" content="2"&gt;&lt;span class="delimiter"&gt;&lt;i class="fas fa-chevron-right"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span property="itemListElement" typeof="ListItem"&gt;&lt;span property="name"&gt;&lt;a property="item" typeof="WebPage" href="#"&gt;&lt;span property="name"&gt;%catsub%&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;meta property="position" content="3"&gt;&lt;span class="delimiter"&gt;&lt;i class="fas fa-chevron-right"&gt;&lt;/i&gt;&lt;/span&gt;&lt;span class="current-item"&gt;%titulo%&lt;/span&gt;&lt;/div&gt;&lt;article class="post-listing post format-standard" id="the-post"&gt;&lt;div class="post-inner"&gt;&lt;h1 class="name post-title entry-title" itemprop="itemReviewed" itemscope itemtype="http://schema.org/Thing"&gt;&lt;span itemprop="name"&gt;%titulo%&lt;/span&gt;&lt;/h1&gt;&lt;h3 class='resumo' itemprop='description'&gt;%resumo%&lt;/h3&gt;&lt;p class="post-meta"&gt;&lt;span class="post-meta-author" itemprop="author" itemscope itemtype="http://schema.org/Person"&gt;&lt;i class="fa fa-user"&gt;&lt;/i&gt;&lt;span class="fn" itemprop="name"&gt;%usuario%&lt;/span&gt;&lt;/span&gt;&lt;span class="cc-date"&gt;&lt;i class="fas fa-clock"&gt;&lt;/i&gt;&lt;time datetime="2021-07-01 9:50:38" itemprop="datePublished" content="2021-07-01T09:50:38-03:00"&gt;%data%&lt;/time&gt;&lt;/span&gt;&lt;/p&gt;&lt;div class="clear"&gt;&lt;/div&gt;&lt;div class="entry"&gt; %conteudo%&lt;/div&gt;&lt;!-- .entry /--&gt;&lt;div class="clear"&gt;&lt;/div&gt;&lt;/div&gt;&lt;!-- .post-inner --&gt;&lt;div class="share-post"&gt;&lt;span class="share-text"&gt;Compartilhe&lt;/span&gt;&lt;ul class="flat-social"&gt;&lt;li&gt;&lt;a href="http://www.facebook.com/sharer.php?app_id=995305983858730&amp;u=https://www.confiraconcursos.com.br/?p=52049" class="social-facebook" rel="external" target="_blank"&gt;&lt;i class="fab fa-facebook"&gt;&lt;/i&gt; &lt;span&gt;Facebook&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://twitter.com/share?url=https://www.confiraconcursos.com.br/?p=52049&amp;text=CISNAP-SP abre concurso e processo seletivo 2021 via @confiraconcurso" class="social-twitter" rel="external" target="_blank"&gt;&lt;i class="fab fa-twitter"&gt;&lt;/i&gt; &lt;span&gt;Twitter&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://t.me/share/url?url=https://www.confiraconcursos.com.br/?p=52049&amp;text=CISNAP-SP abre concurso e processo seletivo 2021" class="social-telegram" rel="external" target="_blank"&gt;&lt;i class="fab fa-telegram"&gt;&lt;/i&gt; &lt;span&gt;Telegram&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li id="whatsapp-li"&gt;&lt;a href="https://api.whatsapp.com/send?text=CISNAP-SP abre concurso e processo seletivo 2021 - https://www.confiraconcursos.com.br/?p=52049" class="social-whatsapp" rel="external" target="_blank"&gt;&lt;i class="fab fa-whatsapp"&gt;&lt;/i&gt; &lt;span&gt;Whatsapp&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.confiraconcursos.com.br/?p=52049" class="social-linkedin" rel="external" target="_blank"&gt;&lt;i class="fab fa-linkedin-in"&gt;&lt;/i&gt; &lt;span&gt;Linkedin&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div class="clear"&gt;&lt;/div&gt;&lt;/div&gt; &lt;!-- .share-post --&gt;&lt;/article&gt;&lt;/div&gt;&lt;/div&gt;&lt;link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet"&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+    <comment>Template Html Post</comment>
+  </data>
+</root>

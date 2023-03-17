@@ -1,0 +1,242 @@
+<html lang="pt-BR" prefix="og: http://ogp.me/ns#">
+<head>
+	<title>Editor &#8211; Confira Concursos</title>
+
+	<meta name='robots' content='max-image-preview:large' />
+
+<body>
+	<div id="wp-myeditor-wrap" class="wp-core-ui wp-editor-wrap tmce-active">
+		<link rel='stylesheet' id='dashicons-css' href='{site}/wp-includes/css/dashicons.min.css' type='text/css' media='all' />
+		<link rel='stylesheet' id='editor-buttons-css' href='{site}/wp-includes/css/editor.min.css' type='text/css' media='all' />
+		<div id="wp-myeditor-editor-tools" class="wp-editor-tools hide-if-no-js">
+			<div class="wp-editor-tabs">
+				<button type="button" id="myeditor-tmce" class="wp-switch-editor switch-tmce" data-wp-editor-id="myeditor">Visual</button>
+				<button type="button" id="myeditor-html" class="wp-switch-editor switch-html" data-wp-editor-id="myeditor">Texto</button>
+			</div>
+		</div>
+		<div id="wp-myeditor-editor-container" class="wp-editor-container"><div id="qt_myeditor_toolbar" class="quicktags-toolbar"></div><textarea class="wp-editor-area" rows="20" autocomplete="off" cols="40" name="myeditor" id="myeditor"></textarea></div>
+	</div>
+	<style>
+		.wp-editor-tools {
+			display: none;
+		}
+
+		body {
+			margin: 0px;
+		}
+
+		i.mce-i-resize {
+			color: #595959;
+			background: #675c5c;
+			border-radius: 50px;
+		}
+
+		.mce-container-body .mce-resizehandle {
+			right: 1;
+			bottom: 1;
+		}
+	</style>
+	<script>
+		document.body.style.overflow = 'hidden';
+		var visual = true;
+		function getContent() {
+			return window.tinymce.get('myeditor').getContent();
+		}
+		function getContentHtml() {
+			return document.querySelector('.wp-editor-area').value;
+		}
+
+		function setContent(texto) {
+			return window.tinymce.get('myeditor').setContent(texto);
+		}
+
+		function AlteraEditor() {
+			var BtVisual = document.querySelector('#myeditor-tmce'),
+				BtHtml = document.querySelector('#myeditor-html');
+
+			if (visual) {
+				BtHtml.click();
+				visual = false;
+			} else {
+				BtVisual.click();
+				visual = true;
+			}
+
+		}
+
+		function teste() {
+			console.log(AlteraEditor());
+		}
+
+	</script>
+
+	<link rel='stylesheet' id='buttons-css' href='{site}/wp-includes/css/buttons.min.css' type='text/css' media='all' />
+
+
+	<script type='text/javascript' src='https://code.jquery.com/jquery-3.5.1.min.js' id='cc-jquery-js'></script>
+
+	<script type='text/javascript' id='utils-js-extra'>
+		/* <![CDATA[ */
+		var userSettings = { "url": "\/confiraconcursos\/", "uid": "2", "time": "1618166208", "secure": "" };
+		/* ]]> */
+	</script>
+	<script type='text/javascript' src='{site}/wp-includes/js/utils.min.js' id='utils-js'></script>
+	<script type='text/javascript' src='{site}/wp-admin/js/editor.min.js' id='editor-js'></script>
+	<script type='text/javascript' id='editor-js-after'>
+		window.wp.oldEditor = window.wp.editor;
+	</script>
+	<script type='text/javascript' id='quicktags-js-extra'>
+		/* <![CDATA[ */
+		var quicktagsL10n = { "closeAllOpenTags": "Fechar todas as tags abertas", "closeTags": "fechar tags", "enterURL": "Digite o URL", "enterImageURL": "Digite o URL da imagem", "enterImageDescription": "Digite uma descri\u00e7\u00e3o da imagem", "textdirection": "dire\u00e7\u00e3o do texto", "toggleTextdirection": "Alternar dire\u00e7\u00e3o de texto do editor", "dfw": "Modo de escrita sem distra\u00e7\u00f5es", "strong": "Negrito", "strongClose": "Fechar tag de negrito", "em": "It\u00e1lico", "emClose": "Fechar tag de it\u00e1lico", "link": "Inserir link", "blockquote": "Bloco de cita\u00e7\u00e3o", "blockquoteClose": "Fechar tag de cita\u00e7\u00e3o", "del": "Texto exclu\u00eddo (tachado)", "delClose": "Fechar tag de texto exclu\u00edda", "ins": "Texto Inserido", "insClose": "Fechar tag de texto", "image": "Inserir imagem", "ul": "Lista com marcadores", "ulClose": "Fechar tag de lista com marcadores", "ol": "Lista numerada", "olClose": "Fechar tag de lista numerada", "li": "Item da lista", "liClose": "Fechar tag de item de lista", "code": "C\u00f3digo", "codeClose": "Fechar tag de c\u00f3digo", "more": "Inserir a tag \"Leia mais\"" };
+		/* ]]> */
+	</script>
+	<script type='text/javascript' src='{site}/wp-includes/js/quicktags.min.js' id='quicktags-js'></script>
+	<script type='text/javascript' src='{site}/wp-includes/js/dist/vendor/wp-polyfill.min.js' id='wp-polyfill-js'></script>
+
+	<script type='text/javascript' src='{site}/wp-includes/js/dist/dom-ready.min.js' id='wp-dom-ready-js'></script>
+	<script type='text/javascript' src='{site}/wp-includes/js/dist/hooks.min.js' id='wp-hooks-js'></script>
+	<script type='text/javascript' src='{site}/wp-includes/js/dist/i18n.min.js' id='wp-i18n-js'></script>
+	<script type='text/javascript' id='wp-i18n-js-after'>
+		wp.i18n.setLocaleData({ 'text direction\u0004ltr': ['ltr'] });
+	</script>
+	<script type='text/javascript' id='wp-a11y-js-translations'>
+		(function (domain, translations) {
+			var localeData = translations.locale_data[domain] || translations.locale_data.messages;
+			localeData[""].domain = domain;
+			wp.i18n.setLocaleData(localeData, domain);
+		})("default", { "translation-revision-date": "2021-03-19 15:11:25+0000", "generator": "GlotPress\/3.0.0-alpha.2", "domain": "messages", "locale_data": { "messages": { "": { "domain": "messages", "plural-forms": "nplurals=2; plural=n > 1;", "lang": "pt_BR" }, "Notifications": ["Notifica\u00e7\u00f5es"] } }, "comment": { "reference": "wp-includes\/js\/dist\/a11y.js" } });
+	</script>
+	<script type='text/javascript' src='{site}/wp-includes/js/dist/a11y.min.js' id='wp-a11y-js'></script>
+	<script type='text/javascript' id='wplink-js-extra'>
+		/* <![CDATA[ */
+		var wpLinkL10n = { "title": "Inserir\/editar link", "update": "Atualizar", "save": "Adicionar link", "noTitle": "(sem t\u00edtulo)", "noMatchesFound": "Nenhum resultado encontrado.", "linkSelected": "Link selecionado.", "linkInserted": "Link inserido.", "minInputLength": "3" };
+		/* ]]> */
+	</script>
+	<script type='text/javascript' src='{site}/wp-includes/js/wplink.min.js' id='wplink-js'></script>
+	<script type='text/javascript' src='{site}/wp-includes/js/jquery/ui/core.min.js' id='jquery-ui-core-js'></script>
+
+	<script type='text/javascript' id='jquery-ui-autocomplete-js-extra'>
+		/* <![CDATA[ */
+		var uiAutocompleteL10n = { "noResults": "Nenhum resultado encontrado.", "oneResult": "Foi encontrado um resultado. Use as setas para cima e para baixo do teclado para navegar.", "manyResults": "Foram encontrados %d resultados. Use as setas para cima e para baixo do teclado para navegar.", "itemSelected": "Item selecionado." };
+		/* ]]> */
+	</script>
+
+
+	<script type="text/javascript">
+		tinyMCEPreInit = {
+			baseURL: "{site}/wp-includes/js/tinymce",
+			suffix: ".min",
+			mceInit: { 'myeditor': { theme: "modern", skin: "lightgray", language: "pt", formats: { alignleft: [{ selector: "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li", styles: { textAlign: "left" } }, { selector: "img,table,dl.wp-caption", classes: "alignleft" }], aligncenter: [{ selector: "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li", styles: { textAlign: "center" } }, { selector: "img,table,dl.wp-caption", classes: "aligncenter" }], alignright: [{ selector: "p,h1,h2,h3,h4,h5,h6,td,th,div,ul,ol,li", styles: { textAlign: "right" } }, { selector: "img,table,dl.wp-caption", classes: "alignright" }], strikethrough: { inline: "del" } }, relative_urls: false, remove_script_host: false, convert_urls: false, browser_spellcheck: true, fix_list_elements: true, entities: "38,amp,60,lt,62,gt", entity_encoding: "raw", keep_styles: false, cache_suffix: "wp-mce-49110-20201110", resize: "vertical", menubar: false, branding: false, preview_styles: "font-family font-size font-weight font-style text-decoration text-transform", end_container_on_empty_block: true, wpeditimage_html5_captions: true, wp_lang_attr: "pt-BR", wp_keep_scroll_position: false, wp_shortcut_labels: { "Heading 1": "access1", "Heading 2": "access2", "Heading 3": "access3", "Heading 4": "access4", "Heading 5": "access5", "Heading 6": "access6", "Paragraph": "access7", "Blockquote": "accessQ", "Underline": "metaU", "Strikethrough": "accessD", "Bold": "metaB", "Italic": "metaI", "Code": "accessX", "Align center": "accessC", "Align right": "accessR", "Align left": "accessL", "Justify": "accessJ", "Cut": "metaX", "Copy": "metaC", "Paste": "metaV", "Select all": "metaA", "Undo": "metaZ", "Redo": "metaY", "Bullet list": "accessU", "Numbered list": "accessO", "Insert\/edit image": "accessM", "Insert\/edit link": "metaK", "Remove link": "accessS", "Toolbar Toggle": "accessZ", "Insert Read More tag": "accessT", "Insert Page Break tag": "accessP", "Distraction-free writing mode": "accessW", "Add Media": "accessM", "Keyboard Shortcuts": "accessH" }, content_css: "{site}/wp-includes/css/dashicons.min.css?ver=5.7,{site}/wp-includes/js/tinymce/skins/wordpress/wp-content.css?ver=5.7", plugins: "charmap,colorpicker,hr,lists,media,paste,tabfocus,textcolor,fullscreen,wordpress,wpautoresize,wpeditimage,wpemoji,wpgallery,wplink,wpdialogs,wptextpattern,wpview,image", selector: "#myeditor", wpautop: true, indent: false, toolbar1: "formatselect,bold,italic,bullist,numlist,blockquote,alignleft,aligncenter,alignright,link,wp_more,spellchecker,fullscreen,wp_adv", toolbar2: "strikethrough,hr,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help", toolbar3: "", toolbar4: "", tabfocus_elements: ":prev,:next", body_class: "myeditor post-type-page post-status-publish page-template-default locale-pt-br" } },
+			qtInit: { 'myeditor': { id: "myeditor", buttons: "strong,em,link,block,del,ins,img,ul,ol,li,code,more,close" } },
+			ref: { plugins: "charmap,colorpicker,hr,lists,media,paste,tabfocus,textcolor,fullscreen,wordpress,wpautoresize,wpeditimage,wpemoji,wpgallery,wplink,wpdialogs,wptextpattern,wpview,image", theme: "modern", language: "pt" },
+			load_ext: function (url, lang) { var sl = tinymce.ScriptLoader; sl.markDone(url + '/langs/' + lang + '.js'); sl.markDone(url + '/langs/' + lang + '_dlg.js'); }
+		};
+	</script>
+	<script type='text/javascript' src='{site}/wp-includes/js/tinymce/tinymce.min.js' id='wp-tinymce-root-js'></script>
+	<script type='text/javascript' src='{site}/wp-includes/js/tinymce/plugins/compat3x/plugin.min.js' id='wp-tinymce-js'></script>
+	<script type='text/javascript'>
+		tinymce.addI18n('pt', { "New document": "Novo documento", "Formats": "Formatos", "Headings": "T\u00edtulos", "Heading 1": "T\u00edtulo 1", "Heading 2": "T\u00edtulo 2", "Heading 3": "T\u00edtulo 3", "Heading 4": "T\u00edtulo 4", "Heading 5": "T\u00edtulo 5", "Heading 6": "T\u00edtulo 6", "Blocks": "Blocos", "Paragraph": "Par\u00e1grafo", "Blockquote": "Bloco de cita\u00e7\u00e3o", "Preformatted": "Pr\u00e9-formatado", "Address": "Endere\u00e7o", "Underline": "Sublinhado", "Strikethrough": "Riscado", "Subscript": "Subescrito", "Superscript": "Superescrito", "Clear formatting": "Limpar formata\u00e7\u00e3o", "Bold": "Negrito", "Italic": "It\u00e1lico", "Code": "C\u00f3digo", "Source code": "C\u00f3digo fonte", "Font Family": "Fonte", "Font Sizes": "Tamanhos da fonte", "Align center": "Alinhar ao centro", "Align right": "Alinhar \u00e0 direita", "Align left": "Alinhar \u00e0 esquerda", "Justify": "Justificar", "Increase indent": "Aumentar a indenta\u00e7\u00e3o", "Decrease indent": "Diminuir a indenta\u00e7\u00e3o", "Cut": "Cortar", "Copy": "Copiar", "Paste": "Colar", "Select all": "Selecionar tudo", "Undo": "Desfazer", "Redo": "Refazer", "Ok": "OK", "Cancel": "Cancelar", "Close": "Fechar", "Visual aids": "Recursos visuais", "Bullet list": "Lista com marcadores", "Numbered list": "Lista numerada", "Square": "Quadrado", "Default": "Padr\u00e3o", "Circle": "C\u00edrculo", "Disc": "Disco", "Lower Greek": "Grego min\u00fascula", "Lower Alpha": "Alfab\u00e9tica min\u00fascula", "Upper Alpha": "Alfab\u00e9tica mai\u00fascula", "Upper Roman": "Romano mai\u00fascula", "Lower Roman": "Romano min\u00fascula", "Name": "Nome", "Anchor": "\u00c2ncora", "Anchors": "\u00c2ncoras", "Id should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.": "O ID deve iniciar com uma letra, seguida apenas por letras, n\u00fameros, tra\u00e7os, pontos, dois pontos ou sublinhados.", "Id": "ID", "Document properties": "Propriedades do documento", "Title": "T\u00edtulo", "Keywords": "Palavras-chave", "Encoding": "Codifica\u00e7\u00e3o", "Description": "Descri\u00e7\u00e3o", "Author": "Autor", "Image": "Imagem", "Insert\/edit image": "Inserir\/editar imagem", "General": "Geral", "Advanced": "Avan\u00e7ado", "Source": "Origem", "Border": "Borda", "Constrain proportions": "Manter propor\u00e7\u00f5es", "Vertical space": "Espa\u00e7o vertical", "Image description": "Descri\u00e7\u00e3o da imagem", "Style": "Estilo", "Dimensions": "Dimens\u00f5es", "Insert image": "Inserir imagem", "Date\/time": "Data\/hora", "Insert date\/time": "Inserir data\/hora", "Table of Contents": "Sum\u00e1rio", "Insert\/Edit code sample": "Inserir\/editar amostra de c\u00f3digo", "Language": "Idioma", "Media": "M\u00eddia", "Insert\/edit media": "Inserir\/editar m\u00eddia", "Poster": "Autor", "Alternative source": "Fonte alternativa", "Paste your embed code below:": "Cole o c\u00f3digo de incorpora\u00e7\u00e3o abaixo:", "Insert video": "Inserir v\u00eddeo", "Embed": "Incorporar", "Special character": "Caracteres especiais", "Right to left": "Direita para a esquerda", "Left to right": "Esquerda para a direita", "Nonbreaking space": "Espa\u00e7o incondicional", "Page break": "Quebra de p\u00e1gina", "Paste as text": "Colar como texto", "Preview": "Visualizar", "Print": "Imprimir", "Save": "Salvar", "Fullscreen": "Tela inteira", "Horizontal line": "Linha horizontal", "Horizontal space": "Espa\u00e7o horizontal", "Restore last draft": "Restaurar \u00faltimo rascunho", "Insert\/edit link": "Inserir\/editar link", "Remove link": "Remover link", "Insert link": "Inserir link", "Target": "Destino", "New window": "Nova janela", "Text to display": "Texto a exibir", "Url": "URL", "The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?": "O URL que voc\u00ea digitou parece ser um endere\u00e7o de e-mail. Voc\u00ea quer adicionar o prefixo obrigat\u00f3rio mailto:?", "The URL you entered seems to be an external link. Do you want to add the required http:\/\/ prefix?": "O URL que voc\u00ea digitou parece ser um link externo. Quer adicionar o prefixo obrigat\u00f3rio http:\/\/?", "Color": "Cor", "Custom color": "Cor personalizada", "Custom...": "Personalizada...", "No color": "Nenhuma cor", "Could not find the specified string.": "N\u00e3o foi poss\u00edvel encontrar a sequ\u00eancia de caracteres especificada.", "Replace": "Substituir", "Next": "Pr\u00f3ximo", "Prev": "Anterior", "Whole words": "Palavras inteiras", "Find and replace": "Procurar e substituir", "Replace with": "Substituir por", "Find": "Procurar", "Replace all": "Substituir tudo", "Match case": "Coincidir capitaliza\u00e7\u00e3o", "Spellcheck": "Verificar ortografia", "Finish": "Finalizar", "Ignore all": "Ignorar tudo", "Ignore": "Ignorar", "Add to Dictionary": "Adicionar ao dicion\u00e1rio", "Insert table": "Inserir tabela", "Delete table": "Excluir tabela", "Table properties": "Propriedades da tabela", "Row properties": "Propriedades da linha da tabela", "Cell properties": "Propriedades da c\u00e9lula da tabela", "Border color": "Cor da borda", "Row": "Linha", "Rows": "Linhas", "Column": "Coluna", "Cols": "Colunas", "Cell": "C\u00e9lula", "Header cell": "C\u00e9lula de cabe\u00e7alho", "Header": "Cabe\u00e7alho", "Body": "Corpo", "Footer": "Rodap\u00e9", "Insert row before": "Inserir linha antes", "Insert row after": "Inserir linha depois", "Insert column before": "Inserir coluna antes", "Insert column after": "Inserir coluna depois", "Paste row before": "Colar linha da tabela antes", "Paste row after": "Colar linha da tabela depois", "Delete row": "Excluir linha", "Delete column": "Excluir coluna", "Cut row": "Cortar linha", "Copy row": "Copiar linha", "Merge cells": "Mesclar c\u00e9lulas", "Split cell": "Dividir c\u00e9lula", "Height": "Altura", "Width": "Largura", "Caption": "Legenda", "Alignment": "Alinhamento", "H Align": "Alinhamento horizontal", "Left": "Esquerda", "Center": "Centro", "Right": "Direita", "None": "Nenhum", "V Align": "Alinhamento vertical", "Top": "Topo", "Middle": "Meio", "Bottom": "Base", "Row group": "Grupo de linhas", "Column group": "Grupo de colunas", "Row type": "Tipo de linha", "Cell type": "Tipo de c\u00e9lula", "Cell padding": "Enchimento da c\u00e9lula", "Cell spacing": "Espa\u00e7amento de c\u00e9lula", "Scope": "Escopo", "Insert template": "Inserir modelo", "Templates": "Modelos", "Background color": "Cor de fundo", "Text color": "Cor do  texto", "Show blocks": "Mostrar blocos", "Show invisible characters": "Exibir caracteres invis\u00edveis", "Words: {0}": "Palavras: {0}", "Paste is now in plain text mode. Contents will now be pasted as plain text until you toggle this option off.": "Agora colar est\u00e1 em modo de texto simples. O conte\u00fado ser\u00e1 colado como texto simples at\u00e9 que voc\u00ea desative esta op\u00e7\u00e3o.\n\nSe voc\u00ea est\u00e1 tentando colar conte\u00fado de texto rico do Microsoft Word, tente desativar essa op\u00e7\u00e3o. O editor ir\u00e1 limpar o texto colado do Word automaticamente.", "Rich Text Area. Press ALT-F9 for menu. Press ALT-F10 for toolbar. Press ALT-0 for help": "\u00c1rea de rich text. Pressione Alt+Shift+H para obter ajuda.", "Rich Text Area. Press Control-Option-H for help.": "\u00c1rea de rich text. Pressione Control-Option-H para obter ajuda.", "You have unsaved changes are you sure you want to navigate away?": "As modifica\u00e7\u00f5es que voc\u00ea fez ser\u00e3o perdidas se voc\u00ea sair desta p\u00e1gina.", "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": "Seu navegador n\u00e3o suporta o acesso direto \u00e0 \u00e1rea de transfer\u00eancia. Utilize atalhos do teclado ou o menu Editar do seu navegador.", "Insert": "Inserir", "File": "Arquivo", "Edit": "Editar", "Tools": "Ferramentas", "View": "Ver", "Table": "Tabela", "Format": "Formato", "Toolbar Toggle": "Alternar barra de ferramentas", "Insert Read More tag": "Inserir a tag \"Leia mais\"", "Insert Page Break tag": "Inserir tag de quebra de p\u00e1gina", "Read more...": "Leia mais...", "Distraction-free writing mode": "Modo de escrita sem distra\u00e7\u00f5es", "No alignment": "Sem alinhamento", "Remove": "Remover", "Edit|button": "Editar", "Paste URL or type to search": "Cole o URL ou digite para pesquisar", "Apply": "Aplicar", "Link options": "Op\u00e7\u00f5es do link", "Text": "Texto", "Add Media": "Adicionar m\u00eddia", "Keyboard Shortcuts": "Atalhos do teclado", "Classic Block Keyboard Shortcuts": "Teclas de atalho do bloco cl\u00e1ssico", "Default shortcuts,": "Atalhos padr\u00e3o,", "Additional shortcuts,": "Atalhos adicionais,", "Focus shortcuts:": "Atalhos de foco:", "Inline toolbar (when an image, link or preview is selected)": "Barra de ferramentas (quando uma imagem, link ou visualiza\u00e7\u00e3o \u00e9 selecionada)", "Editor menu (when enabled)": "Menu do Editor (quando ativo)", "Editor toolbar": "Barra de ferramentas do editor", "Elements path": "Caminho dos elementos", "Ctrl + Alt + letter:": "Ctrl + Alt + letra:", "Shift + Alt + letter:": "Shift + Alt + letra:", "Cmd + letter:": "Cmd + letra:", "Ctrl + letter:": "Ctrl + letra:", "Letter": "Letra", "Action": "A\u00e7\u00e3o", "Warning: the link has been inserted but may have errors. Please test it.": "Aten\u00e7\u00e3o: o link foi inserido, mas pode ter erros. \u00c9 necess\u00e1rio test\u00e1-lo.", "To move focus to other buttons use Tab or the arrow keys. To return focus to the editor press Escape or use one of the buttons.": "Para mudar o foco para outros bot\u00f5es use Tab ou as setas do teclado. Para retornar o foco para o editor pressione ESC ou use um dos bot\u00f5es.", "When starting a new paragraph with one of these formatting shortcuts followed by a space, the formatting will be applied automatically. Press Backspace or Escape to undo.": "Ao iniciar um novo par\u00e1grafo com um destes atalhos seguidos de espa\u00e7o, a formata\u00e7\u00e3o ser\u00e1 aplicada automaticamente. Pressione Backspace ou Esc para desfazer.", "The following formatting shortcuts are replaced when pressing Enter. Press Escape or the Undo button to undo.": "Os atalhos de formata\u00e7\u00e3o seguintes s\u00e3o substitu\u00eddos ao pressionar Enter. Pressione Esc ou Desfazer para desfazer a a\u00e7\u00e3o.", "The next group of formatting shortcuts are applied as you type or when you insert them around plain text in the same paragraph. Press Escape or the Undo button to undo.": "O pr\u00f3ximo grupo de atalhos de formata\u00e7\u00e3o s\u00e3o aplicadas conforme voc\u00ea digita ou quando voc\u00ea insere em torno de texto simples no mesmo par\u00e1grafo. Pressione o bot\u00e3o ESC ou Voltar para voltar." });
+		tinymce.ScriptLoader.markDone('{site}/wp-includes/js/tinymce/langs/pt.js');
+	</script>
+	<script type="text/javascript">
+		var ajaxurl = "/wp-admin/admin-ajax.php";
+		(function () {
+			var init, id, $wrap;
+
+			if (typeof tinymce !== 'undefined') {
+				if (tinymce.Env.ie && tinymce.Env.ie < 11) {
+					tinymce.$('.wp-editor-wrap ').removeClass('tmce-active').addClass('html-active');
+					return;
+				}
+
+				for (id in tinyMCEPreInit.mceInit) {
+					init = tinyMCEPreInit.mceInit[id];
+					$wrap = tinymce.$('#wp-' + id + '-wrap');
+
+					if (($wrap.hasClass('tmce-active') || !tinyMCEPreInit.qtInit.hasOwnProperty(id)) && !init.wp_skip_init) {
+						tinymce.init(init);
+
+						if (!window.wpActiveEditor) {
+							window.wpActiveEditor = id;
+						}
+					}
+				}
+			}
+
+			if (typeof quicktags !== 'undefined') {
+				for (id in tinyMCEPreInit.qtInit) {
+					quicktags(tinyMCEPreInit.qtInit[id]);
+
+					if (!window.wpActiveEditor) {
+						window.wpActiveEditor = id;
+					}
+				}
+			}
+		}());
+	</script>
+	<div id="wp-link-backdrop" style="display: none"></div>
+	<div id="wp-link-wrap" class="wp-core-ui" style="display: none" role="dialog" aria-labelledby="link-modal-title">
+		<form id="wp-link" tabindex="-1">
+			<input type="hidden" id="_ajax_linking_nonce" name="_ajax_linking_nonce" value="985eed100a" />		<h1 id="link-modal-title">Inserir/editar link</h1>
+			<button type="button" id="wp-link-close"><span class="screen-reader-text">Fechar</span></button>
+			<div id="link-selector">
+				<div id="link-options">
+					<p class="howto" id="wplink-enter-url">Insira o URL de destino</p>
+					<div>
+						<label>
+							<span>URL</span>
+							<input id="wp-link-url" type="text" aria-describedby="wplink-enter-url" />
+						</label>
+					</div>
+					<div class="wp-link-text-field">
+						<label>
+							<span>Texto do link</span>
+							<input id="wp-link-text" type="text" />
+						</label>
+					</div>
+					<div class="link-target">
+						<label>
+							<span></span>
+							<input type="checkbox" id="wp-link-target" /> Abrir link em nova aba
+						</label>
+					</div>
+				</div>
+				<p class="howto" id="wplink-link-existing-content">Ou apontar para um conteúdo existente</p>
+				<div id="search-panel">
+					<div class="link-search-wrapper">
+						<label>
+							<span class="search-label">Pesquisar</span>
+							<input type="search" id="wp-link-search" class="link-search-field" autocomplete="off" aria-describedby="wplink-link-existing-content" />
+							<span class="spinner"></span>
+						</label>
+					</div>
+					<div id="search-results" class="query-results" tabindex="0">
+						<ul></ul>
+						<div class="river-waiting">
+							<span class="spinner"></span>
+						</div>
+					</div>
+					<div id="most-recent-results" class="query-results" tabindex="0">
+						<div class="query-notice" id="query-notice-message">
+							<em class="query-notice-default">Nenhum termo de busca especificado. Exibindo os mais recentes.</em>
+							<em class="query-notice-hint screen-reader-text">Pesquise ou use as teclas seta para cima/baixo para selecionar um item.</em>
+						</div>
+						<ul></ul>
+						<div class="river-waiting">
+							<span class="spinner"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="submitbox">
+				<div id="wp-link-cancel">
+					<button type="button" class="button">Cancelar</button>
+				</div>
+				<div id="wp-link-update">
+					<input type="submit" value="Adicionar link" class="button button-primary" id="wp-link-submit" name="wp-link-submit">
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

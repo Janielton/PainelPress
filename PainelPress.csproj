@@ -1,0 +1,114 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+	  <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <StartupObject>PainelPress.App</StartupObject>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <BaseOutputPath></BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+	  <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+    <OutputPath>obj\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Editor.html" />
+    <None Remove="favicon.ico" />
+    <None Remove="Imagem\busca.png" />
+    <None Remove="Imagem\close.png" />
+    <None Remove="Imagem\config.png" />
+    <None Remove="Imagem\copy.png" />
+    <None Remove="Imagem\icon_check.png" />
+    <None Remove="Imagem\icon_error.png" />
+    <None Remove="Imagem\logo.png" />
+    <None Remove="Imagem\maximizar.png" />
+    <None Remove="Imagem\move.png" />
+    <None Remove="Imagem\noimagem.png" />
+    <None Remove="Imagem\open_link.png" />
+    <None Remove="Imagem\play.png" />
+    <None Remove="Imagem\restaurar.png" />
+    <None Remove="Imagem\stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Classes\Browser\Editor.html" />
+    <Resource Include="Imagem\copy.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CefSharp.Common.NETCore" Version="101.0.150" />
+    <PackageReference Include="CefSharp.Wpf.NETCore" Version="101.0.150" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="Google.Analytics.Data.V1Beta" Version="1.0.0-beta08" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0-preview.4.22229.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
+    <PackageReference Include="Prism.Core" Version="8.1.97" />
+    <PackageReference Include="Refit" Version="6.3.2" />
+    <PackageReference Include="Selenium.Support" Version="4.1.1" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.1.1" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="102.0.5005.2700-beta" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FtpLibrary\FtpLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
+    <Resource Include="Imagem\busca.png" />
+    <Resource Include="Imagem\close.png" />
+    <Resource Include="Imagem\config.png" />
+    <Resource Include="Imagem\icon_check.png" />
+    <Resource Include="Imagem\icon_error.png" />
+    <Resource Include="Imagem\logo.png" />
+    <Resource Include="Imagem\maximizar.png" />
+    <Resource Include="Imagem\move.png" />
+    <Resource Include="Imagem\noimagem.png" />
+    <Resource Include="Imagem\open_link.png" />
+    <Resource Include="Imagem\play.png" />
+    <Resource Include="Imagem\restaurar.png" />
+    <Resource Include="Imagem\stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

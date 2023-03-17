@@ -1,0 +1,387 @@
+﻿<ContentControl x:Class="PainelPress.Paginas.Postar"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PainelPress.Paginas"    
+             xmlns:Navegador="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf" 
+             xmlns:cefSharpCore="clr-namespace:CefSharp;assembly=CefSharp.Core"  
+             xmlns:fa="http://schemas.fontawesome.io/icons/" 
+                mc:Ignorable="d" PreviewKeyDown="ContentControl_PreviewKeyDown"
+             d:DesignHeight="650" d:DesignWidth="900">
+    <ContentControl.Resources>
+        <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
+        <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
+        <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
+        <Style x:Key="TextBoxStyle1" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" CornerRadius="6" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.Focus.Border}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                        <Condition Property="IsSelectionActive" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FF3C73EA"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#4C6A6A6A"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#4C6A6A6A"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF817F7F"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1,0,0,3"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="4,4,0,0" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background1" Color="#FFF14747"/>
+        <SolidColorBrush x:Key="Button.Static.Border1" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background1" Color="Gray"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border1" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background1" Color="Gray"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border1" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background1" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border1" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground1" Color="#FF838383"/>
+        <Style x:Key="ButtonClear" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background1}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border1}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Width" Value="17"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="50" x:Name="border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentControl.Resources>
+
+    <Grid Background="WhiteSmoke" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="350*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition x:Name="gridSidebar" Width="220"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Name="brTitulo" Background="WhiteSmoke" Padding="3,5,3,0">
+            <StackPanel Orientation="Vertical">
+                <TextBox SpellCheck.IsEnabled="True" LostFocus="ediTitulo_LostFocus" VerticalAlignment="Top" Padding="2,-2,0,0" FontSize="22" Style="{DynamicResource TextBoxStyle1}" x:Name="ediTitulo" Height="30" Margin="0"/>
+                <TextBlock Padding="5,0" x:Name="tbSlugTitle"/>
+            </StackPanel>
+        </Border>
+        <Border Grid.Row="1" Name="brResumo" Background="WhiteSmoke" Padding="3,5,3,5">
+            <TextBox Padding="2" SpellCheck.IsEnabled="True" TextWrapping="Wrap" FontSize="16" Style="{DynamicResource TextBoxStyle1}" MaxLength="300" x:Name="ediResumo"/>
+        </Border>
+        <Border Grid.Row="3" Name="brEditor" Padding="3,0,3,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="148*"/>
+                    <ColumnDefinition Width="121*"/>
+                    <ColumnDefinition Width="405*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFD8D8D8"/>
+                        <GradientStop Color="White" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <ProgressBar x:Name="loadingEditor" BorderBrush="White" Height="8" Width="300" IsIndeterminate="True" Foreground="#FF3C73EA" Grid.Column="1" Margin="39,166,187,166" Grid.ColumnSpan="2"/>
+                <Navegador:ChromiumWebBrowser ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="0" Visibility="Hidden" x:Name="browEditor" LoadingStateChanged="browEditor_LoadingStateChanged" LostFocus="browEditor_LostFocus" Grid.ColumnSpan="3" >
+
+                </Navegador:ChromiumWebBrowser>
+            </Grid>
+
+        </Border>
+
+        <Border Grid.Row="2" Name="brBotoes" Background="WhiteSmoke">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btUpload" Click="btUpload_Click" Cursor="Hand">Upload (F1)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btEdital" Click="btEdital_Click">Edital (F2)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btSalvarPost" Click="btSalvarPost_Click">Salvar (F3)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btHtml" Click="btHtml_Click" Cursor="Hand">HTML (F4)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" x:Name="btBusca" Click="btBusca_Click" Cursor="Hand">Buscar (F5)</Button>
+            </StackPanel>
+
+        </Border>
+
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150*"/>
+                <RowDefinition Height="200*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0">
+                <Frame Padding="5" x:Name="frameCats" Source="CategoriasCheck.xaml" NavigationUIVisibility="Hidden" Background="White" Margin="0,0,0,5"/>
+            </Border>
+            <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Row="1">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Taxonomies</TextBlock>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <Grid>
+                                <TextBlock FontSize="16" HorizontalAlignment="Left">Tags</TextBlock>
+                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearTags" Click="btClearTags_Click" HorizontalAlignment="Right" Content="X" />
+                            </Grid>
+
+                            <TextBox x:Name="ediTags" MaxWidth="205" TextWrapping="Wrap" TextChanged="ediTags_TextChanged" FontSize="16" Margin="0,2,0,0" PreviewKeyDown="ediTags_KeyDown" LostFocus="ediTags_LostFocus"/>
+                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxTags" MaxHeight="150" SelectionChanged="boxTags_SelectionChanged"></ListBox>
+                            <StackPanel x:Name="listaTags" MinHeight="20">
+                                <TextBlock x:Name="tbTags" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <Grid>
+                                <TextBlock FontSize="16" HorizontalAlignment="Left">Cargos</TextBlock>
+                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearCargos" Click="btClearCargos_Click" HorizontalAlignment="Right" Content="X" />
+                            </Grid>
+                            <TextBox TextChanged="ediTags_TextChanged" KeyDown="ediTags_KeyDown" x:Name="ediCargos" FontSize="16" Margin="0,2,0,0" MaxWidth="205" TextWrapping="Wrap"/>
+                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxCargos" MaxHeight="150" SelectionChanged="boxCargos_SelectionChanged"></ListBox>
+                            <StackPanel x:Name="listaCargos" MinHeight="20">
+                                <TextBlock x:Name="tbCargos" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                   
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                           
+                            <Grid>
+                                <TextBlock FontSize="16" HorizontalAlignment="Left">Cidades</TextBlock>
+                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearCidades" HorizontalAlignment="Right" Click="btClearCidades_Click" Content="X" />
+                            </Grid>
+                            <TextBox TextChanged="ediTags_TextChanged" x:Name="ediCidades" FontSize="16" Margin="0,2,0,0" KeyDown="ediTags_KeyDown" MaxWidth="205" TextWrapping="Wrap"/>
+                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxCidades" MaxHeight="150" SelectionChanged="boxCidades_SelectionChanged"></ListBox>
+                            <StackPanel x:Name="listaCidades" MinHeight="20">
+                                <TextBlock x:Name="tbCidades" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                  
+                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Campos</TextBlock>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Edital</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediEdital" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Imagem</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediImg" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0"  Width="200"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Inscrição</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediInscricao" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Provas</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediProvas" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
+                        </StackPanel>
+                    </Border>
+                   
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Salário</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediSalario" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Vagas</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediVagas" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200" />
+                        </StackPanel>
+                    </Border>
+                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
+                        <StackPanel Orientation="Vertical" Margin="2">
+                            <TextBlock FontSize="16">Questões</TextBlock>
+                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediQuestao" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="3" Grid.Column="1">
+                <Grid.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFC1C1C1"/>
+                        <GradientStop Color="#FF787878" Offset="1"/>
+                    </LinearGradientBrush>
+                </Grid.Background>
+                <Button x:Name="btPublicar" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White" Padding="5" Click="btPublicar_Click" Width="150" Cursor="Hand" Margin="0,0,0,20">Publicar</Button>
+                <StackPanel x:Name="stackStatus" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,5" Visibility="Visible">
+                    <TextBox IsEnabled="False" TextAlignment="Center" Background="White" Text="Imediatamente" Padding="8,4" FontSize="14" x:Name="ediStatusPost" Margin="0,0,2,0"/>
+                    <Button Content="Editar" Style="{StaticResource ButtonStyle1}" x:Name="btEditarStatus" Click="btEditarStatus_Click" MinWidth="40" Padding="5,0" BorderThickness="0" Background="#FF655CC1" Foreground="#FFFFFBFB" />
+                </StackPanel>
+                <StackPanel x:Name="stackVer" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,5" Visibility="Collapsed">
+                    <Button Content="Ver post (F6)" Style="{StaticResource ButtonStyle1}" x:Name="btVerPost" Click="btVerPost_Click" MinWidth="40" Padding="15,2" BorderThickness="0" Background="#FF655CC1" Foreground="#FFFFFBFB" />
+                    <Button Visibility="Collapsed" Style="{StaticResource ButtonClear}" Background="Transparent" x:Name="btClearCacher" Width="20" Height="20" Margin="10,0" VerticalAlignment="Center" Click="btClearCacher_Click">
+                        <fa:ImageAwesome Icon="Recycle" Foreground="#FF74C118" Height="38" VerticalAlignment="Top" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <StackPanel Visibility="Visible" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF999999"/>
+                    <GradientStop Color="#FFEAEAEA" Offset="1"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
+            <Button x:Name="btRestautarPost" VerticalAlignment="Center" Margin="7,0" MinWidth="20" Height="20" Style="{StaticResource ButtonStyle1}" Click="btRestautarPost_Click" Cursor="Hand">
+                <Button.Background>
+                    <ImageBrush ImageSource="/Imagem/restaurar.png"/>
+                </Button.Background>
+            </Button>
+            <ComboBox Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" DisplayMemberPath="Nome" x:Name="comboUser" SelectionChanged="comboUser_SelectionChanged" FontSize="16" MinWidth="170" Foreground="#FF3E3D3D"/>
+        </StackPanel>
+
+        <Grid x:Name="GridFundo" Visibility="Collapsed" Background="#6B7A7A7A" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="2"/>
+        <ProgressBar x:Name="loadEnviandoDados" VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="8" IsIndeterminate="False" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="2" Foreground="#FF0587E0" BorderBrush="#FF0587E0" Visibility="Collapsed"/>
+        <Border Grid.Row="3" Background="WhiteSmoke" VerticalAlignment="Bottom" HorizontalAlignment="Left" x:Name="brCidadeNoImg">
+        </Border>
+
+        <Border Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Center" x:Name="brBotoesNotificacao" CornerRadius="8" Background="White" Padding="10" Margin="10" BorderThickness="1" BorderBrush="#FFD6D6D6" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="45"/>
+                </Grid.RowDefinitions>
+
+                <TextBox x:Name="editImgNotifi" MinWidth="300" Margin="0,5,0,0" FontSize="14" Padding="3,4,0,0"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" MinHeight="40" x:Name="stackBotoesNotificacao">
+
+                    <TextBlock Text="Enviar Notificação" VerticalAlignment="Center" Margin="20,10" FontSize="18"/>
+                    <StackPanel Orientation="Horizontal" x:Name="stackBotoesMensagem" MouseLeftButtonDown="stackBotoes_MouseLeftButtonDown" Margin="2">
+
+                    </StackPanel>
+
+                </StackPanel>
+                <Button Style="{StaticResource ButtonClear}" x:Name="btCloseNotifi" Grid.Row="0" HorizontalAlignment="Right" Width="15" Height="15" VerticalAlignment="Top" Content="X" Padding="0,0,0,4" Click="btCloseNotifi_Click"/>
+            </Grid>
+        </Border>
+        <Border x:Name="brBotoesAcao" Grid.RowSpan="4" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF8870F3" Padding="5" Margin="2,10" CornerRadius="8" Opacity="0.2" Mouse.MouseEnter="brBotoesAcao_MouseEnter" Mouse.MouseLeave="brBotoesAcao_MouseLeave">
+            <StackPanel Orientation="Vertical">
+                <Button Width="25" Height="25" Background="Transparent"  Margin="0,5,0,0" x:Name="btGerarToken" Click="btGerarToken_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
+                    <fa:ImageAwesome Icon="Key" Foreground="#FFBBB41F"/>
+                </Button>
+                <Button Width="25" Height="25" Background="Transparent" Margin="0,10,0,0" x:Name="btGerarTkTwitter" Visibility="Collapsed" Click="btGerarTkTwitter_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
+                    <fa:ImageAwesome Icon="Twitter" Foreground="#FF1FACEE"/>
+                </Button>
+                <Button Width="25" Height="25"  Background="Transparent" Margin="0,10,0,0" x:Name="btVerHtmlPost" Click="btVerHtmlPost_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
+                    <fa:ImageAwesome Icon="Eye" Foreground="#FF565859"/>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Border Visibility="Collapsed" Background="#FFD6D6D6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Row="3" MinHeight="20" x:Name="bdStatusTask" Padding="5,1" CornerRadius="0,5,0,0">
+            <TextBlock x:Name="tbStatusTask"/>
+        </Border>
+    </Grid>
+</ContentControl>

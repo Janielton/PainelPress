@@ -1,0 +1,39 @@
+﻿<ContentControl x:Class="PainelPress.Paginas.Configuracao"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                  xmlns:fa="http://schemas.fontawesome.io/icons/" 
+             xmlns:local="clr-namespace:PainelPress.Paginas"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="WhiteSmoke">
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical">
+                <Border Padding="4" Background="#FFB9B9B9" Margin="8" CornerRadius="8">
+                    <StackPanel Orientation="Vertical" Margin="6">
+                        <TextBlock FontSize="18" Margin="0,0,0,8">Configurações site/plugin</TextBlock>
+                        <TextBox MinHeight="150" FontSize="18" Text="{Binding JsonConfig}" TextWrapping="Wrap"></TextBox>
+                    </StackPanel>
+                </Border>
+                <Border Padding="4" Background="#FFB9B9B9" Margin="8" CornerRadius="8">
+                    <StackPanel Orientation="Vertical" Margin="6">
+                        <TextBlock FontSize="18" Margin="0,0,0,8">Campos personalizados</TextBlock>
+                        <TextBox MinHeight="150" FontSize="18" Text="{Binding JsonCampos}" TextWrapping="Wrap"></TextBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+        <Border Visibility="{Binding IsVisibleLoading}" Margin="8" Padding="8" CornerRadius="8" Background="#B29FA2A5">
+            <ProgressBar Margin="50,0" Padding="8" IsIndeterminate="True" VerticalAlignment="Center" Height="10" Foreground="#FFA0DE20">
+                <ProgressBar.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF485D90"/>
+                        <GradientStop Color="#FF4584DA" Offset="1"/>
+                    </LinearGradientBrush>
+                </ProgressBar.Background>
+            </ProgressBar>
+        </Border>
+       
+    </Grid>
+</ContentControl>

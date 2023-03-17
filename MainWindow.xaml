@@ -1,0 +1,86 @@
+﻿<Window x:Class="PainelPress.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Background="WhiteSmoke" 
+        WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen" 
+        Closing="Window_Closing"
+        Title="PainelPress V.1.1" 
+        Height="600" Width="1000" Icon="/favicon.ico">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Home.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFB8B8B8"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Border HorizontalAlignment="Left" Grid.Column="0" BorderThickness="0,0,2,0" BorderBrush="#FFA0A0A0" Background="LightGray">
+                <Button Background="Gray" Grid.Column="0" x:Name="btInicio" FontSize="25" MinWidth="200" HorizontalAlignment="Left" Click="btInicio_Click" BorderThickness="0" Cursor="Hand" IsEnabled="False" Style="{DynamicResource ButtonEstilo}">
+                    <Image Cursor="Hand" Height="40" Width="140"  Source="/Imagem/logo.png" />
+                </Button>
+            </Border>
+
+            <Border HorizontalAlignment="Left" Grid.Column="2" BorderThickness="2,0,0,0"  BorderBrush="#FFA0A0A0" >
+                <Button Background="#FF9AD831" Style="{DynamicResource ButtonEstilo}" x:Name="btPostar" FontSize="25" MinWidth="200" HorizontalAlignment="Right" Content="Postar" Click="btPostar_Click" Cursor="Hand" />
+            </Border>
+            
+           
+            <ScrollViewer  Grid.Column="1" HorizontalScrollBarVisibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" MinHeight="55">
+                <StackPanel Orientation="Horizontal">
+                    <Button Visibility="Visible" Style="{DynamicResource ButtonStyleCentro}" x:Name="btBackup" Content="Backup" Click="btBackup_Click" Cursor="Hand"/>
+                    <Button Style="{DynamicResource ButtonStyleCentro}" x:Name="btUpload" Content="Upload" Click="btUpload_Click"/>
+                    
+                    <Button Style="{DynamicResource ButtonStyleCentro}" x:Name="btRelatorios" Content="Analytics" Click="btRelatorios_Click"/>
+                    <Button Style="{DynamicResource ButtonStyleCentro}" Visibility="Collapsed" x:Name="btCache" Content="Cacher" Click="btCache_Click" Cursor="Hand"/>
+                    <Button Style="{DynamicResource ButtonStyleCentro}" x:Name="btSocial" Content="Social" Click="btSocial_Click" Cursor="Hand"/>
+                    <Button Style="{DynamicResource ButtonStyleCentro}" x:Name="btFTP" Content="FTP" Click="btFTP_Click" Cursor="Hand"/>
+                    <Button Style="{DynamicResource ButtonStyleCentro}" x:Name="btTaxonomy" Content="Taxonomies" Click="btTaxonomy_Click" Cursor="Hand"/>
+                    <StackPanel Margin="5,0" Orientation="Horizontal" Background="#7F6F6F6F" VerticalAlignment="Center">
+                        <TextBlock x:Name="textUser" Text="Usuário" Foreground="White" Margin="5,7" VerticalAlignment="Center"/>
+                        <Button x:Name="btSair" FontSize="14" Content="Sair" Margin="5,0" Padding="5,0,5,2"  VerticalAlignment="Center" Click="btSair_Click" Background="#FFDE564F"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <Border Grid.Row="1" Background="#FF4C4B4B"/>
+        <ContentControl Grid.Row="2" x:Name="contentPagina"/>
+        <Border HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Row="2" Padding="2,0,0,2" Grid.Column="2" Name="borderMensagem" Visibility="Collapsed" BorderBrush="Transparent" Margin="10,0,0,5" Opacity="0.9" Background="#FF90E040" BorderThickness="1" CornerRadius="5">
+            <Label x:Name="labelMensagem" Margin="10,0" Padding="2" HorizontalAlignment="Center" 
+                       FontSize="18" Content="" 
+                        Foreground="White" >
+
+            </Label>
+        </Border>
+
+        <StackPanel Visibility="Collapsed" x:Name="stackTwitterToken" Grid.Row="2" VerticalAlignment="Bottom"  HorizontalAlignment="Left" Background="Red">
+            <TextBlock Margin="10,0" Text="Token do Twitter invalido. Gere outro abaixo" FontSize="20" Foreground="White"/>
+            <StackPanel  Orientation="Horizontal">
+                <TextBox x:Name="jsonCredencial" Width="400" Height="40" Margin="5"/>
+                <Button  Height="40" Margin="10,0" x:Name="btGerarTokenTwitter" Content="Gerar" Click="btGerarTokenTwitter_Click"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" HorizontalAlignment="Left" x:Name="btConfig" Click="btConfig_Click" Padding="5">
+            <fa:ImageAwesome Height="30" Width="30" Icon="Gear" Foreground="#FF5D5A5A"/>
+        </Button>
+    </Grid>
+</Window>

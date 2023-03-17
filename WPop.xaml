@@ -1,0 +1,261 @@
+﻿<Window x:Class="PainelPress.WPop"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PainelPress"
+        mc:Ignorable="d" Background="Transparent" BorderThickness="0" AllowsTransparency="True" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None" Title="Pop" Height="240" Width="500">
+    <Window.Resources>
+        <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
+
+        <Style x:Key="TextBoxStyle1" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="Background" Value="WhiteSmoke"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Padding" Value="3,1"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                            </Trigger>
+                            
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                        <Condition Property="IsSelectionActive" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFE84040"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="Gray"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="WhiteSmoke"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="ButtonStyle1" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" CornerRadius="3" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                           
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="FocusVisual1">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="OptionMarkFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="RadioButton.Static.Background" Color="#FFFFFFFF"/>
+        <SolidColorBrush x:Key="RadioButton.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="RadioButton.Static.Glyph" Color="Gray"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Background" Color="#FFF3F9FF"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Border" Color="#FF5593FF"/>
+        <SolidColorBrush x:Key="RadioButton.MouseOver.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Background" Color="#FFD9ECFF"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Border" Color="#FF3C77DD"/>
+        <SolidColorBrush x:Key="RadioButton.Pressed.Glyph" Color="#FF212121"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Background" Color="#FFE6E6E6"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Border" Color="#FFBCBCBC"/>
+        <SolidColorBrush x:Key="RadioButton.Disabled.Glyph" Color="#FF707070"/>
+        <Style x:Key="RadioButtonStyle1" TargetType="{x:Type RadioButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual1}"/>
+            <Setter Property="Background" Value="{StaticResource RadioButton.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource RadioButton.Static.Border}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Grid x:Name="templateRoot" Background="#a7b8f3" SnapsToDevicePixels="True">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Margin="5,6" x:Name="radioButtonBorder" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="100" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Grid x:Name="markGrid" Margin="2">
+                                    <Ellipse x:Name="optionMark" Fill="{StaticResource RadioButton.Static.Glyph}" MinHeight="10" MinWidth="10" Opacity="0"/>
+                                </Grid>
+                            </Border>
+                            <ContentPresenter Margin="2,5,10,5" x:Name="contentPresenter" Grid.Column="1" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,-1,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.MouseOver.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.MouseOver.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.Disabled.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{StaticResource RadioButton.Pressed.Border}"/>
+                                <Setter Property="Fill" TargetName="optionMark" Value="{StaticResource RadioButton.Pressed.Glyph}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="{x:Null}">
+                                <Setter Property="Opacity" TargetName="optionMark" Value="0.56"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid MouseDown="Janela_MouseMove">
+        <Border x:Name="janelaEdital" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Collapsed">
+        <Grid>
+                <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+                    <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediEditalUrl" LostFocus="ediEditalUrl_LostFocus"/>
+                    <StackPanel Orientation="Horizontal" Height="50" HorizontalAlignment="Center">
+                        <RadioButton x:Name="radEditalPadrao" IsChecked="True" Style="{DynamicResource RadioButtonStyle1}" Content="Padrão" VerticalAlignment="Center"/>
+                        <RadioButton x:Name="radEditalView" Style="{DynamicResource RadioButtonStyle1}" Content="View" VerticalAlignment="Center" Margin="10,0"/>
+                        <RadioButton Checked="radEditalDrive_Checked" Unchecked="radEditalDrive_Unchecked" x:Name="radEditalDrive" Style="{DynamicResource RadioButtonStyle1}" Content="Drive" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediEditalDrive" HorizontalAlignment="Center" MinWidth="300" Visibility="Collapsed"/>
+                    <StackPanel Orientation="Horizontal" Height="50" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBox KeyDown="ediEditalSlug_KeyDown" Style="{DynamicResource TextBoxStyle1}" x:Name="ediEditalSlug" Width="250"  Margin="5,0,0,0"/>
+                        <Button x:Name="btGerarEdital" Foreground="White" Background="#FF4084E6" Style="{DynamicResource ButtonStyle1}" Content="Gerar Edital" FontSize="18" Click="btGerarEdital_Click" Height="30" VerticalAlignment="Center" Margin="5,0" Padding="10,0"/>
+                    </StackPanel>
+                    <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediEditalView"/>
+                </StackPanel>
+        </Grid>
+        </Border>
+
+        <Border x:Name="janelaUrl" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Collapsed">
+         <Grid>
+                <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+                    <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediUrlExterno" Margin="0,5"/>
+                    <StackPanel Orientation="Horizontal" Height="40" HorizontalAlignment="Center">
+                        <RadioButton IsChecked="True" Style="{DynamicResource RadioButtonStyle1}" x:Name="radUrlOrganizadora" Content="Organizadora" VerticalAlignment="Top"/>
+                        <RadioButton Style="{DynamicResource RadioButtonStyle1}"  x:Name="radUrlSite" Content="Site" VerticalAlignment="Top" Margin="10,0"/>
+                        <RadioButton Style="{DynamicResource RadioButtonStyle1}" Content="Edital" VerticalAlignment="Top" x:Name="radUrlEdital"/>
+                    </StackPanel>
+                    <TextBox BorderBrush="WhiteSmoke" TextWrapping="Wrap" MaxWidth="400" x:Name="ediUrlResult" Padding="2,3"/>
+                    <Button Width="150" x:Name="btGerarUrl" Foreground="White" Background="#FF4084E6" Style="{DynamicResource ButtonStyle1}" Content="Gerar Url" Height="30" VerticalAlignment="Center" Margin="0,15" FontSize="20" Padding="10,0" Click="btGerarUrl_Click" Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border x:Name="janelaCache" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Collapsed">
+            <Grid>
+                <StackPanel Orientation="Vertical" Margin="10" VerticalAlignment="Center">
+                    <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediCacheParam" Margin="0,5"/>
+                    <StackPanel Orientation="Horizontal" Height="40" HorizontalAlignment="Center">
+                        <RadioButton IsChecked="True" Style="{DynamicResource RadioButtonStyle1}" x:Name="radCacheCidade" Content="Cidade" VerticalAlignment="Top"/>
+                        <RadioButton Style="{DynamicResource RadioButtonStyle1}" x:Name="radCachePost" Content="Post" VerticalAlignment="Top" Margin="10,0"/>
+                        <RadioButton Style="{DynamicResource RadioButtonStyle1}" x:Name="radCacheServer" Content="Server" VerticalAlignment="Top" Margin="10,0" Cursor="Hand"/>
+                    </StackPanel>
+               
+                    <Button Width="150" x:Name="btClearCache" Foreground="White" Background="#FF4084E6" Style="{DynamicResource ButtonStyle1}" Content="Limpar" Height="30" VerticalAlignment="Center" Margin="0,15" FontSize="20" Padding="10,0" Click="btClearCache_Click" Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border x:Name="janelaBusca" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Collapsed">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" Style="{DynamicResource TextBoxStyle1}" x:Name="ediBusca" Margin="30,5" TextChanged="ediBusca_TextChanged"/>
+                <ListView Grid.Row="1" x:Name="listPost" BorderThickness="0,1,0,0" BorderBrush="WhiteSmoke" VerticalAlignment="Stretch" Margin="0,0,0,5" SelectionChanged="listPost_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock TextWrapping="Wrap" MaxWidth="550" Padding="5" FontSize="15" Text="{Binding Title}"/>
+                                <TextBlock Background="WhiteSmoke" Padding="5" Text="{Binding Date}" VerticalAlignment="Center" Margin="10,0" FontSize="12"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </Grid>
+        </Border>
+        <Button Style="{DynamicResource ButtonStyle1}" Padding="0,0,0,2" Content="X" x:Name="btClose" Click="btClose_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Width="20" Margin="7" Foreground="White" Cursor="Hand"/>
+    </Grid>
+</Window>
