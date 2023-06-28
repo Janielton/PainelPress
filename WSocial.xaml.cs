@@ -32,9 +32,9 @@ namespace PainelPress
         byte[] ImgSelecao;
         TwitterService twitterService;
         MensagemToast mensagem = new MensagemToast();
-        Social social = new Social();
+        SocialModel social = new SocialModel();
         bool twiter;
-        Social facebook;
+        SocialModel facebook;
         public bool HIDENBW = true;
         public WSocial()
         {
@@ -300,7 +300,7 @@ namespace PainelPress
         {
             if (string.IsNullOrEmpty(ediToken.Text))
             {
-                social.setFacebook(new Social()
+                social.setFacebook(new SocialModel()
                 {
                     ativado = false,
                     token = "",
@@ -310,7 +310,7 @@ namespace PainelPress
             }
             else
             {
-                social.setFacebook(new Social()
+                social.setFacebook(new SocialModel()
                 {
                     ativado = true,
                     token = ediToken.Text,

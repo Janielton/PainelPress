@@ -78,7 +78,7 @@ namespace PainelPress.Classes
             {
              try
             {
-                var dados = new Social().facebook();
+                var dados = new SocialModel().facebook();
                 driver.Navigate().GoToUrl("https://mbasic.facebook.com/");
                 driver.FindElement(By.Id("m_login_email")).Click();
                 driver.FindElement(By.Id("m_login_email")).Clear();
@@ -124,7 +124,68 @@ namespace PainelPress.Classes
                 return false; }
 
             }
-            private bool IsElementPresent(By by)
+
+        public bool PostaTwitter(string texto)
+        {
+            try
+            {
+                var dados = new SocialModel().facebook();
+                driver.Navigate().GoToUrl("https://mbasic.facebook.com/");
+                driver.FindElement(By.Id("m_login_email")).Click();
+                driver.FindElement(By.Id("m_login_email")).Clear();
+                // driver.FindElement(By.Id("m_login_email")).SendKeys(dados.usuario);
+                driver.FindElement(By.Name("pass")).Click();
+                driver.FindElement(By.Name("pass")).Clear();
+                // driver.FindElement(By.Name("pass")).SendKeys(dados.senha);
+                driver.FindElement(By.Name("login")).Click();
+                driver.Navigate().GoToUrl($"https://iphone.facebook.com/{dados.pagina}/posts");
+                Thread.Sleep(1000);
+                Actions action = new Actions(driver);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.SendKeys(Keys.Tab);
+                action.Perform();
+                action.SendKeys(Keys.Enter);
+                action.Perform();
+                Thread.Sleep(2000);
+                driver.FindElement(By.Name("status")).Click();
+                // driver.FindElement(By.Name("xc_message")).Clear();
+                driver.FindElement(By.Name("status")).SendKeys(texto);
+                Thread.Sleep(1000);
+                driver.FindElement(By.ClassName("_9drg")).Click();
+                Thread.Sleep(2000);
+                if (hiden) driver.Quit();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                driver.Quit();
+                return false;
+            }
+
+        }
+
+        private bool IsLogadoTwitter()
+        {
+            driver.Navigate().GoToUrl("https://twitter.com/i/bookmarks");
+            Debug.WriteLine(driver.Url);
+            return true;
+        }
+
+        private bool IsElementPresent(By by)
             {
                 try
                 {

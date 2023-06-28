@@ -80,12 +80,11 @@ namespace PainelPress
                 if (string.IsNullOrEmpty(user.username) || string.IsNullOrEmpty(user.password)) return;
                 var rest = RestService.For<InterfaceAPI>(Constants.SITE);
                 Token resultado = await rest.Login(user);
-                Debug.WriteLine(resultado.token);
-                if (!string.IsNullOrEmpty(resultado.token))
+                if (resultado != null && !string.IsNullOrEmpty(resultado.token))
                 {
                     config.Default.Upgrade();
                     config.Default.Logado = true;
-                    config.Default.Usuario = resultado.user_nicename;
+                    config.Default.Usuario = resultado.user_email;
                     if (radSalvarSenha.IsChecked == true) { config.Default.Senha = user.password; }
                     config.Default.Token = resultado.token;
                     config.Default.Save();
@@ -94,7 +93,7 @@ namespace PainelPress
                 }
                 else
                 {
-                    txtStatus.Text = resultado.code;
+                    txtStatus.Text = resultado.message;
                     txtStatus.Visibility = Visibility.Collapsed;
                 }
                
@@ -123,6 +122,10 @@ namespace PainelPress
                 }else if (objeto.code.Contains("invalid_email"))
                 {
                     txtStatus.Text = "Email inválido";
+                }
+                else if (objeto.code.Contains("invalid_username"))
+                {
+                    txtStatus.Text = "Usuário inválido";
                 }
                 txtStatus.Visibility = Visibility.Visible;
             }
@@ -172,6 +175,7 @@ namespace PainelPress
             {
                 config.Default.Upgrade();
                 config.Default.site = editSite.Text;
+                Constants.SITE = editSite.Text;
                 config.Default.Save();
             }
 

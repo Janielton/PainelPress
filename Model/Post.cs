@@ -8,30 +8,21 @@ namespace PainelPress.Model
 {
     public class Post
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
+      
+        public int id { get; set; }
+        public string author { get; set; }   
+        public TituloModel title { get; set; }
+        public string date { get; set; }
+        public string status { get; set; }
+        public string link { get; set; }
 
-        [JsonProperty("author")]
-        public string Author { get; set; }
-
-        [JsonProperty("title")]
-        public TituloModel Title { get; set; }
-
-        [JsonProperty("date")]
-        public DateTime Date { get; set; }
-
-        [JsonProperty("status")]
-        public string Status { get; set; }
-
-        [JsonProperty("link")]
-        public string Link { get; set; }
 
         public Post() { }
 
-        public Post(string titulo, int id, DateTime date) {
-            this.Title.raw = titulo;
-            this.Id = id;
-            this.Date = date;
+        public Post(string titulo, int id, string date) {
+            this.title.raw = titulo;
+            this.id = id;
+            this.date = date;
         }
 
         [Newtonsoft.Json.JsonIgnore]
@@ -39,7 +30,7 @@ namespace PainelPress.Model
         {
             get
             {
-                return Date.ToString("dd/MM/yyyy HH:mm");
+                return Convert.ToDateTime(date).ToString("dd/MM/yyyy HH:mm");
             }
         }
 
@@ -48,7 +39,7 @@ namespace PainelPress.Model
         {
             get
             {
-                return Usuario.getUsuario(Author).Nome;
+                return Usuario.getUsuario(author).Nome;
             }
         }
 
@@ -57,7 +48,25 @@ namespace PainelPress.Model
         {
             get
             {
-                return Convert.ToInt32(Id);
+                return Convert.ToInt32(id);
+            }
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public string getTitulo
+        {
+            get
+            {
+                return title.raw;
+            }
+        }
+        [Newtonsoft.Json.JsonIgnore]
+        public string setTitulo
+        {
+            set
+            {
+                title.raw = value;
+                title.rendered = value;
             }
         }
 

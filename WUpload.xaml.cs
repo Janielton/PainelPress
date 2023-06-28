@@ -1,25 +1,14 @@
 ﻿using Microsoft.Win32;
-using Refit;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using PainelPress.Classes;
-using PainelPress.Model;
-using Newtonsoft.Json;
 using PainelPress.Paginas;
+using PainelPress.Elementos;
+using FontAwesome.WPF;
 
 namespace PainelPress
 {
@@ -29,45 +18,51 @@ namespace PainelPress
     public partial class WUpload : Window
     {
         byte[] ImgSelecao;
-        Ferramentas ferramenta = new Ferramentas();
         bool Post = false;
-
-
+        public string PATH = "";
+        public string NOME = "";
+        RestAPI restAPI = new RestAPI();
         public WUpload()
         {
             InitializeComponent();
         }
 
-        public WUpload(bool post)
+        public WUpload(bool post, string path = "")
         {
             InitializeComponent();
             this.Post = post;
-            //Debug.WriteLine(Conversor64.EncodeToBase64("painelpress:85454588s$3344"));
+            btUpload.Content = "Definir";
+            if (path != "")
+            {
+                SetImage(path);    
+            }
         }
 
         private void btSelectImg_Click(object sender, RoutedEventArgs e)
         {
-            if (editUrlImage.Text.StartsWith("http"))
-            {
-                BaixarImage(editUrlImage.Text);
-            }
-            else
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Imagem Arquivos|*.png;*.jpg;*.webp";
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Imagem Arquivos|*.png;*.jpg;*.webp";
 
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    SetImage(openFileDialog.FileName);
-                }
+            if (openFileDialog.ShowDialog() == true)
+            {
+                SetImage(openFileDialog.FileName);
             }
-           
+
         }
 
         private void btUpload_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(editUrlImage.Text)) {
-                UploadSend();
+                if (btUpload.Content.ToString().Equals("Enviar")){
+                    UploadSend();
+                }
+                else
+                {
+                    PATH = editUrlImage.Text;
+                    NOME = editNome.Text;
+                    DialogResult = true;
+                    this.Close();
+                }        
             }
         }
 
@@ -75,50 +70,42 @@ namespace PainelPress
         {
             imgUpOk.Visibility = Visibility.Collapsed;
             editNome.Visibility = Visibility.Visible;
+            gridUrl.Visibility = Visibility.Collapsed;
             editUrlImage.Text = "";
             editNome.Text = "";
+            imgUp.Source = CorImage.GetImagemProjeto("noimagem");
         }
 
-        private async void BaixarImage(string url)
-        {
-            editUrlImage.Text = url;
-            RestAPI restAPI = new RestAPI();
-            var img = await restAPI.BaixarDados(url);
-            if (img != null)
-            {
-                imgUp.Source = ByteArrayToImage(img);
-            }
-
-        }
-
+  
         private async void UploadSend() {
             try
             {
 
-                string param = $"extensao={getExtensao(editUrlImage.Text)}&nome={editNome.Text}";
+                string param = $"extensao={ImagemTool.getExtensao(editUrlImage.Text)}&nome={editNome.Text}";
                 string urlUplod = Constants.SITE + $"/api?rota=upload&{param}";
                 pLoading.Visibility = Visibility.Visible;
                
-                RestAPI restAPI = new RestAPI();
-                RequisicaoBol resultado = await restAPI.UploadImagemStrem(urlUplod, ImgSelecao);
+              
+                RequisicaoBol resultado = await restAPI.UploadImagem(editNome.Text, ImagemTool.getExtensao(editUrlImage.Text), ImgSelecao);
 
                 pLoading.Visibility = Visibility.Collapsed;
+                if (resultado == null)
+                {
+                    AlertMensagem.instance.Show("Erro ao fazer upload");
+                    return;
+                }
+
                 if (resultado.Sucesso)
                 {
                     imgUpOk.Visibility = Visibility.Visible;
                     editNome.Visibility = Visibility.Collapsed;
-                    editUrlImage.Text = resultado.Mensagem;
-                    Clipboard.SetText(editUrlImage.Text);
-                    if (Post)
-                    {
-                        Postar._ediImg.Text = editUrlImage.Text;
-                        DialogResult = true;
-                        this.Close();
-                    }
-                  
+                    Clipboard.SetText(resultado.Mensagem);
+                    gridUrl.Visibility = Visibility.Visible;
+                    editUrl.Texto = resultado.Mensagem;
                 }
                 else
                 {
+                    AlertMensagem.instance.Show(resultado.Mensagem, "Erro ao enviar imagem");
                     imgUpErro.Visibility = Visibility.Visible;
                 }
                
@@ -128,21 +115,6 @@ namespace PainelPress
                 Debug.WriteLine("UploadSend => "+ex.Message);
                 pLoading.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private string getExtensao(string caminho) {
-            var split = caminho.Split(".");
-            int index = split.Length - 1;
-            return split[index];
-        }
-
-        private string getNome(string caminho)
-        {
-
-            var split = caminho.Split("\\");
-            int index = split.Length - 1;
-            var split2 = split[index].Split(".");
-            return Ferramentas.ToUrlSlug(split2[0]);
         }
 
         public static BitmapFrame ByteArrayToImage(byte[] byteArrayIn)
@@ -166,7 +138,7 @@ namespace PainelPress
             editUrlImage.Text = path;
             ImgSelecao = IMGtoBITY(path);
             imgUp.Source = ByteArrayToImage(ImgSelecao);
-            editNome.Text = getNome(path);
+            editNome.Text = ImagemTool.getNome(path);
 
         }
         private byte[] IMGtoBITY(string imageIn)
@@ -189,7 +161,7 @@ namespace PainelPress
 
         }
 
-        private void Grid_Drop(object sender, DragEventArgs e)
+        private async void Grid_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -200,8 +172,9 @@ namespace PainelPress
             else if(e.Data.GetDataPresent(DataFormats.Text))
             {
                 string draggedFileUrl = (string)e.Data.GetData(DataFormats.Text, false);
-                Debug.WriteLine($"url => {draggedFileUrl}");
-                BaixarImage(draggedFileUrl);
+              
+               string path = await ImagemTool.BaixarImage(draggedFileUrl);
+                SetImage(path);
             }
         }
 
@@ -217,6 +190,26 @@ namespace PainelPress
             Reset();
         }
 
-       
+        private void btCloseWin_Click(object sender, RoutedEventArgs e)
+        {
+           // DialogResult = false;
+            this.Close();
+        }
+
+        private void btCloseUrl_Click(object sender, RoutedEventArgs e)
+        {
+            Reset();
+        }
+
+        private void btCopyUrl_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(editUrl.Texto);
+            btCopyUrl.Content = new ImageAwesome()
+            {
+                Icon = FontAwesomeIcon.Check,
+                Width = 25,
+                Foreground = CorImage.GetCorVerde()
+            };
+        }
     }
 }

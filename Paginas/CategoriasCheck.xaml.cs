@@ -1,8 +1,12 @@
-﻿using PainelPress.Classes;
+﻿
+using PainelPress.Classes;
+using PainelPress.Elementos;
 using PainelPress.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,53 +20,127 @@ namespace PainelPress.Paginas
     public partial class CategoriasCheck : Page
     {
         List<string> listCats = new List<string>();
-        List<Categoria> categorias = new List<Categoria>();
-        int[] catPai = { 71, 76, 58, 60, 87 };
+        List<CategoriaFull> categorias = new List<CategoriaFull>();
+        List<string> catsPai = new List<string>();
         public static string CatList;
 
         public CategoriasCheck()
         {
             InitializeComponent();
-            // Setap();
+            Setap();
         }
 
         public CategoriasCheck(string[] cats)
         {
             InitializeComponent();
             listCats.Clear();
-            SetCats(cats);
-                   
+            Setap();
+            SetCats(cats);         
         }
+
 
         private void Setap()
         {
             string cats = config.Default.categorias;
             if (cats != "")
             {
-                categorias = Ferramentas.JsonToObjeto(cats, 2) as List<Categoria>;
-                new Ferramentas().GetXamlCats(categorias);              
+                categorias = Ferramentas.JsonToObjeto(cats, 3) as List<CategoriaFull>;
+                SetCatsInContainer(categorias);              
             }
         }
 
-       
 
-        private void SetCats(string[] cats)
+        public void SetCatsInContainer(List<CategoriaFull> categorias)
+        {
+ 
+            foreach (var cat in categorias)
+            {
+                StackPanel stack = new StackPanel()
+                {
+                    Orientation = Orientation.Vertical
+                };
+                CheckBox checkPai = CategoriaBox(cat, true);
+                stack.Children.Add(checkPai);
+                if (HasChild(cat))
+                {
+                    stack.Children.Add(StackComSubs(cat.subs, cat.term_id));
+                    catsPai.Add(cat.term_id);
+                }
+                containerCats.Children.Add(stack);
+            }
+            
+            bool HasChild(CategoriaFull cat)
+            {
+                return cat.subs.Count > 0;
+            }
+
+            CheckBox CategoriaBox(CategoriaFull cat, bool pai)
+            {
+  
+                var check = new CheckBox()
+                {
+                    Content = cat.name,
+                    Tag = cat.term_id,
+                    Margin = new Thickness(0,0,0,2)
+                };
+                this.RegisterName($"cb_{cat.term_id}", check);
+                if (pai)
+                {
+                    check.Style = Resources["CheckBoxStylePai"] as Style;
+                    check.FontSize = 20;
+                }
+                else
+                {
+                    check.Style = Resources["CheckBoxStyleSub"] as Style;
+                    check.FontSize = 16;
+                }
+                check.Checked += CheckBox_Checked;
+                check.Unchecked += CheckBox_Unchecked;
+                return check;
+            }
+
+           
+
+            StackPanel StackComSubs(List<SubCat> subs, string id)
+            {
+                StackPanel stack = new StackPanel()
+                {
+                    Orientation = Orientation.Vertical,
+                    Background = CorImage.GetCor("#FFF5F5F5"),
+                    Visibility = Visibility.Collapsed,
+                   // Name = $"stack{id}"
+                };
+                this.RegisterName($"stack{id}", stack);
+ 
+                foreach (SubCat cat in subs)
+                {
+                    CheckBox checkPai = CategoriaBox(cat.subsToFull, false);
+                    stack.Children.Add(checkPai);
+                }
+                return stack;
+            }
+
+        }
+
+        public void SetCats(string[] cats)
         {    
  
             try
             {
+                listCats.Clear();
                 foreach (string item in cats)
                 {
-                    CheckBox checkbox = (CheckBox)this.FindName("ct" + item);
-                    checkbox.IsChecked = true;
+                    string nome = "cb_" + item;
+                    CheckBox checkbox = (CheckBox)this.FindName(nome);
+                    if(checkbox!= null) checkbox.IsChecked = true;
+
                 }
                 
             }catch(Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-              
-           
+               
         }
 
 
@@ -71,12 +149,13 @@ namespace PainelPress.Paginas
             try
             {
                 CheckBox rb = (CheckBox)sender;
-            int tagId = Convert.ToInt32(rb.Tag.ToString());
-            if (catPai.Contains(tagId))
-            {
-                ShowHideSubCat(true, tagId);
-            }
-                AltetarTag(true, tagId.ToString());
+                if (rb == null) return;
+                string tagId = rb.Tag.ToString();
+                if (catsPai.Contains(tagId))
+                {
+                    ShowHideSubCat(true, tagId);
+                }
+                AltetarTag(true, tagId);
             }
             catch (Exception ex)
             {
@@ -86,16 +165,17 @@ namespace PainelPress.Paginas
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            try { 
-            CheckBox rb = (CheckBox)sender;
-            int tagId = Convert.ToInt32(rb.Tag.ToString());
-            if (catPai.Contains(tagId))
-            {
+            try {
+                CheckBox rb = (CheckBox)sender;
+                if (rb == null) return;
+                string tagId = rb.Tag.ToString();
+                if (catsPai.Contains(tagId))
+                {
  
                 ShowHideSubCat(false, tagId);
-            }
+                }
 
-                AltetarTag(false, tagId.ToString());
+                AltetarTag(false, tagId);
             }
             catch (Exception ex)
             {
@@ -118,30 +198,12 @@ namespace PainelPress.Paginas
 
             }
 
-            Debug.WriteLine(CatList);
         }
-        private void ShowHideSubCat(bool show, int cat)
+        private void ShowHideSubCat(bool show, string cat)
         {
-            if (cat == 71)
-            {
-                stackcentrooeste.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else if (cat == 76)
-            {
-                stacknorte.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else if (cat == 58)
-            {
-                stacknordeste.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else if (cat == 60)
-            {
-                stacksudeste.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else if (cat == 87)
-            {
-                stacksul.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
+            var stack = (StackPanel)containerCats.FindName($"stack{cat}");
+            if(stack == null) return;
+            stack.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }

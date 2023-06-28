@@ -274,5 +274,113 @@ namespace PainelPress.Properties {
                 this["facebook"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool primeiroacesso {
+            get {
+                return ((bool)(this["primeiroacesso"]));
+            }
+            set {
+                this["primeiroacesso"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string usuarios {
+            get {
+                return ((string)(this["usuarios"]));
+            }
+            set {
+                this["usuarios"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string taxonomys {
+            get {
+                return ((string)(this["taxonomys"]));
+            }
+            set {
+                this["taxonomys"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string campos {
+            get {
+                return ((string)(this["campos"]));
+            }
+            set {
+                this["campos"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sitemapurl {
+            get {
+                return ((string)(this["sitemapurl"]));
+            }
+            set {
+                this["sitemapurl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string sitemapnews {
+            get {
+                return ((string)(this["sitemapnews"]));
+            }
+            set {
+                this["sitemapnews"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool miniatura {
+            get {
+                return ((bool)(this["miniatura"]));
+            }
+            set {
+                this["miniatura"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string campo_imagem {
+            get {
+                return ((string)(this["campo_imagem"]));
+            }
+            set {
+                this["campo_imagem"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string layout {
+            get {
+                return ((string)(this["layout"]));
+            }
+            set {
+                this["layout"] = value;
+            }
+        }
     }
 }

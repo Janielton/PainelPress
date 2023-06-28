@@ -7,81 +7,70 @@ namespace PainelPress.Model
 {
     public class PostView
     {
+        [JsonProperty("id")]
         [JsonPropertyName("id")]
         public string Id { get; set; }
 
+        [JsonProperty("post_author")]
         [JsonPropertyName("post_author")]
         public string Author { get; set; }
 
+        [JsonProperty("post_title")]
         [JsonPropertyName("post_title")]
         public string Title { get; set; }
 
+        [JsonProperty("post_content")]
         [JsonPropertyName("post_content")]
         public string Content { get; set; }
 
+        [JsonProperty("post_excerpt")]
         [JsonPropertyName("post_excerpt")]
         public string Resumo { get; set; }
 
+        [JsonProperty("post_date")]
         [JsonPropertyName("post_date")]
         public string Date { get; set; }
 
+        [JsonProperty("post_status")]
         [JsonPropertyName("post_status")]
         public string Status { get; set; }
 
+        [JsonProperty("post_name")]
         [JsonPropertyName("post_name")]
         public string Slug { get; set; }
 
+        [JsonProperty("categoria")]
         [JsonPropertyName("categoria")]
         public string Categoria { get; set; }
 
+    
         [JsonPropertyName("tag")]
+        [JsonProperty("tag")]
         public string Tag { get; set; }
 
-        [JsonPropertyName("cidade")]
-        public string Cidade { get; set; }
+        [JsonPropertyName("imagem_destaque")]
+        [JsonProperty("imagem_destaque")]
+        public string imagem_destaque { get; set; }
 
-        [JsonPropertyName("cargos")]
-        public string Cargos { get; set; }
-         
+        [JsonProperty("metas")]
         [JsonPropertyName("metas")]
         public List<MetaGetPost> Metas { get; set; }
 
+        [JsonProperty("terms")]
         [JsonPropertyName("terms")]
-        public Terms Terms { get; set; }
+        public object Terms { get; set; }
 
-        public Meta Meta { get; set; }
+        [JsonProperty("meta")]
+        [JsonPropertyName("meta")]
+        public Dictionary<string, object> Meta { get; set; }
 
         public List<MetaGetPost> metasToMeta()
         {
             List<MetaGetPost> meta = new List<MetaGetPost>();
             if (Meta == null) return meta;
-            if (Meta.Imagem != null)
+            foreach(var met in Meta)
             {
-                meta.Add(new MetaGetPost { MetaKey = "imagem", MetaValue = Meta.Imagem });
-            }
-            if (Meta.Provas != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "provas", MetaValue = Meta.Provas });
-            }
-            if (Meta.Salario != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "salario", MetaValue = Meta.Salario });
-            }
-            if (Meta.Vagas != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "vagas", MetaValue = Meta.Vagas });
-            }
-            if (Meta.Edital != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "edital", MetaValue = Meta.Edital });
-            }
-            if (Meta.Questoes != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "questoes", MetaValue = Meta.Questoes });
-            }
-            if (Meta.Inscricao != null)
-            {
-                meta.Add(new MetaGetPost { MetaKey = "inscricao", MetaValue = Meta.Inscricao });
+                meta.Add(new MetaGetPost { MetaKey = met.Key, MetaValue = met.Value.ToString() });
             }
             return meta;
         }

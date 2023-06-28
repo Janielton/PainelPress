@@ -20,7 +20,6 @@ namespace PainelPress.Classes
                 MainWindow.lbMensagem.Content = msg;
                 MainWindow.brMensagem.Visibility = Visibility.Visible;
                 MainWindow.brMensagem.Background = CorImage.GetCor("#FFB3E237");
-                Application.Current.MainWindow.Focus();
             }
             else
             {
@@ -59,5 +58,7 @@ namespace PainelPress.Classes
                 timerTickCount = 0;
             }
         }
+
+        public static MensagemToast instance => new MensagemToast();
     }
 }

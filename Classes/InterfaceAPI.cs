@@ -8,16 +8,71 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PainelPress.Model;
 using PainelPress.Model.Conf;
+using System.Windows.Media.Animation;
 
 namespace PainelPress.Classes
 {
 
     public interface InterfaceAPI
     {
-      
+
+
+        [Delete("/wp-json/painel-api/remove-media/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> DeleteImagemDestaque(int id);
+
+        #region CAMPOS
+
+        [Delete("/wp-json/painel-api/campo/{id}/{nome}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> DeleteCampo(long id, string nome);
+
+        [Post("/wp-json/painel-api/campo/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> EditarCampo(long id, [Body(BodySerializationMethod.UrlEncoded)] Dictionary<object, string> data);
+
+
+        //Campos
+        [Get("/wp-json/painel-api/campos")]
+        [Headers("Authorization: Bearer")]
+        Task<List<Campos>> getCampos();
+
+        [Put("/wp-json/painel-api/campos")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> setCampos(List<Campos> campos);
+        #endregion
+
+
+        #region CAT
+
+        [Get("/wp-json/painel-api/categorias")]
+        [Headers("Authorization: Bearer")]
+        Task<List<CategoriaFull>> ListaCats();
+
+        [Post("/wp-json/painel-api/categoria")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> AdicionarCat([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> dados);
+
+        [Put("/wp-json/painel-api/categoria/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> EditarCat(string id, [Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> dados);
+
+        [Delete("/wp-json/painel-api/categoria/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> DeleteCat(string id);
+
+        #endregion
+
+        #region USUARIO
+
+        [Get("/wp-json/wp/v2/users")]
+        [Headers("Authorization: Bearer")]
+        Task<List<SimplesModel>> getUsuarios();
+
+        #endregion
 
         #region POST
-        //Posts
+        //GET
         [Get("/wp-json/wp/v2/posts")]
        // [Headers("Authorization: Basic cGFpbmVscHJlc3M6ODU0NTQ1ODhzJDMzNDQ=")]
         [Headers("Authorization: Bearer")]
@@ -27,24 +82,34 @@ namespace PainelPress.Classes
         [Headers("Authorization: Bearer")]
         Task<List<PostSimples>> GetPosts(string palavra);
 
-        [Get("/api?rota=post&id={id}")]
-        [Headers("Authorization: Basic cGFpbmVscHJlc3M6ODU0NTQ1ODhzJDMzNDQ=")]
+        [Get("/wp-json/painel-api/post/{id}")]
+        [Headers("Authorization: Bearer")]
         Task<PostView> getPost(long id);
 
+        //POST
         [Post("/wp-json/wp/v2/posts")]
         [Headers("Content-Type:  application/json", "accept:  application/json", "Authorization: Bearer")]
-        Task<Post> Postar([Body] string post);
+        Task<string> Postar([Body] string post);
 
         [Post("/wp-json/wp/v2/posts/{id}")]
         [Headers("Content-Type: application/json", "accept: application/json", "Authorization: Bearer")]
-        Task<PostSimples> Atualizar([Body] string post, int id);
+        Task<string> Atualizar([Body] string post, int id);
+
+        //DELETE
+        [Delete("/wp-json/wp/v2/posts/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<string> Delete(int id);
         #endregion
 
         #region Taxonomy/Categorias/Tags
         //Taxonomy
-        [Get("/api?rota=taxonomy&param={isparam}")]
-        [Headers("Authorization: Basic cGFpbmVscHJlc3M6ODU0NTQ1ODhzJDMzNDQ=")]
-        Task<List<Taxonomy>> getTaxonomy(string isparam);
+        [Get("/wp-json/painel-api/taxonomy/{tipo}")]
+        [Headers("Authorization: Bearer")]
+        Task<List<Taxonomy>> getTaxonomies(string tipo);
+
+        [Post("/wp-json/painel-api/taxonomy/{tipo}")]
+        [Headers("Authorization: Bearer")]
+        Task<Taxonomy> getTaxonomy(string tipo, [Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> dados);
 
         //Categorias
         [Get("/api?rota=categorias")]
@@ -54,25 +119,29 @@ namespace PainelPress.Classes
         [Post("/wp-json/wp/v2/tags")]
         [Headers("Content-Type: application/json", "accept: application/json", "Authorization: Bearer")]
         Task<Tag> CriarTag([Body] string post);
+
+
+        [Get("/wp-json/painel-api/taxonomys")]
+        [Headers("Authorization: Bearer")]
+        Task<List<string>> getCustomTaxonomies();
+
+
+        [Post("/wp-json/painel-api/busca-taxonomy")]
+        [Headers("Authorization: Bearer")]
+        Task<List<Taxonomy>> buscaTaxonomies([Body(BodySerializationMethod.UrlEncoded)] Dictionary<string, object> dados);
+
+
         #endregion
 
 
         #region CONFIG
-        //Campos
-        [Get("/wp-json/painel-api/campos")]
-        [Headers("Authorization: Bearer")]
-        Task<List<Campos>> getCampos();
-
-        [Post("/wp-json/painel-api/campos")]
-        [Headers("Authorization: Bearer")]
-        Task<RequisicaoBol> setCampos(List<Campos> campos);
-
+ 
         //Config
         [Get("/wp-json/painel-api/config")]
         [Headers("Authorization: Bearer")]
         Task<ConfigPlugin> getConfig();
 
-        [Post("/wp-json/painel-api/config")]
+        [Put("/wp-json/painel-api/config")]
         [Headers("Authorization: Bearer")]
         Task<RequisicaoBol> setConfig(ConfigPlugin config);
 
@@ -93,6 +162,39 @@ namespace PainelPress.Classes
         [Headers("Authorization: Basic cGFpbmVscHJlc3M6ODU0NTQ1ODhzJDMzNDQ=")]
         Task<List<Inscritos>> GetInscritosALL();
 
+
+
+        #region STORY
+
+        [Post("/wp-json/painel-api/story")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> AddStory([Body(BodySerializationMethod.UrlEncoded)] Story story);
+
+        [Put("/wp-json/painel-api/story")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> EditStory([Body(BodySerializationMethod.UrlEncoded)] Story story);
+
+        [Get("/wp-json/painel-api/story-post/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<Story?> getStoryByPost(string id);
+
+
+        [Get("/wp-json/painel-api/stories")]
+        [Headers("Authorization: Bearer")]
+        Task<List<Story>> getStories();
+
+        //DELETE
+        [Delete("/wp-json/painel-api/story/{id}")]
+        [Headers("Authorization: Bearer")]
+        Task<RequisicaoBol> DeleteStory(string id);
+
+        [Post("/wp-json/painel-api/stories")]
+        [Headers("Authorization: Bearer")]
+        Task<List<Story>> BuscarStory([Body(BodySerializationMethod.UrlEncoded)] [AliasAs("key")]  string key);
+
+        #endregion
+
+
         #region TOKEN/LOGIN
 
         [Post("/wp-json/painel-press/v1/token/validate")]
@@ -112,13 +214,7 @@ namespace PainelPress.Classes
         [Headers("Content-Type: application/json", "accept: application/json", "Authorization: key=AAAA7T4j51w:APA91bGvjx3STYfBnEYIY7vZFE1-bEAIBv4PoqXEKGRbReOVIpEoC8MO0a_pAR0z9Y2YKR5bnfJps67MuRuR0Xx2tzKvy-3Rg3hKntFlpTUgDTuaBfIJ7-dS9Fvkx1dHl1w7WSAc1XYs")]
         Task<string> SendNotificacao([Body] string dados);
 
-      
-
-        #region DELETE
-        [Delete("/wp-json/wp/v2/posts/{id}")]
-        [Headers("Authorization: Bearer")]
-        Task<PostSimples> Delete(int id);
-        #endregion
+     
 
         #region UPLOAD no-use
         [Multipart]

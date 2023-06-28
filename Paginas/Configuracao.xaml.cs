@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using PainelPress.Classes;
 using PainelPress.Model;
 using PainelPress.ViewModel;
+using System.Text.RegularExpressions;
 
 namespace PainelPress.Paginas
 {
@@ -32,6 +33,12 @@ namespace PainelPress.Paginas
             InitializeComponent();
         }
 
-        
+        private void ApenasNumero(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+ 
     }
 }

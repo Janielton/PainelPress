@@ -67,7 +67,7 @@ namespace PainelPress
         {
             loadingItens.Visibility = Visibility.Visible;
             tbItemCarregados.Text = $"Carregando {param}...";
-            var list = await terms.getTaxonomy(param);
+            var list = await terms.getTaxonomies(param);
             SalvarTax(param, list);
         }
 

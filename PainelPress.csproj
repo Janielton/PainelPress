@@ -38,6 +38,8 @@
     <None Remove="Imagem\copy.png" />
     <None Remove="Imagem\icon_check.png" />
     <None Remove="Imagem\icon_error.png" />
+    <None Remove="Imagem\ic_check.png" />
+    <None Remove="Imagem\ic_uncheck.png" />
     <None Remove="Imagem\logo.png" />
     <None Remove="Imagem\maximizar.png" />
     <None Remove="Imagem\move.png" />
@@ -62,7 +64,8 @@
     <PackageReference Include="CefSharp.Wpf.NETCore" Version="101.0.150" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="Google.Analytics.Data.V1Beta" Version="1.0.0-beta08" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0-preview.4.22229.2" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
@@ -73,10 +76,14 @@
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="102.0.5005.2700-beta" />
     <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
     <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+    <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FtpLibrary\FtpLibrary.csproj" />
+    <ProjectReference Include="..\ShareSocial\ShareSocial.csproj" />
+    <ProjectReference Include="..\StoryLibrary\StoryLibrary.csproj" />
+    <ProjectReference Include="E:\repos\DataBase\DataBase.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,6 +93,8 @@
     <Resource Include="Imagem\config.png" />
     <Resource Include="Imagem\icon_check.png" />
     <Resource Include="Imagem\icon_error.png" />
+    <Resource Include="Imagem\ic_check.png" />
+    <Resource Include="Imagem\ic_uncheck.png" />
     <Resource Include="Imagem\logo.png" />
     <Resource Include="Imagem\maximizar.png" />
     <Resource Include="Imagem\move.png" />

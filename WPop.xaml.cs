@@ -309,8 +309,8 @@ namespace PainelPress
         {
             if (listPost.SelectedItem != null) {
                 var post = listPost.SelectedItem as Post;
-                if (Convert.ToInt32(post.Id) == 0) return;
-                WNavegador navegador = new WNavegador(post.Link, false);
+                if (Convert.ToInt32(post.id) == 0) return;
+                WNavegador navegador = new WNavegador(post.link, false);
                 navegador.Show();
             }
         }

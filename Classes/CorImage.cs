@@ -14,12 +14,27 @@ namespace PainelPress.Classes
             return cor;
         }
 
+
         public static Brush GetCorPadrao()
         {
             var bc = new BrushConverter();
             Brush cor = (Brush)bc.ConvertFrom("#FF673AB7");
             return cor;
         }
+
+        public static Brush GetCorIcone()
+        {
+            var bc = new BrushConverter();
+            Brush cor = (Brush)bc.ConvertFrom("#FF673AB7");
+            return cor;
+        }
+        public static Brush GetCorVerde()
+        {
+            var bc = new BrushConverter();
+            Brush cor = (Brush)bc.ConvertFrom("#FF96C561");
+            return cor;
+        }
+        public static SolidColorBrush Transparente() => new SolidColorBrush(Colors.Transparent);
 
         public static BitmapImage GetImagemProjeto(string name)
         {

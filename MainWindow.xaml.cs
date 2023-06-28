@@ -22,6 +22,9 @@ using PainelPress.Model;
 using PainelPress.Paginas;
 using FtpLibrary;
 using config = PainelPress.Properties.Settings;
+using FontAwesome.WPF;
+using PainelPress.Elementos;
+
 namespace PainelPress
 {
     /// <summary>
@@ -47,9 +50,9 @@ namespace PainelPress
                 login.Topmost = true;
                 this.Hide();
                 if (login.ShowDialog() == true)
-                {
-                    Setap();
+                {       
                     this.Show();
+                    Setap();
                 } 
             }
             else
@@ -58,19 +61,18 @@ namespace PainelPress
                 Setap();
 
             }
-
-
         }
 
         private void Setap()
         {
             contentPagina.Content = new Inicio();
             framePrincipal = contentPagina;
-            BT_INICIO = btInicio;
+           
             BT_POSTAR = btPostar;
             lbMensagem = labelMensagem;
             brMensagem = borderMensagem;
             textUser.Text = config.Default.Usuario;
+            SetMenu(Classes.Menu.ListaItems());
         }
         private async void IsValidToken()
         {
@@ -171,14 +173,20 @@ namespace PainelPress
 
         private void btInicio_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(Postar.postConteudo))
+            
+            if (!string.IsNullOrEmpty(Postar.postConteudo))
             {
-                contentPagina.Content = new Inicio();
-                btInicio.IsEnabled = false;
-                btPostar.IsEnabled = true;
-                return;
+                AlertMensagem confirme = AlertMensagem.instance.Confirme("Tem certeza que deseja ir para a pagina inical?","Alteções serão perdidas",2);
+                confirme.ShowDialog();
+                if (confirme.result == "no")
+                {
+                    return;
+                }
+                
             }
-
+            contentPagina.Content = new Inicio();
+            btPostar.IsEnabled = true;
+           
             // new WTeste().Show();
 
         }
@@ -187,15 +195,11 @@ namespace PainelPress
         private void btPostar_Click(object sender, RoutedEventArgs e)
         {
             contentPagina.Content = new Postar();
-            btInicio.IsEnabled = true;
+           
             btPostar.IsEnabled = false;
         }
 
-        private void btTaxonomy_Click(object sender, RoutedEventArgs e)
-        {
-            WinTaxanomy tax = new WinTaxanomy();
-            tax.ShowDialog();
-        }
+       
 
  
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -205,12 +209,6 @@ namespace PainelPress
             Application.Current.Shutdown();
         }
 
-
-        private void btCache_Click(object sender, RoutedEventArgs e)
-        {
-            WPop wPop = new WPop(3);
-            wPop.ShowDialog();
-        }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -226,30 +224,7 @@ namespace PainelPress
             e.Handled = true;
         }
 
-        private void btBackup_Click(object sender, RoutedEventArgs e)
-        {
-            WBackup backup = new WBackup();
-            backup.Show();
-        }
-
-        private void btUpload_Click(object sender, RoutedEventArgs e)
-        {
-            WUpload upload = new WUpload();
-            upload.Show();
-        }
-        private void btRelatorios_Click(object sender, RoutedEventArgs e)
-        {
-            WRelatorios relatorios = new WRelatorios();
-            relatorios.Show();
-        }
-
        
-        private void btSocial_Click(object sender, RoutedEventArgs e)
-        {
-            WSocial social = new WSocial();
-            social.Show();
-        }
-
         private void btGerarTokenTwitter_Click(object sender, RoutedEventArgs e)
         {
 
@@ -264,20 +239,179 @@ namespace PainelPress
             Application.Current.Shutdown();
         }
 
-        private void btFTP_Click(object sender, RoutedEventArgs e)
+      
+
+       
+
+        private void btCloseWin_Click(object sender, RoutedEventArgs e)
+        {
+            CefSharp.Cef.Shutdown();
+            Application.Current.Shutdown();
+        }
+
+        private void btMaximizar_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Normal)
+            {
+                this.WindowState = WindowState.Maximized;
+                btMaximizar.Content = new ImageAwesome()
+                {
+                    Icon = FontAwesomeIcon.WindowRestore,
+                    Foreground = Brushes.White,
+                    Width = 20
+                };
+            }
+            else
+            {
+                this.WindowState = WindowState.Normal;
+                btMaximizar.Content = new ImageAwesome()
+                {
+                    Icon = FontAwesomeIcon.WindowMaximize,
+                    Foreground = Brushes.White,
+                    Width = 20
+                };
+            }
+
+        }
+
+        private void btMinimizar_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+
+        #region MENU
+        private void edit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          
+            SetMenu(Classes.Menu.ListaBusca(buscaFunc.Texto));
+        }
+
+        private void SetMenu(List<Classes.Menu> lista)
+        {
+            stackScrol.Children.Clear();
+            if (lista.Count == 0)
+            {
+                stackScrol.Children.Add(new Button()
+                {
+                    Content = "Não encontrado",
+                    Padding = new Thickness(5,4,5,6),
+                    IsEnabled = false,
+                    Style = Resources["ButtonStyleCentro"] as Style
+                });
+                return;
+            }
+            foreach (var item in lista)
+            {
+                Button button = new Button();
+                button.Content = item.nome;
+                button.Tag = item.tag;
+              
+                button.Click += btMenu_Click;
+                button.Style = Resources["ButtonStyleCentro"] as Style;
+                stackScrol.Children.Add(button);
+            }
+        }
+
+        private void btMenu_Click(object sender, RoutedEventArgs e)
+        {
+            Button bt = sender as Button;
+            if(bt != null)
+            {
+                string tag = bt.Tag.ToString();
+                if (tag == "upload")
+                {
+                    btUpload_Click();
+                }
+                else if (tag == "analytics")
+                {
+                    btRelatorios_Click();
+                }
+                else if (tag == "ftp")
+                {
+                    btFTP_Click();
+                }
+                else if (tag == "paginas")
+                {
+                   
+                }
+                else if (tag == "social")
+                {
+                    btSocial_Click();
+                }
+                else if (tag == "stories")
+                {
+                    btStories_Click();
+                }
+                else if (tag == "backup")
+                {
+                    btBackup_Click();
+                }
+                else if (tag == "taxonomies")
+                {
+                    btTaxonomy_Click();
+                }
+                else if (tag == "categorias")
+                {
+                    new WinContainer(new Categorias()).Show();
+                }
+            }
+        }
+
+
+        private void btTaxonomy_Click()
+        {
+            WinTaxanomy tax = new WinTaxanomy();
+            tax.ShowDialog();
+        }
+
+        private void btCache_Click()
+        {
+            WPop wPop = new WPop(3);
+            wPop.ShowDialog();
+        }
+
+        private void btBackup_Click()
+        {
+            WBackup backup = new WBackup();
+            backup.Show();
+        }
+
+        private void btUpload_Click()
+        {
+            WUpload upload = new WUpload();
+            upload.Show();
+        }
+        private void btRelatorios_Click()
+        {
+            WRelatorios relatorios = new WRelatorios();
+            relatorios.Show();
+        }
+
+
+        private void btSocial_Click()
+        {
+            Social social = new Social();
+            new WinContainer(social).Show();
+        }
+
+        private void btFTP_Click()
         {
             try
             {
                 new FTPWindow().Show();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
 
-        private void btConfig_Click(object sender, RoutedEventArgs e)
+        private void btStories_Click()
         {
-            new WinContainer(1).Show();
+            var janela = new Stories();
+            new WinContainer(janela).Show();
         }
+        #endregion
     }
 }

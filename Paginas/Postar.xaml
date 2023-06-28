@@ -3,10 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:PainelPress.Paginas"    
-             xmlns:Navegador="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf" 
-             xmlns:cefSharpCore="clr-namespace:CefSharp;assembly=CefSharp.Core"  
-             xmlns:fa="http://schemas.fontawesome.io/icons/" 
+             xmlns:local="clr-namespace:PainelPress.Paginas"     
+             xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:partes="clr-namespace:PainelPress.Partes" xmlns:elementos="clr-namespace:PainelPress.Elementos"
                 mc:Ignorable="d" PreviewKeyDown="ContentControl_PreviewKeyDown"
              d:DesignHeight="650" d:DesignWidth="900">
     <ContentControl.Resources>
@@ -153,158 +151,83 @@
         </Style>
     </ContentControl.Resources>
 
-    <Grid Background="WhiteSmoke" >
+    <Grid Background="#FFD2D2D2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="350*"/>
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition x:Name="gridSidebar" Width="220"/>
+            <ColumnDefinition x:Name="colunaCentro" Width="230" MinWidth="230"/>
         </Grid.ColumnDefinitions>
-        <Border Grid.Row="0" Name="brTitulo" Background="WhiteSmoke" Padding="3,5,3,0">
-            <StackPanel Orientation="Vertical">
-                <TextBox SpellCheck.IsEnabled="True" LostFocus="ediTitulo_LostFocus" VerticalAlignment="Top" Padding="2,-2,0,0" FontSize="22" Style="{DynamicResource TextBoxStyle1}" x:Name="ediTitulo" Height="30" Margin="0"/>
-                <TextBlock Padding="5,0" x:Name="tbSlugTitle"/>
+
+        <Grid Grid.Row="0" Name="brTitulo" >
+            <StackPanel Margin="5,5,5,0" Orientation="Vertical">
+                <elementos:EditText FontSize="22" Altura="45" ShowCount="True" Legenda="Titulo" x:Name="ediTitulo" TextoChanged="edit_TextChanged"/>
+                <TextBox BorderThickness="0" TextAlignment="Center" MinWidth="400" Padding="5,0" FontSize="13" Margin="0,3,0,0" Foreground="Gray" x:Name="tbSlugTitle" HorizontalAlignment="Right"/>
             </StackPanel>
-        </Border>
-        <Border Grid.Row="1" Name="brResumo" Background="WhiteSmoke" Padding="3,5,3,5">
-            <TextBox Padding="2" SpellCheck.IsEnabled="True" TextWrapping="Wrap" FontSize="16" Style="{DynamicResource TextBoxStyle1}" MaxLength="300" x:Name="ediResumo"/>
-        </Border>
-        <Border Grid.Row="3" Name="brEditor" Padding="3,0,3,0">
+        </Grid>
+        <Grid Margin="5,5,5,0" Grid.Row="1" Name="brResumo" >
+            <elementos:EditText Altura="80" ShowCount="True" Legenda="Descrição" x:Name="ediResumo" QuebraLinha="True"/>
+        </Grid>
+        <Border Grid.Row="3" Name="brEditor">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="148*"/>
-                    <ColumnDefinition Width="121*"/>
-                    <ColumnDefinition Width="405*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                        <GradientStop Color="#FFD8D8D8"/>
-                        <GradientStop Color="White" Offset="1"/>
+                        <GradientStop Color="#FFE8E8E8"/>
+                        <GradientStop Color="#FF636363" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
-                <ProgressBar x:Name="loadingEditor" BorderBrush="White" Height="8" Width="300" IsIndeterminate="True" Foreground="#FF3C73EA" Grid.Column="1" Margin="39,166,187,166" Grid.ColumnSpan="2"/>
-                <Navegador:ChromiumWebBrowser ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="0" Visibility="Hidden" x:Name="browEditor" LoadingStateChanged="browEditor_LoadingStateChanged" LostFocus="browEditor_LostFocus" Grid.ColumnSpan="3" >
 
-                </Navegador:ChromiumWebBrowser>
+                <ContentControl Grid.Row="0" x:Name="editor" Grid.ColumnSpan="3"/>
             </Grid>
 
         </Border>
 
-        <Border Grid.Row="2" Name="brBotoes" Background="WhiteSmoke">
+        <Border Grid.Row="2" Name="brBotoes">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btUpload" Click="btUpload_Click" Cursor="Hand">Upload (F1)</Button>
-                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btEdital" Click="btEdital_Click">Edital (F2)</Button>
-                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btSalvarPost" Click="btSalvarPost_Click">Salvar (F3)</Button>
-                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btHtml" Click="btHtml_Click" Cursor="Hand">HTML (F4)</Button>
-                <Button Style="{DynamicResource ButtonStyle1}" x:Name="btBusca" Click="btBusca_Click" Cursor="Hand">Buscar (F5)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btSalvarPost" Click="btSalvarPost_Click">Salvar (F1)</Button>
+
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btHtml" Click="btHtml_Click" Cursor="Hand">HTML (F2)</Button>
+                <Button Style="{DynamicResource ButtonStyle1}" x:Name="btBusca" Click="btBusca_Click" Cursor="Hand" Margin="0,0,10,0">Buscar (F3)</Button>
+
+                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btUpload" Click="btUpload_Click" Cursor="Hand">Upload (F4)</Button>
             </StackPanel>
 
         </Border>
 
-        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3">
+        <Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="3" Margin="2,0,0,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="150*"/>
+                <RowDefinition Height="150*" x:Name="rowCats"/>
                 <RowDefinition Height="200*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="130"/>
             </Grid.RowDefinitions>
-            <Border Grid.Row="0">
-                <Frame Padding="5" x:Name="frameCats" Source="CategoriasCheck.xaml" NavigationUIVisibility="Hidden" Background="White" Margin="0,0,0,5"/>
+            <Border Grid.Row="0" >
+                <Frame Padding="5" x:Name="frameCats" NavigationUIVisibility="Hidden" Background="White" Margin="0,0,0,5"/>
             </Border>
-            <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
-ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Row="1">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Taxonomies</TextBlock>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <Grid>
-                                <TextBlock FontSize="16" HorizontalAlignment="Left">Tags</TextBlock>
-                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearTags" Click="btClearTags_Click" HorizontalAlignment="Right" Content="X" />
-                            </Grid>
+            <ScrollViewer x:Name="scrollSidebar" ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+                <StackPanel Orientation="Vertical" Width="225" x:Name="containerSidebar">
+                    <Border AllowDrop="True" Drop="Container_Drop" MinHeight="100" Margin="5,5,8,10" Background="WhiteSmoke" CornerRadius="4">
+                        <ContentControl x:Name="imageControl" Margin="5"/>
+                    </Border>
+                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="8,10,10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Taxonomies</TextBlock>
+                    <StackPanel MinHeight="20" x:Name="containerTaxs" Margin="0">
 
-                            <TextBox x:Name="ediTags" MaxWidth="205" TextWrapping="Wrap" TextChanged="ediTags_TextChanged" FontSize="16" Margin="0,2,0,0" PreviewKeyDown="ediTags_KeyDown" LostFocus="ediTags_LostFocus"/>
-                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxTags" MaxHeight="150" SelectionChanged="boxTags_SelectionChanged"></ListBox>
-                            <StackPanel x:Name="listaTags" MinHeight="20">
-                                <TextBlock x:Name="tbTags" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <Grid>
-                                <TextBlock FontSize="16" HorizontalAlignment="Left">Cargos</TextBlock>
-                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearCargos" Click="btClearCargos_Click" HorizontalAlignment="Right" Content="X" />
-                            </Grid>
-                            <TextBox TextChanged="ediTags_TextChanged" KeyDown="ediTags_KeyDown" x:Name="ediCargos" FontSize="16" Margin="0,2,0,0" MaxWidth="205" TextWrapping="Wrap"/>
-                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxCargos" MaxHeight="150" SelectionChanged="boxCargos_SelectionChanged"></ListBox>
-                            <StackPanel x:Name="listaCargos" MinHeight="20">
-                                <TextBlock x:Name="tbCargos" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                   
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                           
-                            <Grid>
-                                <TextBlock FontSize="16" HorizontalAlignment="Left">Cidades</TextBlock>
-                                <Button Style="{DynamicResource ButtonClear}" x:Name="btClearCidades" HorizontalAlignment="Right" Click="btClearCidades_Click" Content="X" />
-                            </Grid>
-                            <TextBox TextChanged="ediTags_TextChanged" x:Name="ediCidades" FontSize="16" Margin="0,2,0,0" KeyDown="ediTags_KeyDown" MaxWidth="205" TextWrapping="Wrap"/>
-                            <ListBox DisplayMemberPath="Name" Background="WhiteSmoke" BorderThickness="0" x:Name="boxCidades" MaxHeight="150" SelectionChanged="boxCidades_SelectionChanged"></ListBox>
-                            <StackPanel x:Name="listaCidades" MinHeight="20">
-                                <TextBlock x:Name="tbCidades" TextWrapping="Wrap" Width="200" Margin="0,2"></TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-                  
-                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Campos</TextBlock>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Edital</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediEdital" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Imagem</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediImg" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0"  Width="200"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Inscrição</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediInscricao" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Provas</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediProvas" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
-                        </StackPanel>
-                    </Border>
-                   
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Salário</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediSalario" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Vagas</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediVagas" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200" />
-                        </StackPanel>
-                    </Border>
-                    <Border Margin="5" Background="White" Padding="2" CornerRadius="5">
-                        <StackPanel Orientation="Vertical" Margin="2">
-                            <TextBlock FontSize="16">Questões</TextBlock>
-                            <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="ediQuestao" TextWrapping="Wrap" FontSize="16" Margin="0,2,0,0" Width="200" />
-                        </StackPanel>
-                    </Border>
+                    </StackPanel>
+
+                    <TextBlock FontSize="18" Padding="0,0,0,4" Margin="8,10,10,0" VerticalAlignment="Center" Background="Black" Foreground="White" TextAlignment="Center">Campos</TextBlock>
+                    <StackPanel MinHeight="20" x:Name="containerCampos" Margin="0">
+
+                    </StackPanel>
+
+
                 </StackPanel>
             </ScrollViewer>
             <Grid Grid.Row="3" Grid.Column="1">
@@ -314,7 +237,10 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Ro
                         <GradientStop Color="#FF787878" Offset="1"/>
                     </LinearGradientBrush>
                 </Grid.Background>
-                <Button x:Name="btPublicar" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White" Padding="5" Click="btPublicar_Click" Width="150" Cursor="Hand" Margin="0,0,0,20">Publicar</Button>
+                <StackPanel VerticalAlignment="Top" Orientation="Vertical" Margin="0,0,0,10"  Height="90">
+                    <Button Visibility="Hidden" x:Name="btStory" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White"  Click="btStory_Click" Width="150" Margin="0,7,0,7" Cursor="Hand">Story</Button>
+                    <Button x:Name="btPublicar" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White" Padding="5" Click="btPublicar_Click" Width="150">Publicar</Button>
+                </StackPanel>
                 <StackPanel x:Name="stackStatus" VerticalAlignment="Bottom" HorizontalAlignment="Center" Orientation="Horizontal" Margin="0,5" Visibility="Visible">
                     <TextBox IsEnabled="False" TextAlignment="Center" Background="White" Text="Imediatamente" Padding="8,4" FontSize="14" x:Name="ediStatusPost" Margin="0,0,2,0"/>
                     <Button Content="Editar" Style="{StaticResource ButtonStyle1}" x:Name="btEditarStatus" Click="btEditarStatus_Click" MinWidth="40" Padding="5,0" BorderThickness="0" Background="#FF655CC1" Foreground="#FFFFFBFB" />
@@ -326,6 +252,16 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Ro
                     </Button>
                 </StackPanel>
             </Grid>
+            <GridSplitter Grid.Row="0" 
+              Grid.ColumnSpan="3" 
+              HorizontalAlignment="Stretch" 
+              VerticalAlignment="Bottom"
+              Background="Gray" 
+              ShowsPreview="true"            
+              ResizeDirection="Rows"
+              Tag="cats"
+              DragCompleted="GridSplitter_DragCompleted"       
+              Height="4"/>
         </Grid>
         <StackPanel Visibility="Visible" Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
             <StackPanel.Background>
@@ -334,14 +270,48 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Ro
                     <GradientStop Color="#FFEAEAEA" Offset="1"/>
                 </LinearGradientBrush>
             </StackPanel.Background>
-            <Button x:Name="btRestautarPost" VerticalAlignment="Center" Margin="7,0" MinWidth="20" Height="20" Style="{StaticResource ButtonStyle1}" Click="btRestautarPost_Click" Cursor="Hand">
-                <Button.Background>
-                    <ImageBrush ImageSource="/Imagem/restaurar.png"/>
-                </Button.Background>
+            <Button x:Name="btUpdateUsers" Background="Transparent" VerticalAlignment="Center" Margin="10,2" Width="20" Height="20" Padding="0" Click="btUpdateUsers_Click" Cursor="Hand">
+                <fa:ImageAwesome Icon="Refresh" Foreground="#FF565859"/>
             </Button>
             <ComboBox Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" DisplayMemberPath="Nome" x:Name="comboUser" SelectionChanged="comboUser_SelectionChanged" FontSize="16" MinWidth="170" Foreground="#FF3E3D3D"/>
         </StackPanel>
+        <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="4"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Stretch"
+              Background="Gray" 
+              ShowsPreview="True"
+              Width="3"
+              Tag="centro"
+              DragCompleted="GridSplitter_DragCompleted"     
+              />
+        <Grid Grid.RowSpan="4" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="45"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="brBotoesAcao" Background="#FFC8C5D4" Padding="5" Margin="4,10,0,10" CornerRadius="8" Opacity="0.2" Mouse.MouseEnter="brBotoesAcao_MouseEnter" Mouse.MouseLeave="brBotoesAcao_MouseLeave">
 
+                <StackPanel Orientation="Vertical" x:Name="stackBotoes">
+                    <Button Visibility="Collapsed" Width="25" Height="25" Background="Transparent" Margin="0,5,0,0" x:Name="btGerarToken" Click="btGerarToken_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
+                        <fa:ImageAwesome Icon="Key" Foreground="#FFBBB41F"/>
+                    </Button>
+                    <Button Width="25" Height="25" Background="Transparent" Margin="0,10,0,0" x:Name="btGerarTkTwitter" Visibility="Collapsed" Click="btGerarTkTwitter_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
+                        <fa:ImageAwesome Icon="Twitter" Foreground="#FF1FACEE"/>
+                    </Button>
+                    <Button Tag="view" Padding="0" Width="25" Height="25"  Background="Transparent" Margin="0,10,0,0" x:Name="btVerHtmlPost" Mouse.MouseEnter="btHiden_MouseEnter"  Click="btVerHtmlPost_Click" BorderThickness="0" >
+                        <fa:ImageAwesome Icon="Eye" Foreground="#FF565859"/>
+                    </Button>
+                    <Button Tag="restaure" Mouse.MouseEnter="btHiden_MouseEnter"  Background="Transparent" x:Name="btRestautarPost" VerticalAlignment="Center" Margin="0,7,0,10" MinWidth="25" Height="25" Padding="0" Click="btRestautarPost_Click" Cursor="Hand">
+                        <fa:ImageAwesome Icon="Upload" Foreground="#FF565859"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+            <StackPanel x:Name="stackBtsDesc" Orientation="Vertical" Grid.Column="1" Margin="0,10" Visibility="Collapsed">
+                <TextBlock Tag="desc_view" Visibility="Hidden" Width="75" HorizontalAlignment="Left" Background="#FF88DA86" Foreground="White" FontSize="15" Padding="5,4,6,5" Margin="0,12,0,5">Visualizar</TextBlock>
+                <TextBlock Tag="desc_restaure" Visibility="Hidden" Background="#FF88DA86" Foreground="White" Padding="5,4,6,5" FontSize="15" Margin="0">Restaurar salvo</TextBlock>
+            </StackPanel>
+        </Grid>
+        
         <Grid x:Name="GridFundo" Visibility="Collapsed" Background="#6B7A7A7A" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="2"/>
         <ProgressBar x:Name="loadEnviandoDados" VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" Height="8" IsIndeterminate="False" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="2" Foreground="#FF0587E0" BorderBrush="#FF0587E0" Visibility="Collapsed"/>
         <Border Grid.Row="3" Background="WhiteSmoke" VerticalAlignment="Bottom" HorizontalAlignment="Left" x:Name="brCidadeNoImg">
@@ -366,22 +336,11 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" Background="#FFDADADA" Grid.Ro
                 <Button Style="{StaticResource ButtonClear}" x:Name="btCloseNotifi" Grid.Row="0" HorizontalAlignment="Right" Width="15" Height="15" VerticalAlignment="Top" Content="X" Padding="0,0,0,4" Click="btCloseNotifi_Click"/>
             </Grid>
         </Border>
-        <Border x:Name="brBotoesAcao" Grid.RowSpan="4" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF8870F3" Padding="5" Margin="2,10" CornerRadius="8" Opacity="0.2" Mouse.MouseEnter="brBotoesAcao_MouseEnter" Mouse.MouseLeave="brBotoesAcao_MouseLeave">
-            <StackPanel Orientation="Vertical">
-                <Button Width="25" Height="25" Background="Transparent"  Margin="0,5,0,0" x:Name="btGerarToken" Click="btGerarToken_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
-                    <fa:ImageAwesome Icon="Key" Foreground="#FFBBB41F"/>
-                </Button>
-                <Button Width="25" Height="25" Background="Transparent" Margin="0,10,0,0" x:Name="btGerarTkTwitter" Visibility="Collapsed" Click="btGerarTkTwitter_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
-                    <fa:ImageAwesome Icon="Twitter" Foreground="#FF1FACEE"/>
-                </Button>
-                <Button Width="25" Height="25"  Background="Transparent" Margin="0,10,0,0" x:Name="btVerHtmlPost" Click="btVerHtmlPost_Click" BorderThickness="0" Style="{StaticResource ButtonClear}">
-                    <fa:ImageAwesome Icon="Eye" Foreground="#FF565859"/>
-                </Button>
-            </StackPanel>
-        </Border>
+        
 
         <Border Visibility="Collapsed" Background="#FFD6D6D6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Row="3" MinHeight="20" x:Name="bdStatusTask" Padding="5,1" CornerRadius="0,5,0,0">
             <TextBlock x:Name="tbStatusTask"/>
         </Border>
+
     </Grid>
 </ContentControl>

@@ -220,7 +220,7 @@
         <Button VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Padding="0" Background="Transparent" x:Name="btConfig" Click="btConfig_Click">
             <Image Source="Imagem/config.png" Width="35" Height="35"/>
         </Button>
-        <Grid HorizontalAlignment="Left" Visibility="Collapsed" x:Name="gridConfig">
+        <Grid HorizontalAlignment="Left" Visibility="Visible" x:Name="gridConfig">
             <Border Background="WhiteSmoke" BorderBrush="Gray" BorderThickness="0,0,3,0" Margin="0,0,25,0" Padding="8,5">
                 <StackPanel Orientation="Vertical"  HorizontalAlignment="Left">
                     <TextBlock FontSize="18">Facebook</TextBlock>
@@ -246,7 +246,7 @@
                 <fa:ImageAwesome Icon="Close" Foreground="Red" Width="20" Height="20"/>
             </Button>
         </Grid>
-        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" x:Name="log"></TextBlock>
+        <TextBlock Margin="5" VerticalAlignment="Top" HorizontalAlignment="Right" x:Name="log">tes</TextBlock>
       
     </Grid>
 </Window>

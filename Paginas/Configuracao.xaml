@@ -5,26 +5,132 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                   xmlns:fa="http://schemas.fontawesome.io/icons/" 
              xmlns:local="clr-namespace:PainelPress.Paginas"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d"  
+            xmlns:custom="clr-namespace:PainelPress.Elementos"
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <ContentControl.Resources>
+        <!--<ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/PainelPress;component/Styles/GenericCRButton.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>-->
+        
+    </ContentControl.Resources>
     <Grid Background="WhiteSmoke">
-        <ScrollViewer>
+        <ScrollViewer Visibility="Visible">
             <StackPanel Orientation="Vertical">
-                <Border Padding="4" Background="#FFB9B9B9" Margin="8" CornerRadius="8">
+                <Border Padding="4" Margin="8" CornerRadius="8" Visibility="Visible">
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFA9BDE6"/>
+                            <GradientStop Color="#FF696E79" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <StackPanel Orientation="Vertical" Margin="6">
-                        <TextBlock FontSize="18" Margin="0,0,0,8">Configurações site/plugin</TextBlock>
-                        <TextBox MinHeight="150" FontSize="18" Text="{Binding JsonConfig}" TextWrapping="Wrap"></TextBox>
+                        <TextBlock FontSize="22" Margin="0,0,0,8" FontFamily="Arial Black">Configurações site/plugin</TextBlock>
+                        <TextBox Visibility="{Binding IsVisibleJsonConfig}" MinHeight="150" FontSize="18" Text="{Binding JsonConfig, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"></TextBox>
+                        <StackPanel x:Name="stackForm" Visibility="{Binding IsVisibleStackConfig}">
+                            <TextBlock Padding="5,2,5,5" Background="#333E3B3B" FontSize="20" Foreground="White">Web Stories</TextBlock>
+                            <StackPanel Margin="0,10" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock Foreground="#FFF3F3F3" VerticalAlignment="Center" FontSize="18">Páginas</TextBlock>
+                                <TextBox TextAlignment="Center" PreviewTextInput="ApenasNumero" MinWidth="50" Margin="5,0" VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding paginas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock VerticalAlignment="Center" Foreground="#FFF3F3F3" FontSize="18" Margin="10,0">Analytics</TextBlock>
+                                <TextBox TextAlignment="Center"  MinWidth="180" Margin="0" VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding analytics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Foreground="#FFF3F3F3" VerticalAlignment="Center" FontSize="18" Margin="10,0">Adsense</TextBlock>
+                                <TextBox TextAlignment="Center" MinWidth="180" VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding ads, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,10" VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" FontSize="20" FontFamily="Arial Black" Foreground="#FFADC7E4">Cores:</TextBlock>
+                                <TextBlock VerticalAlignment="Center" FontSize="18" Margin="10,0,3,0" Foreground="#FFF3F3F3">Cor H1</TextBlock>
+                                <TextBox VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding color_h1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock VerticalAlignment="Center" FontSize="18" Margin="10,0,3,0" Foreground="#FFF3F3F3">Fundo H1</TextBlock>
+                                <TextBox TextAlignment="Center"  VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding color_back_h1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock VerticalAlignment="Center" FontSize="18" Margin="10,0,3,0" Foreground="#FFF3F3F3">Cor P</TextBlock>
+                                <TextBox TextAlignment="Center"  VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding color_p, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock VerticalAlignment="Center" FontSize="18" Margin="10,0,3,0" Foreground="#FFF3F3F3">Fundo P</TextBlock>
+                                <TextBox TextAlignment="Center"  VerticalAlignment="Center" DataContext="{Binding ModelConfig}" Text="{Binding color_back_p, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <TextBlock VerticalAlignment="Center" FontSize="18" Margin="0,10,0,3" Foreground="#FFF3F3F3">Imagens aleátorias</TextBlock>
+                            <TextBox TextWrapping="Wrap" DataContext="{Binding ModelConfig}" Text="{Binding imagens, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button MinWidth="150" HorizontalAlignment="Right" Margin="10" Command="{Binding ShowJsonConfig}" Background="#FFEA7320">
+                                <StackPanel Orientation="Horizontal">
+                                    <fa:ImageAwesome Height="30" Width="30" Icon="FileText" Foreground="#FF5D5A5A" Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding JsonBtText}" Margin="0,1,20,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button MinWidth="150" HorizontalAlignment="Right" Margin="10" Command="{Binding SalvarConfig}">
+                                <StackPanel Orientation="Horizontal">
+                                    <fa:ImageAwesome Height="30" Width="30" Icon="Gear" Foreground="#FF5D5A5A" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Salvar" Margin="0,1,20,0"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+
+                        <TextBlock Padding="5,2,5,5" Background="#333E3B3B" FontSize="20" Foreground="White">Geral</TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock Text="Site" VerticalAlignment="Center" Foreground="#FFF3F3F3" FontSize="18" Margin="10,0"/>
+                            <TextBox Width="400" FontSize="20" x:Name="editSite" Text="{Binding editTextSite}"/>
+                            <Button VerticalAlignment="Center" Background="Transparent"
+                          Command="{Binding UpdateSite}"  CommandParameter="{Binding Text,ElementName=editSite}">
+                                <fa:ImageAwesome Height="30" Width="30" Icon="Save" Foreground="WhiteSmoke" Margin="0,0,10,0"/>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
-                <Border Padding="4" Background="#FFB9B9B9" Margin="8" CornerRadius="8">
+                <Border Padding="4" Margin="8" CornerRadius="8">
+                    <Border.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FFA9BDE6"/>
+                            <GradientStop Color="#FF696E79" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <StackPanel Orientation="Vertical" Margin="6">
-                        <TextBlock FontSize="18" Margin="0,0,0,8">Campos personalizados</TextBlock>
-                        <TextBox MinHeight="150" FontSize="18" Text="{Binding JsonCampos}" TextWrapping="Wrap"></TextBox>
+                        <TextBlock FontFamily="Arial Black" FontSize="22" Margin="0,0,0,8">Campos personalizados</TextBlock>
+                        <TextBox Visibility="{Binding IsVisibleJsonCampos}" MinHeight="150" FontSize="18" Text="{Binding JsonCampos, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Cursor=""></TextBox>
+                        <WrapPanel Orientation="Horizontal" Visibility="{Binding IsVisibleWrapCampos}">
+                            <ItemsControl ItemsSource="{Binding FilhosCampos}"  Width="Auto" Height="Auto">
+                                <ItemsControl.Style>
+                                    <Style TargetType="{x:Type ItemsControl}">
+                                        <Setter Property="ItemsPanel">
+                                            <Setter.Value>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ItemsControl.Style>
+                            </ItemsControl>
+                        </WrapPanel>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="40">
+                                <TextBox x:Name="editAdd" Visibility="{Binding IsVisibleEdAdd}" Margin="0,0,10,0" FontSize="21" MinWidth="250" Background="AliceBlue"/>
+                                <Button Background="AliceBlue" Command="{Binding AddCampo}"  CommandParameter="{Binding ElementName=editAdd}" Cursor="Hand">
+                                    <fa:ImageAwesome Height="30" Width="30" Icon="PlusCircle" Foreground="#FF5D5A5A"/></Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button MinWidth="150" HorizontalAlignment="Right" Margin="10" Command="{Binding ShowJsonCampos}" Background="#FFEA7320">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Height="30" Width="30" Icon="FileText" Foreground="#FF5D5A5A" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding JsonCamposBtText}" Margin="0,1,20,0"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button MinWidth="150" HorizontalAlignment="Right" Margin="10" Command="{Binding SalvarCampos}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <fa:ImageAwesome Height="30" Width="30" Icon="Gear" Foreground="#FF5D5A5A" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Salvar" Margin="0,1,20,0"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Border>
             </StackPanel>
         </ScrollViewer>
-        <Border Visibility="{Binding IsVisibleLoading}" Margin="8" Padding="8" CornerRadius="8" Background="#B29FA2A5">
+        <Border Visibility="Collapsed" Margin="8" Padding="8" CornerRadius="8" Background="#B29FA2A5">
             <ProgressBar Margin="50,0" Padding="8" IsIndeterminate="True" VerticalAlignment="Center" Height="10" Foreground="#FFA0DE20">
                 <ProgressBar.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -34,6 +140,7 @@
                 </ProgressBar.Background>
             </ProgressBar>
         </Border>
-       
+
+        <!--<custom:CustomRadioButton Visibility="Visible" Width="100" Height="50" VerticalAlignment="Bottom" IsChecked="True">ey, mark me!</custom:CustomRadioButton>-->
     </Grid>
 </ContentControl>

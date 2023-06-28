@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PainelPress.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -46,6 +47,7 @@ namespace PainelPress.Classes
 
     public class PostModel
     {
+
         [JsonProperty(PropertyName = "title")]
         public string Title { get; set; }
 
@@ -71,9 +73,22 @@ namespace PainelPress.Classes
         public string Date { get; set; }
 
         [JsonProperty(PropertyName = "terms")]
-        public Terms Terms { get; set; }
+        public object Terms { get; set; }
 
         [JsonProperty(PropertyName = "meta")]
-        public Meta Meta { get; set; }
+        public Dictionary<string, object> Campos { get; set; }
+
+        public PostView toView(int id, string slug, string img)
+        {
+            return new PostView()
+            {
+                Id = id.ToString(),
+                Title = this.Title,
+                Resumo = Excerpt,
+                Slug = slug
+            };
+        }
     }
+
+   
 }

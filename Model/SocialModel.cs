@@ -7,7 +7,7 @@ using config = PainelPress.Properties.Settings;
 
 namespace PainelPress.Model
 {
-    public class Social
+    public class SocialModel
     {
         [JsonProperty("ativado")]
         public bool ativado { get; set; }
@@ -18,9 +18,9 @@ namespace PainelPress.Model
         [JsonProperty("token")]
         public string token { get; set; }
 
-        public Social facebook()
+        public SocialModel facebook()
         {
-            return JsonConvert.DeserializeObject<Social>(config.Default.facebook);
+            return JsonConvert.DeserializeObject<SocialModel>(config.Default.facebook);
         }
 
         public bool twitter()
@@ -35,7 +35,7 @@ namespace PainelPress.Model
             config.Default.Save();
 
         }
-        public void setFacebook(Social social)
+        public void setFacebook(SocialModel social)
         {
             string json = JsonConvert.SerializeObject(social);
             if (json.Length > 5)

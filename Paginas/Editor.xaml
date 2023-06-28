@@ -1,0 +1,28 @@
+﻿<ContentControl x:Class="PainelPress.Paginas.Editor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PainelPress.Paginas" xmlns:Navegador="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf" xmlns:xrpb="http://XamlRadialProgressBar/DotNet" xmlns:fa="http://schemas.fontawesome.io/icons/"
+                mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Navegador:ChromiumWebBrowser ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="0" Visibility="Hidden" x:Name="browEditor" LoadingStateChanged="browEditor_LoadingStateChanged" LostFocus="browEditor_LostFocus" Grid.ColumnSpan="3"/>
+        <Grid x:Name="sharpEditor"  Visibility="Visible"/>
+        <Border Margin="0,0,3,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <Button FontWeight="Bold" Margin="0,2">B</Button>
+                <Button FontWeight="Bold" Margin="0,2" FontStyle="Italic">
+                    <fa:ImageAwesome Icon="Italic" Foreground="#FF565859"/>
+                </Button>
+            </StackPanel>
+        </Border>
+        <Grid x:Name="loading" Visibility="Collapsed" Background="#6B7A7A7A" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="2">
+            <Border CornerRadius="8" Background="#FF1175E6" Height="120" Width="200">
+                <xrpb:RadialProgressBar Height="80" Width="80" Foreground="White"  IndeterminateSpeedRatio="0.1"  IsIndeterminate="True"/>
+            </Border>
+           
+        </Grid>
+      
+    </Grid>
+</ContentControl>

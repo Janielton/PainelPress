@@ -4,9 +4,48 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PainelPress"
-        mc:Ignorable="d"
+        mc:Ignorable="d" WindowStyle="None"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+         xmlns:shell="http://schemas.microsoft.com/netfx/2009/xaml/presentation" 
         Title="Container" Height="450" Width="800">
-    <Grid>
-        <ContentControl x:Name="contentContainer"/>
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome
+            ResizeBorderThickness="6"
+            CaptionHeight="50"
+            CornerRadius="0"
+            GlassFrameThickness="2">
+        </shell:WindowChrome>
+    </shell:WindowChrome.WindowChrome>
+    <Grid Background="#FF1795E4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ContentControl Margin="2,0,2,2" Grid.Row="1" x:Name="contentContainer"/>
+        <Grid Grid.Row="0">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
+                    <GradientStop Color="#FF4554A7" Offset="0.992"/>
+                    <GradientStop Color="#FF08A4F5" Offset="0"/>
+                    <GradientStop Color="#FF18A9F5" Offset="0.636"/>
+                    <GradientStop Color="#FF328ECE" Offset="0.883"/>
+                    <GradientStop Color="#FF4554A7" Offset="0.444"/>
+                    <GradientStop Color="#FF2E7FCA" Offset="0.28"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <TextBlock x:Name="Titulo" Foreground="White" VerticalAlignment="Top" Margin="16,13,0,0" FontSize="22" HorizontalAlignment="Left" FontFamily="Cooper Std Black"></TextBlock>
+            <StackPanel WindowChrome.IsHitTestVisibleInChrome="True" Orientation="Horizontal" HorizontalAlignment="Right" >
+                <Button Margin="2,0" Name="btMinimizar" Click="btMinimizar_Click"   Background="Transparent">
+                    <fa:ImageAwesome Icon="WindowMinimize" Foreground="White" Width="20"/>
+                </Button>
+                <Button Margin="2,0" Name="btMaximizar" Click="btMaximizar_Click" Background="Transparent">
+                    <fa:ImageAwesome Icon="WindowMaximize" Foreground="White" Width="20"/>
+                </Button>
+                <Button Name="btCloseWin" Click="btCloseWin_Click" Background="Transparent">
+                    <fa:ImageAwesome Icon="WindowClose" Foreground="White" Width="20"/>
+                </Button>
+
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

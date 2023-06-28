@@ -13,10 +13,21 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
 using PainelPress.Classes;
 using PainelPress.Model;
-using config = PainelPress.Properties.Settings;
+using configs = PainelPress.Properties.Settings;
+using PainelPress.Elementos;
+using ShareSocial;
+using System.Linq;
+using FontAwesome.WPF;
+using System.Windows.Media;
+using ImageProcessor.Imaging.Quantizers.WuQuantizer;
+using System.Windows.Data;
+using HarfBuzzSharp;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
+using PainelPress.Partes;
+using Tweetinvi.Core.Extensions;
 
 namespace PainelPress.Paginas
 {
@@ -25,60 +36,51 @@ namespace PainelPress.Paginas
     /// </summary>
     public partial class Postar : ContentControl
     {
-        int IDPost;
+        public int IDPost;
         bool Add = true;
         string statusPost = "publish";
-        string tags = "";
-        string keywords = "";
         string dataPost = "";
         public static string postConteudo = "";
         public static TextBox _ediImg;
         Usuario selecaoUsuario;
-        Terms terms = new Terms();
-        Meta meta = new Meta();
-        List<string> listTags = new List<string>();
-        List<string> listRusumo = new List<string>();
-        List<string> listCidades = new List<string>();
-        List<string> listCagos = new List<string>();
+        List<string> listKeyTax = new List<string>();
+        List<string> listKeyCampo = new List<string>();
+        Dictionary<string, List<string>> taxanomyList = new Dictionary<string, List<string>>();
         BaseDados baseDados = new BaseDados();
         Taxonomy selecaoTag;
-        Taxonomy selecaoCidade;
-        Taxonomy selecaoCargo;
-        DateTime hoje = DateTime.Now;
-        private int timerTickCount = 0;
-        DispatcherTimer timer;
-        int indexMeta = 0;
         InterfaceAPI apiRestBasic;
         InterfaceAPI apiRestBarear;
-        TwitterService twitterService;
+        MainShare mainShare;
         RestAPI restAPI = new RestAPI();
         bool facebook = false;
         bool twitter = false;
-     
+        PostModel postAtual;
+        CategoriasCheck categoriasCheck = new CategoriasCheck();
+        ImageContainer imageContainer = new ImageContainer();
+        MensagemToast mensagemToast = new MensagemToast();
+        Dictionary<string, int> configLayout = new Dictionary<string, int>();
+        Configuracoes configuracoes = new Configuracoes();
+        Editor editorPost;
         public Postar()
         {
             InitializeComponent();
-           
-            browEditor.LoadUrl($"{Constants.SITE}/editor.html");
             apiRestBasic = RestService.For<InterfaceAPI>(Constants.SITE);
             apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
             {
                 AuthorizationHeaderValueGetter = () =>
-                    Task.FromResult(config.Default.Token)
+                    Task.FromResult(configuracoes.getToken())
             });
             Setap();
-
         }
 
         public Postar(Post post)
         {
             InitializeComponent();
-            browEditor.LoadUrl($"{Constants.SITE}/editor.html");
             apiRestBasic = RestService.For<InterfaceAPI>(Constants.SITE);
             apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
             {
                 AuthorizationHeaderValueGetter = () =>
-                    Task.FromResult(config.Default.Token)
+                    Task.FromResult(configuracoes.getToken())
             });
             SetUpdate(post);
         }
@@ -86,85 +88,805 @@ namespace PainelPress.Paginas
         public Postar(PostSimples post)
         {
             InitializeComponent();
-            browEditor.LoadUrl($"{Constants.SITE}/editor.html");
             apiRestBasic = RestService.For<InterfaceAPI>(Constants.SITE);
             apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
             {
                 AuthorizationHeaderValueGetter = () =>
-                    Task.FromResult(config.Default.Token)
+                    Task.FromResult(configuracoes.getToken())
             });
+            ShowHideLoading(true);
             SetUpdate(post);
         }
 
-        private void Setap()
+        private async void Setap()
         {
+           // ShowHideLoading(true);
+            ////LAYOUT
+            try
+            {
+                configLayout = configuracoes.getLayout();
+                if (configLayout != null)
+                {
+                    if (configLayout.ContainsKey("centro"))
+                    {
+                        int wd = configLayout["centro"];
+                        colunaCentro.Width = new GridLength(wd);
+                        containerSidebar.Width = wd-5;
+                    }
+                   if (configLayout.ContainsKey("cats")) rowCats.Height = new GridLength(configLayout["cats"]);
+                }
+            }
+            catch { }
+            
+            //USUARIOS
             List<Usuario> lista = Usuario.listaUsuarios();
-         
             comboUser.ItemsSource = lista;
+            
             int i = 0;
             foreach (var user in lista)
             {
-                if(user.Id == config.Default.usuarioAtual)
+                if(user.Id == configuracoes.getUsuario())
                 {
                     comboUser.SelectedIndex = i;
                 }
                 i++;
             }
+
+            ///CONTAINERS
+            frameCats.Content = categoriasCheck;
+            imageControl.Content = imageContainer;
+            imageContainer.SetPostar(this);
+
+            ////EDITOR
+            editorPost = new Editor(2, Add);
+            if (configLayout.ContainsKey("editor_tamanho"))
+            {
+                editorPost.setTela(configLayout["editor_tamanho"]);
+            }
+            editor.Content = editorPost;
+
             postConteudo = "";
-            twitterService = new TwitterService();
+            
+            ///SOCIAL
+            SocialModel social = new SocialModel();
+            mainShare = new MainShare(Constants.PASTA);
+            var confT = mainShare.getTwitterConfig;
+            if (confT != null)
+            {
+                mainShare.StartTwitter(confT.api);
+                twitter = true;
+                // var userTw = await mainShare.getContaTwitter();
+                // if (userTw != "no") twitter = true;
+            }
 
-            _ediImg = ediImg;
-
-            Social social = new Social();
             facebook = social.facebook().ativado;
-            twitter = social.twitter();
+            
+            setTaxs();
+            setCampos();
+           
         }
+
+        #region TAXONOMYS
+        private void setTaxs()
+        {
+            List<string> taxs = configuracoes.getTaxonomies();
+            if (taxs != null)
+            {
+
+                foreach (string nome in taxs)
+                {
+                    containerTaxs.Children.Add(getBoxTax(nome));
+                    taxanomyList.Add(nome, new List<string>());
+                    listKeyTax.Add(nome);
+                }
+            }
+        }
+
+        private Border getBoxTax(string nome)
+        {
+            Border border = new Border() {
+              Tag = "bd_" + nome,
+              Margin = new Thickness(5),
+              Background = CorImage.GetCor("#ffffff"),
+              Padding = new Thickness(2),
+              CornerRadius = new CornerRadius(5)
+            };
+
+            StackPanel stack = new StackPanel()
+            {
+                Tag = "stack_" + nome,
+                Orientation = Orientation.Vertical,
+                Margin = new Thickness(2)
+            };
+
+            Grid grid = new Grid();
+
+            grid.Children.Add(new TextBlock()
+            {
+                Text = "post_tag"== nome? "Tags" : Ferramentas.CapitalizeTexto(nome),
+                FontSize = 16,
+            });
+
+            Button buttonCl = new Button()
+            {
+                Tag = nome,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Width = 20,
+                Height = 20,
+                Padding = new Thickness(0),
+                Background = CorImage.Transparente(),
+                Visibility = Visibility.Hidden,
+                Content = new ImageAwesome()
+                {
+                    Foreground = CorImage.GetCorIcone(),
+                    Icon = FontAwesomeIcon.WindowClose,
+                }
+            };
+            buttonCl.Click += btClearTax_Click;
+            grid.Children.Add(buttonCl);
+            stack.Children.Add(grid);
+
+            TextBox edit = new TextBox()
+            {
+                Tag = nome,
+                TextWrapping = TextWrapping.Wrap,
+                MinWidth = 205,
+                Margin = new Thickness(0,2,0,0),
+                FontSize = 16,           
+            };
+            edit.TextChanged += ediTags_TextChanged;
+            edit.PreviewKeyDown += ediTags_KeyDown;
+            stack.Children.Add(edit);
+
+            ListBox lista = new ListBox()
+            {
+                Tag = "list_" + nome,
+                Background = Brushes.WhiteSmoke,
+                MaxHeight = 150,
+                BorderThickness = new Thickness(0),
+                DisplayMemberPath = "Name",
+                Cursor = Cursors.Hand
+            };
+
+            lista.SelectionChanged += boxTags_SelectionChanged;
+            stack.Children.Add(lista);
+
+            StackPanel stackList = new StackPanel()
+            {
+                Tag = "sl_" + nome,
+                MinHeight = 20,
+            };
+            stack.Children.Add(stackList);
+
+            border.Child = stack;
+            return border;
+        }
+
+
+        private void btClearTax_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as Button;
+            if (item == null) return;
+            string tag = item.Tag.ToString();
+            string tagB = "bd_" + tag;
+            Border container = FindElemento.FindBorder(containerTaxs, tagB);
+            if (container == null) return;
+      
+            string tagS = "sl_" + tag;
+            StackPanel stack = FindElemento.FindStack((StackPanel)container.Child, tagS);
+            if (stack == null) return;
+     
+            stack.Children.Clear();
+            taxanomyList[tag] = new List<string>();
+      
+            Button button = FindElemento.FindButton((StackPanel)container.Child, tag);
+            if (button != null)
+            {
+                button.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void boxTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var box = sender as ListBox;
+            if (box != null && box.SelectedItem != null)
+            {
+                Taxonomy tag = box.SelectedItem as Taxonomy;
+                AddTax(tag);
+                box.ItemsSource = null;
+            }
+        }
+
+        private void AddTax(Taxonomy tax)
+        {
+            selecaoTag = tax;
+            string tag = selecaoTag.Tipo;
+            string valor = tag == "post_tag" ? selecaoTag.TermId : selecaoTag.Name;
+            var list = taxanomyList[tag];
+            if (list.Contains(valor))
+            {
+                return;
+            }
+
+            string tagB = "bd_" + tag;
+            Border container = FindElemento.FindBorder(containerTaxs, tagB);
+
+            if (container == null)
+            {
+                Debug.WriteLine("No container");
+                return;
+            }
+            StackPanel stack = container.Child as StackPanel;
+            if (stack == null)
+            {
+                Debug.WriteLine("No stack");
+                return;
+            }
+            string tagL = "sl_" + tag;
+            StackPanel stackList = FindElemento.FindStack(stack, tagL);
+
+            if (stackList.Children.Count == 0)
+            {
+                TextBlock text = new TextBlock()
+                {
+                    Text = selecaoTag.Name,
+                    MinHeight = 20,
+                    Width = 200,
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(2)
+
+                };
+                stackList.Children.Add(text);
+            }
+            else
+            {
+                var text = stackList.Children[0] as TextBlock;
+                text.Text += ", " + selecaoTag.Name;
+            }
+            TextBox edit = FindElemento.FindTextBox(stack, tag);
+            edit.Text = "";
+           
+            list.Add(valor);
+            taxanomyList[tag] = list;
+            
+            Button button = FindElemento.FindButton((StackPanel)container.Child, tag);
+            if (button != null)
+            {
+                button.Visibility = Visibility.Visible;
+            }
+
+        }
+
+        private async void AddTaxs(string tipo, string taxs)
+        {
+
+            taxs = taxs.Replace(";", ",");
+            if (tipo== "post_tag")
+            {          
+                if (taxs.Contains(","))
+                {
+                    var array = taxs.Split(",");
+                    foreach (var item in array)
+                    {
+                        string nome = item.Trim();
+                        await VerificaTag(nome);
+                    }
+                }
+                else
+                {
+                    await VerificaTag(taxs);
+                }
+               
+            }
+            else
+            {
+                if (taxs.Contains(","))
+                {
+                    var array = taxs.Split(",");
+                    foreach (var item in array)
+                    {
+                        string nome = item.Trim();
+                        Taxonomy tag = new Taxonomy()
+                        {
+                            Tipo = tipo,
+                            Name = nome
+                        };
+                        AddTax(tag);
+                    }
+
+                }
+                else
+                {
+                    Taxonomy tag = new Taxonomy()
+                    {
+                        Tipo = tipo,
+                        Name = taxs
+                    };
+                    AddTax(tag);
+                }   
+               
+            }
+
+        }
+
+        private async Task<Taxonomy> VerificaTag(string name)
+        {
+            try
+            {
+                var param = new Dictionary<string, object>()
+                {
+                    { "nome", name }
+                };
+                Taxonomy tag = await apiRestBarear.getTaxonomy("post_tag", param);
+                if (tag != null)
+                {
+                    AddTax(tag);
+                    return tag;
+                }
+                else
+                {
+                    AlertMensagem alert = AlertMensagem.instance.Aviso($"Essa tag não existe. Deseja cadastrar a tag: {name}?", "Tag não existe",1);
+                    if(alert.ShowDialog() == true && alert.result =="sim")
+                    {
+                        ShowHideLoading(true);
+                        CriaTag(name);
+                    }
+                }
+            }
+            catch(ApiException ex)
+            {
+                AlertMensagem.instance.Show(ex.Message,"Erro ao verificar tag");
+                Ferramentas.PrintObjeto(ex);
+            }
+            return null;
+
+        }
+        
+        private async void CriaTag(string tag)
+        {
+            try
+            {
+                string json = "{\"name\":\"" + tag + "\",\"slug\":\"" + Ferramentas.ToUrlSlug(tag) + "\"}";
+                var post = await apiRestBarear.CriarTag(json);
+                Taxonomy tax = new Taxonomy();
+                tax.TermId = post.Id.ToString();
+                tax.Name = post.Name;
+                tax.Tipo = "post_tag";
+                AddTax(tax);
+                ShowHideLoading(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("CriaTag => " + ex.Message);
+                ShowHideLoading(false);
+            }
+        }
+
+        private void ediTags_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Enter))
+            {
+                TextBox textBox = sender as TextBox;
+                if (textBox == null) return;
+                string tag = textBox.Tag.ToString().Trim();
+                string tagB = "bd_" + tag;
+                Border container = FindElemento.FindBorder(containerTaxs, tagB);
+                if (container == null) return;
+                string tagL = "list_" + tag;
+                ListBox box = FindElemento.FindListBox((StackPanel)container.Child, tagL);
+                if (box == null) return;
+                box.SelectedIndex = 0;
+            }
+            else if (e.Key == Key.Enter)
+            {
+                TextBox textBox = sender as TextBox;
+                if (textBox == null) return;
+                string tag = textBox.Tag.ToString().Trim();
+                string tagB = "bd_" + tag;
+                Border container = FindElemento.FindBorder(containerTaxs, tagB);
+                if (container == null) return;
+                string tagL = "list_" + tag;
+                ListBox box = FindElemento.FindListBox((StackPanel)container.Child, tagL);
+                if (box == null) return;
+                box.ItemsSource = null;
+                AddTaxs(tag, textBox.Text);
+            }
+
+        }
+
+        private void ediTags_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                var item = sender as TextBox;
+                if (item == null) return;
+                string tag = item.Tag.ToString();
+                string key = item.Text.ToString();
+                BuscarTax(tag, key);
+            }
+            catch {}
+        }
+
+        public string getValueTaxs(string nome)
+        {
+            string tagB = "bd_" + nome;
+            Border container = FindElemento.FindBorder(containerTaxs, tagB);
+
+            if (container == null)
+            {
+                Debug.WriteLine("No container");
+                return "";
+            }
+            StackPanel stack = container.Child as StackPanel;
+            if (stack == null)
+            {
+                Debug.WriteLine("No stack");
+                return "";
+            }
+            string tagL = "sl_" + nome;
+            StackPanel stackList = FindElemento.FindStack(stack, tagL);
+
+            if (stackList.Children.Count == 0) return "";
+            
+            var text = stackList.Children[0] as TextBlock;
+            return text.Text;
+        }
+
+        private async void BuscarTax(string tag, string palavra)
+        {
+            try
+            {
+                string tagB = "bd_" + tag;
+
+                Border container = FindElemento.FindBorder(containerTaxs, tagB);
+            
+                if(container == null)
+                {
+                    Debug.WriteLine("No container");
+                    return;
+                }
+                StackPanel stack = container.Child as StackPanel;
+                if(stack== null)
+                {
+                    Debug.WriteLine("No stack");
+                    return;
+                }
+                string tagL = "list_" + tag;
+                ListBox list = FindElemento.FindListBox(stack, tagL);
+                   
+                if (list != null)
+                {
+                    if (palavra.Length == 0)
+                    {
+                        list.ItemsSource = null;
+                        return;
+                    }
+                    var dados = new Dictionary<string, object>
+                    {
+                     { "taxonomy", tag },
+                     { "key", palavra }
+                    };
+                    List<Taxonomy> taxs = await apiRestBarear.buscaTaxonomies(dados);
+                    list.ItemsSource = taxs;
+                    //list.ItemsSource = taxs.Select(s => s.Name).ToList();
+                }
+                else
+                {
+                    Debug.WriteLine("no busca");
+                }
+            }
+            catch { }
+
+        }
+
+        private void setTerms(object terms)
+        {
+            if (terms == null) return;
+
+            try
+            {
+                var result = JsonConvert.DeserializeObject<JToken>(terms.ToString());
+
+                foreach (string item in listKeyTax)
+                {
+                    if(result[item] != null)
+                    {
+                        AddTax(new Taxonomy()
+                        {
+                            Tipo = item,
+                            Name = result[item].ToString()
+                        });
+                        if (item != "post_tag")
+                        {
+                            var lista = result[item].ToString().Split(",").ToList();
+                            taxanomyList[item] = lista;
+                        }
+                    }
+                   
+                }
+            }catch(Exception ex) {
+                Debug.WriteLine(ex.Message);
+            }
+
+
+         
+        }
+
+        #endregion
+
+        #region CAMPOS
+
+        private void setCampos()
+        {
+            var camps = configuracoes.getCampos();
+            if (camps != null)
+            {
+                imageContainer.SetCampos(camps);
+                foreach (string nome in camps)
+                {
+                    containerCampos.Children.Add(getBoxCampo(nome));
+                    listKeyCampo.Add(nome);
+                }
+            }
+
+        }
+
+        public void setValueCampo(string nome, string value)
+        {
+            string tagB = "bd_" + nome;
+            Border border = FindElemento.FindBorder(containerCampos, tagB);
+            if (border == null) return;
+
+            TextBox element = FindElemento.FindTextBox((StackPanel)border.Child, nome);
+            if (element == null) return;
+            element.Text = value;
+        }
+
+        public string getValueCampo(string nome)
+        {
+            string tagB = "bd_" + nome;
+            Border border = FindElemento.FindBorder(containerCampos, tagB);
+            if (border == null) return "";
+
+            TextBox element = FindElemento.FindTextBox((StackPanel)border.Child, nome);
+            if (element == null) return "";
+            return element.Text;
+        }
+
+        private Border getBoxCampo(string nome)
+        {
+            Border border = new Border()
+            {
+                Tag = "bd_" + nome,
+                Margin = new Thickness(5),
+                Background = CorImage.GetCor("#ffffff"),
+                Padding = new Thickness(2),
+                CornerRadius = new CornerRadius(5)
+            };
+
+            StackPanel stack = new StackPanel()
+            {
+                Orientation = Orientation.Vertical,
+                Margin = new Thickness(2)
+
+            };
+
+            Grid grid = new Grid();
+            grid.Children.Add(new TextBlock()
+            {
+                Text = Ferramentas.CapitalizeTexto(nome),
+                FontSize = 16,
+            });
+
+            Button buttonEd = new Button()
+            {
+                Tag = "edit_"+ nome,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Width = 20,
+                Height = 20,
+                Margin = new Thickness(0, 0, 30, 0),
+                Padding = new Thickness(0),
+                Background = CorImage.Transparente(),
+                Visibility = Add ? Visibility.Hidden: Visibility.Visible,
+                Content = new ImageAwesome()
+                {
+                    Foreground = CorImage.GetCorIcone(),
+                    Icon = FontAwesomeIcon.Edit,
+                }
+            };
+
+            buttonEd.Click += btEditCampo_Click;
+            grid.Children.Add(buttonEd);
+
+            Button buttonCl = new Button()
+            {
+                Tag = "del_" + nome,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Width = 20,
+                Height = 20,
+                Padding = new Thickness(0),
+                Background = CorImage.Transparente(),
+                Visibility = Add ? Visibility.Hidden : Visibility.Visible,
+                Content = new ImageAwesome()
+                {
+                    Foreground = CorImage.GetCorIcone(),
+                    Icon = FontAwesomeIcon.WindowClose,
+                }
+            };
+            buttonCl.Click += btClearCampo_Click;
+            grid.Children.Add(buttonCl);
+            stack.Children.Add(grid);
+
+            TextBox edit = new TextBox()
+            {
+                Tag = nome,
+                TextWrapping = TextWrapping.Wrap,
+                MinWidth = 200,
+                MinHeight = 50,
+                IsEnabled = Add ? true : false,
+                Margin = new Thickness(0, 2, 0, 0),
+                FontSize = 16,
+            };
+            stack.Children.Add(edit);
+            border.Child = stack;
+            return border;
+        }
+
+        private void btClearCampo_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as Button;
+            if (item == null) return;
+            string tag = item.Tag.ToString().Replace("del_", "");
+           
+            string tagB = "bd_" + tag; 
+            Border border = FindElemento.FindBorder(containerCampos, tagB);
+            if (border == null) return;
+            
+            TextBox element = FindElemento.FindTextBox((StackPanel)border.Child, tag);
+            if (element == null) return;
+            element.Text = "";
+            
+            if (!Add && element.IsEnabled == false)
+            {
+                element.IsEnabled = true;
+                ApagarCampo(tag, IDPost);
+            }
+        }
+
+        private async void ApagarCampo(string nome, long id)
+        {
+            var request = await apiRestBarear.DeleteCampo(id, nome);
+            if (!request.Sucesso)
+            {
+                MessageBox.Show("Erro ao apagar campo", "Erro");
+            }
+        }
+        
+        private void btEditCampo_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as Button;
+            if (item == null) return;
+            string tag = item.Tag.ToString().Replace("edit_", "");
+            string tagB = "bd_" + tag;
+             Border border = FindElemento.FindBorder(containerCampos, tagB);
+            if (border == null) return;
+            TextBox edit = FindElemento.FindTextBox((StackPanel)border.Child, tag);
+            if (edit == null) return;
+            if (edit.IsEnabled == false)
+            {
+                edit.IsEnabled = true;
+            }
+            else if(!Add)
+            {
+                edit.IsEnabled = true;
+                EditarCampo(tag, IDPost, edit);
+            }
+
+        }
+
+        private async void EditarCampo(string nome, long id, TextBox edit)
+        {
+            var dados = new Dictionary<object, string>
+            {
+                     { "key", nome },
+                     { "value", edit.Text }
+            };
+            var request = await apiRestBarear.EditarCampo(id, dados);
+            if (!request.Sucesso)
+            {
+                MessageBox.Show("Erro ao editar campo", "Erro");
+            }
+            else
+            {
+                edit.IsEnabled = false;
+            }
+        }
+
+        private void setMetas(List<MetaGetPost> metas)
+        {
+            if (metas == null || metas.Count == 0) return;
+            metas.ForEach(met => {
+                string tagB = "bd_" + met.MetaKey;
+                Border border = FindElemento.FindBorder(containerCampos, tagB);
+                Debug.WriteLine(tagB);
+                if (border != null)
+                {
+                    Debug.WriteLine("bd ok");
+                    TextBox element = FindElemento.FindTextBox((StackPanel)border.Child, met.MetaKey);
+                    if (element != null)
+                    {
+                        element.Text = met.MetaValue;
+                    }
+                }            
+            });
+        }
+
+
+        #endregion
 
         private void SetUpdate(Post post)
         {
             this.IDPost = post.getID;
             Add = false;
-            ediTitulo.Text = post.Title.raw;
+            ediTitulo.Texto = post.getTitulo;
             btPublicar.Content = "Atualizar";
+            btStory.Visibility = Visibility.Visible;
             MainWindow.BT_POSTAR.Content = "Novo Post";
-           
             Setap();
+            getPost(IDPost);
         }
 
         private void SetUpdate(PostSimples post)
         {
             this.IDPost = post.Id;
             Add = false;
-            ediTitulo.Text = post.Title;
+            ediTitulo.Texto = post.Title;
             btPublicar.Content = "Atualizar";
             MainWindow.BT_POSTAR.Content = "Novo Post";
-
+            btStory.Visibility = Visibility.Visible;
             Setap();
+            getPost(IDPost);
         }
 
         private async void TarefasAposPost(bool post) {
             if (statusPost.Equals("future")) return;
+            if(Constants.SITE.Contains(".appmania.com")) return;
+            if (Constants.SITE.Contains(".test")) return;
             bdStatusTask.Visibility = Visibility.Visible;
            // tbStatusTask.Text = "Gerando cache do post";
            // await setCachePost();
            // await Task.Delay(100);
             if (post) {
-                
-                //if (!string.IsNullOrEmpty(tbCidades.Text))
-                //{
-                //    tbStatusTask.Text = "Limpando cache cidade";
-                //    await ClearCacheCidade();
-                //}
                 //tbStatusTask.Text = "Limpando cache categorias";
                 //await ClearCacheCategoria();
-                tbStatusTask.Text = "Efetuando pings";
-                bool ping = await restAPI.Pings();
-                if (!ping) Mensagem(false, "Erro fazer ping");
-                tbStatusTask.Text = "Enviando post ao Twitter";
-               if(twitter) await SendTwitter();
-                tbStatusTask.Text = "Enviando post ao Facebook";
-               if(facebook) SendFacebook();
-                            
+                try
+                {
+                    if (imageContainer.PADRAO)
+                    {
+                        tbStatusTask.Text = "Fazendo upload de imagem";
+                        bool upIm = await imageContainer.EnviarImagem();
+                        if(!upIm) Mensagem(false, "Erro fazer upload de imagem");
+                    }
+                   
+                    tbStatusTask.Text = "Efetuando pings";
+                    bool ping = await restAPI.Pings();
+                    if (!ping) Mensagem(false, "Erro fazer ping");
+                 
+                    if (twitter)
+                    {
+                        tbStatusTask.Text = "Enviando post ao Twitter";
+                        await SendTwitter();
+                    }
+                    if (facebook)
+                    {  
+                        tbStatusTask.Text = "Enviando post ao Facebook";
+                        await SendFacebook();
+                    }                  
+                }
+                catch(Exception ex)
+                {
+                    AlertMensagem.instance.Show(ex.Message, "Erro em TarefasAposPost");
+                }              
             }
 
             bdStatusTask.Visibility = Visibility.Collapsed;
@@ -199,91 +921,37 @@ namespace PainelPress.Paginas
 
         private async Task SendTwitter()
         {
-            string mensagem = ediTitulo.Text+" "+tbSlugTitle.Text+" #concurso #vaga";
-           var send = await twitterService.PublicarTweetSimples(mensagem);
+            string mensagem = ediTitulo.Texto + " "+tbSlugTitle.Text;
+           var send = await mainShare.createTweet(mensagem);
             if (!send) Mensagem(false, "Erro ao enviar tweet");
         }
 
-        private async void SendFacebook()
+        private async Task SendFacebook()
         {
-            WSocial social = new WSocial();
-            await social.SendFacebook(ediTitulo.Text,tbSlugTitle.Text);
+            Social social = new Social();
+            await social.SendFacebook(ediTitulo.Texto,tbSlugTitle.Text,"");
         }
 
         private async Task ClearCacheCidade()
-        {    
-            string s = tbCidades.Text;
-            var size = s.Split(",");
-            if (size.Length > 9) return;
-            string param = s.Contains(",") ? FormataCidadeSlug(s) : Ferramentas.ToUrlSlug(s);
-
-            var cacher = new Cacher();
-            cacher.tipo = "concurso";
-            cacher.slug = param;
-            Ferramentas.PrintObjeto(cacher);
-            return;
-            var resultado = await apiRestBasic.ClearChache(cacher);
-            if (!resultado.Sucesso)
-            {
-                Mensagem(false, "Erro ao limpar cache");
-            }
-
-        }
-
-        private async Task ClearCacheCategoria()
         {
-       
-      
-            string pai = Ferramentas.ToUrlSlug(getPai(true));
-            string subs = getPai(false);
-            var cacher = new Cacher();
-            cacher.tipo = "categoria";
-            cacher.slug = subs;
-            Ferramentas.PrintObjeto(cacher);
             return;
-            var resultado = await apiRestBasic.ClearChache(cacher);
-            if (!resultado.Sucesso)
-            {
-                Mensagem(false, "Erro ao limpar cacher da categoria");
-            }
+            //string s = tbCidades.Text;
+            //var size = s.Split(",");
+            //if (size.Length > 9) return;
+            //string param = s.Contains(",") ? FormataCidadeSlug(s) : Ferramentas.ToUrlSlug(s);
+
+            //var cacher = new Cacher();
+            //cacher.tipo = "concurso";
+            //cacher.slug = param;
+            //Ferramentas.PrintObjeto(cacher);
+           
+            //var resultado = await apiRestBasic.ClearChache(cacher);
+            //if (!resultado.Sucesso)
+            //{
+            //    Mensagem(false, "Erro ao limpar cache");
+            //}
 
         }
-
-        private string getPai(bool pai) {
-            if (string.IsNullOrEmpty(CategoriasCheck.CatList)) return "no";
-            var catList = CategoriasCheck.CatList.Split(",");
-            Ferramentas ferramentas = new Ferramentas();
-            if (pai) {
-                foreach (var cat in catList)
-                {
-                    if (!cat.Equals("7841"))
-                    {
-                        if (cat.Equals("54") || cat.Equals("53") || cat.Equals("50") || cat.Equals("52") || cat.Equals("51") || cat.Equals("9"))
-                        {
-
-                            return ferramentas.getCatNome(Convert.ToInt32(cat));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                List<string> cats = new List<string>();
-                foreach (var cat in catList)
-                {
-                   int c = Convert.ToInt32(cat.Trim());
-                   if (c == 7841) continue;
-                   bool IsSub = c != 54 && c != 53 && c != 50 && c != 52 && c != 51 && c != 9;
-                  
-                   if (IsSub) cats.Add(Ferramentas.ToUrlSlug(ferramentas.getCatNome(c)));
-                }
-                if(cats.Count > 0) return string.Join(",", cats);
-
-            }
-            
-            return "no";
-        }
-
        
         #endregion
 
@@ -351,15 +1019,16 @@ namespace PainelPress.Paginas
 
         #endregion
 
+        #region ENVIAR POST
         private void btPublicar_Click(object sender, RoutedEventArgs e)
         {
 
-            if (ediTitulo.Text.Length > 30) {
+            if (ediTitulo.Texto.Length > 30) {
                 PublicarAtualizar();
                 return;
             }
       
-            var mensagem = MessageBox.Show("Titulo muito curto. Deseja publicar assim mesmo?", "Titulo curto - "+ ediTitulo.Text.Length, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var mensagem = MessageBox.Show("Titulo muito curto. Deseja publicar assim mesmo?", "Titulo curto - "+ ediTitulo.Texto.Length, MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (mensagem == MessageBoxResult.Yes)
             {
@@ -399,19 +1068,22 @@ namespace PainelPress.Paginas
         {
             try
             {
-               
-                string json = ModelToJson(postMotado());
+
+                postAtual = postMotado();
+                string json = ModelToJson(postAtual);
                 Debug.WriteLine("\n" + json);
-                var resultado = await apiRestBarear.Postar(json);
-                if (resultado != null && resultado.Id > 0)
+                var request = await apiRestBarear.Postar(json);
+                Post resultado = JsonConvert.DeserializeObject<Post>(request);
+                if (resultado != null && resultado.id > 0)
                 {                 
                     Mensagem(true, "Post publicado");
                     btPublicar.Content = "Atualizar";
-                    IDPost = resultado.Id;
-                    tbSlugTitle.Text = resultado.Link;
+                    IDPost = resultado.id;
+                    tbSlugTitle.Text = resultado.link;
                     MainWindow.BT_POSTAR.IsEnabled = true;
                     MainWindow.BT_POSTAR.Content = "Novo Post";
                     stackVer.Visibility = Visibility.Visible;
+                    btStory.Visibility = Visibility.Visible;
                     stackStatus.Visibility = Visibility.Collapsed;
                     postConteudo = "";
                     TarefasAposPost(true);
@@ -425,13 +1097,19 @@ namespace PainelPress.Paginas
                         apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
                         {
                             AuthorizationHeaderValueGetter = () =>
-                                Task.FromResult(config.Default.Token)
+                                Task.FromResult(configuracoes.getToken())
                         });
                     }
                 }
+
+            }
+            catch (ApiException ex)
+            {
+                AlertMensagem.instance.Show(ex.Message, "Erro ao publicar");
             }
             catch (Exception ex) {
                 Mensagem(false, "Erro ao publicar -> "+ ex.Message);
+                Debug.WriteLine(ex.Message);
             }
             ShowHideLoading(false);
         }
@@ -442,10 +1120,12 @@ namespace PainelPress.Paginas
 
             try
             {
-                string json = ModelToJson(postMotado());
-                Debug.WriteLine("\n" + json);
-                var resultado = await apiRestBarear.Atualizar(json, IDPost);
-                if (resultado != null && resultado.Id > 0)
+                postAtual = postMotado();
+                string json = ModelToJson(postAtual);         
+                var request = await apiRestBarear.Atualizar(json, IDPost);
+                Post resultado = JsonConvert.DeserializeObject<Post>(request);
+
+                if (resultado != null && resultado.id > 0)
                 {
                     Mensagem(true, "Post atualizado");
                     //TarefasAposPost(false);
@@ -459,17 +1139,182 @@ namespace PainelPress.Paginas
                         apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
                         {
                             AuthorizationHeaderValueGetter = () =>
-                                Task.FromResult(config.Default.Token)
+                                Task.FromResult(configuracoes.getToken())
                         });
                     }
                 }
-            }catch(Exception ex) {
+            }
+            catch (ApiException ex)
+            {
+                AlertMensagem.instance.Show(ex.Message, "Erro ao atualizar");
+            }
+            catch (Exception ex) {
                 Debug.WriteLine(ex.Message);
+                Mensagem(false, "Erro ao atualizar -> " + ex.Message);
             }
             ShowHideLoading(false);
         }
+        private bool ValidarForm()
+        {
+            if (string.IsNullOrEmpty(ediTitulo.Texto))
+            {
+                ediTitulo.Focus();
+                Mensagem(false, "Digite titulo");
+                return false;
+            }
+            if (string.IsNullOrEmpty(ediResumo.Texto))
+            {
+                ediResumo.Focus();
+                Mensagem(false, "Digite resumo");
+                return false;
+            }
+            if (string.IsNullOrEmpty(postConteudo))
+            {
+                Mensagem(false, "Digite conteudo");
+                return false;
+            }
+            if (string.IsNullOrEmpty(CategoriasCheck.CatList))
+            {
+                Mensagem(false, "Selecione uma categoria");
+                return false;
+            }
 
-        
+            return true;
+        }
+
+        private async void btSalvarPost_Click(object sender, RoutedEventArgs e)
+        {
+           await SalvarPost();
+        }
+
+    
+       
+        async Task SalvarPost(bool sTela = true)
+        {
+
+            try
+            {
+                bool visual = btHtml.Content.Equals("HTML (H2)") ? true : false;
+                postConteudo = await editorPost.getConteudo();
+                if (postConteudo != "")
+                {
+     
+                    postAtual = postMotado(true);
+                    configuracoes.setSalvoPost(postAtual);
+                    if (sTela)
+                    {
+                        string tela = await editorPost.getTela();
+                        if (tela != "")
+                        {
+                            configLayout["editor_tamanho"] = Convert.ToInt32(tela);
+                            configuracoes.setLayout(configLayout);
+                        }
+                       
+                    }
+                    Mensagem(true, "Post salvo com sucesso");
+
+                }
+                else
+                {
+                    Mensagem(false, "Erro ao salvar post");
+                }
+               
+            }
+            catch(FormatException ex)
+            {
+                Debug.WriteLine($"FormatException:{ex.Message}");
+                Mensagem(false, "Erro ao salvar post");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em SalvarPost:{ex.Message}");
+                Mensagem(false, "Erro ao salvar post");
+            }
+
+        }
+
+        private void btHtml_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                btHtml.Content = btHtml.Content.ToString().Equals("HTML (F2)") ? "VISUAL (F2)" : "HTML (F2)";
+                string script = @"(function() { AlteraEditor() })();";
+                editorPost.ExecuteJS(script);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
+        }
+
+        private PostModel postMotado(bool salve = false)
+        {
+            PostModel postModel = new PostModel();
+            var camposWithVal = new Dictionary<string, object>();
+            foreach(string camp in listKeyCampo)
+            {
+                string valor = getValueCampo(camp);
+                if (valor != "")
+                {
+                    camposWithVal.Add(camp, valor);
+                }
+            }
+            if (camposWithVal.Count>0)
+            {
+                postModel.Campos = camposWithVal;
+            }
+
+            postModel.Autor = selecaoUsuario.Id.ToString();
+            postModel.Title = ediTitulo.Texto.Trim();
+            postModel.Excerpt = ediResumo.Texto.Trim();
+            postModel.Content = postConteudo.Trim();
+            postModel.Categories = CategoriasCheck.CatList;
+            postModel.Status = statusPost;
+            // postModel.Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+            postModel.Tags = string.Join(",",taxanomyList["post_tag"].ToArray());
+            var taxsWithVal = new Dictionary<string, object>();
+            foreach (var dict in taxanomyList)
+            {
+                if (dict.Value.Count>0)
+                {
+
+                    if(salve)
+                    {
+                       
+                        if (dict.Key == "post_tag")
+                        {
+                            string val = getValueTaxs("post_tag");
+                            if(val!="") taxsWithVal.Add(dict.Key, val);
+                        }
+                        else
+                        {
+                            string val = string.Join(",", dict.Value.ToArray());
+                            taxsWithVal.Add(dict.Key, val);
+                        }
+                    }
+                    else
+                    {
+                        if (dict.Key != "post_tag")
+                        {
+                            string val = string.Join(",", dict.Value.ToArray());
+                            taxsWithVal.Add(dict.Key, val);
+                        }
+                    }
+                   
+                }
+            }
+            if (taxsWithVal.Count>0)
+            {
+                postModel.Terms = taxsWithVal;
+            }
+            if (!string.IsNullOrEmpty(dataPost)) postModel.Date = dataPost.Trim();
+
+            return postModel;
+        }
+
+
+        #endregion
 
         private string FormataCidadeSlug(string s)
         {
@@ -488,225 +1333,25 @@ namespace PainelPress.Paginas
             return formatada;
         }
 
-        private bool ValidarForm()
-        {
-            if (string.IsNullOrEmpty(ediTitulo.Text))
-            {
-                ediTitulo.Focus();
-                Mensagem(false, "Digite titulo");
-                return false;
-            }
-            if (string.IsNullOrEmpty(ediResumo.Text))
-            {
-                ediResumo.Focus();
-                Mensagem(false, "Digite resumo");
-                return false;
-            }
-            if (string.IsNullOrEmpty(postConteudo))
-            {
-                Mensagem(false, "Digite conteudo");
-                return false;
-            }
-            if (string.IsNullOrEmpty(CategoriasCheck.CatList))
-            {
-                Mensagem(false, "Selecione uma categoria");
-                return false;
-            }
-           
-            return true;
-        }
-
-        private void btSalvarPost_Click(object sender, RoutedEventArgs e)
-        {
-                SalvarPost(true);
-        }
-
-        private async Task GetConteudo()
-        {
-            var script = @"(function() { return getContent(); })();";
-            var task = await browEditor.EvaluateScriptAsync(script);
-            dynamic result = task.Result;
-            string str = result.ToString() as string;
-            postConteudo = str;
-            Debug.WriteLine(str);
-
-        }
-
-        private void setConteudo(string valor)
-        {
-            Debug.WriteLine("setConteudo => " + valor);
-            var script = @"(function() { setContent('" + valor.Replace("\n"," ") + "') })();";
-            browEditor.ExecuteScriptAsync(script);
-            if (!string.IsNullOrEmpty(valor))
-            {
-               // verificaConteudo();
-            }
-        }
-
-        private async void verificaConteudo()
-        {
-            var script = @"(function() { return getContent(); })();";
-            var task = await browEditor.EvaluateScriptAsync(script);
-            dynamic result = task.Result;
-            string str = result.ToString() as string;
-         
-            if (string.IsNullOrEmpty(str)) {
-                setConteudo(postConteudo);
-            }
-        }
-
-        async Task SalvarPost(bool sTela)
-        {
-            try
-            {
-                bool visual = btHtml.Content.Equals("HTML") ? true : false;
-                var script = @"(function() { return getContent(); })();";
-                var task = await browEditor.EvaluateScriptAsync(script);
-                dynamic result = task.Result;
-                string str = result.ToString() as string;
-                postConteudo = str;
-                config.Default.Upgrade();
-                config.Default.PostSalvo = ModelToJson(postMotado());
-                if (sTela) {
-                    script = @"(function() { return document.querySelector('#myeditor_ifr').style.height; })();";
-                    task = await browEditor.EvaluateScriptAsync(script);
-                    result = task.Result;
-                    str = result.ToString() as string;
-                    config.Default.SizeEditor = str;
-                }
-                
-                config.Default.Save();
-                Debug.WriteLine(config.Default.PostSalvo);
-                Mensagem(true, "Post salvo com sucesso");
-            }
-            catch (Exception ex)
-            {
-                Mensagem(false, ex.Message);
-    
-            }
-         
-        }
-
-        private void btHtml_Click(object sender, RoutedEventArgs e)
-        {
-            try {
-             btHtml.Content = btHtml.Content.ToString().Equals("HTML") ? "VISUAL" : "HTML";
-             string script = @"(function() { AlteraEditor() })();";
-             browEditor.ExecuteScriptAsync(script);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
-        }
-
-        private PostModel postMotado()
-        {
-            PostModel postModel = new PostModel();
-
-            if (ValidaMetas())
-            {
-                if(!string.IsNullOrEmpty(ediEdital.Text)) meta.Edital = ediEdital.Text;
-                if (!string.IsNullOrEmpty(ediInscricao.Text)) meta.Inscricao = ediInscricao.Text;
-                if (!string.IsNullOrEmpty(ediImg.Text)) meta.Imagem = ediImg.Text;
-                if (!string.IsNullOrEmpty(ediProvas.Text)) meta.Provas = ediProvas.Text;
-                if (!string.IsNullOrEmpty(ediQuestao.Text)) meta.Questoes = ediQuestao.Text;
-                if (!string.IsNullOrEmpty(ediSalario.Text)) meta.Salario = ediSalario.Text;
-                if (!string.IsNullOrEmpty(ediVagas.Text)) meta.Vagas = ediVagas.Text;
-                postModel.Meta = meta;
-            }
-             
-           
-            postModel.Autor = selecaoUsuario.Id.ToString();
-            postModel.Title = ediTitulo.Text.Trim();
-            postModel.Excerpt = ediResumo.Text.Trim();
-            postModel.Content = postConteudo.Trim();
-            postModel.Categories = CategoriasCheck.CatList;
-            postModel.Status = statusPost;
-           // postModel.Date = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-            postModel.Tags = tags;
-            if (terms.Cidade != null || terms.Cargos != null) { 
-                postModel.Terms = terms;
-            }
-            if (!string.IsNullOrEmpty(dataPost)) postModel.Date = dataPost.Trim();
-
-
-            return postModel;
-        }
-
+        
         private bool ValidaMetas()
         {
-            if (!string.IsNullOrEmpty(ediEdital.Text))
-            {
-                return true;
-            }
-            else if (!string.IsNullOrEmpty(keywords))
-            {
-                return true;
-            }
-            else if (!string.IsNullOrEmpty(ediImg.Text))
-            {
-                return true;
-            }
+            //if (!string.IsNullOrEmpty(ediEdital.Text))
+            //{
+            //    return true;
+            //}
+            //else if (!string.IsNullOrEmpty(keywords))
+            //{
+            //    return true;
+            //}
+            //else if (!string.IsNullOrEmpty(ediImg.Text))
+            //{
+            //    return true;
+            //}
             return false;
         }
 
-        private void AddTaxs(bool cidade, string name)
-        {
-            if (cidade)
-            {
-                if (name.Contains(","))
-                {
-                    var array = name.Split(",");
-                    foreach(var item in array)
-                    {
-                        string nome = item.Trim();
-                        if (!listCidades.Contains(nome) && item.Length > 2)
-                        {
-                            listCidades.Add(nome);
-                        }
-                    }
-                 
-                }
-                else
-                {
-                    string nome = name.Trim();
-                    if (!listCidades.Contains(nome))
-                    {
-                        listCidades.Add(nome);
-                    }
-                }
-
-               terms.Cidade = string.Join(", ", listCidades.ToArray());
-
-            }
-            else
-            {
-                if (name.Contains(","))
-                {
-                    var array = name.Split(",");
-                    foreach (var item in array)
-                    {
-                        string nome = item.Trim();
-                        if (!listCagos.Contains(nome) && item.Length > 2)
-                        {
-                            listCagos.Add(nome);
-                        }
-                    }
-
-                }
-                else
-                {
-                    string nome = name.Trim();
-                    if (!listCagos.Contains(nome))
-                    {
-                        listCagos.Add(nome);
-                    }
-                }
-                terms.Cargos = string.Join(", ", listCagos.ToArray());
-            }
-        }
+       
         
         private string ModelToJson(PostModel data)
         {
@@ -714,20 +1359,20 @@ namespace PainelPress.Paginas
             settings.NullValueHandling = NullValueHandling.Ignore;
             var extraList = JsonConvert.SerializeObject(data, settings).ToString();
             return extraList;
-
         }
 
 
         private async void getPost(long id)
         {        
             try {
-  
-            var post = await apiRestBasic.getPost(id);
-            //Debug.WriteLine(Ferramentas.ObjetoToJson(post));
-        
+            ShowHideLoading(true);
+            var post = await apiRestBarear.getPost(id);
+                //Debug.WriteLine(Ferramentas.ObjetoToJson(post));
+
              setPost(post);
 
              this.Dispatcher.Invoke(new Action(() => {
+                    btStory.Visibility = Visibility.Visible;
                     stackVer.Visibility = Visibility.Visible;
                     stackStatus.Visibility = Visibility.Collapsed;
                     tbSlugTitle.Text = string.Format("{0}/{1}", Constants.SITE, post.Slug);
@@ -736,7 +1381,8 @@ namespace PainelPress.Paginas
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("getPost => "+ex.Message);
+                AlertMensagem.instance.Show("Erro ao pegar post");
+                ShowHideLoading(false);
             }
            
         }
@@ -744,105 +1390,62 @@ namespace PainelPress.Paginas
         private void setPost(PostView post)
         {
             postConteudo = post.Content;
+            postAtual = new PostModel()
+            {
+                Title = post.Title,
+                Excerpt = post.Resumo,
 
+            };
             this.Dispatcher.Invoke(new Action(() => {
-                ediTitulo.Text = post.Title;
-                ediResumo.Text = post.Resumo;
-                loadingEditor.IsIndeterminate = false;
-                loadingEditor.Visibility = Visibility.Collapsed;
-                browEditor.Visibility = Visibility.Visible;
+                ediTitulo.Texto = post.Title;
+                ediResumo.Texto = post.Resumo;
+                ShowHideLoading(false);
                 if(post.Categoria != null)
                 {
                     string[] cats = post.Categoria.Split(",");
-                    frameCats.Content = new CategoriasCheck(cats);
+                    categoriasCheck.SetCats(cats);
                 }
-                SetTerms(post.Terms.Tag, post.Terms.Cidade, post.Terms.Cargos);
-
+                if (post.Tag != null)
+                {
+                    if (post.Tag.Contains(","))
+                    {
+                        var list = post.Tag.Split(",");
+                        taxanomyList["post_tag"] = list.ToList();
+                    }
+                    else
+                    {
+                        taxanomyList["post_tag"] = new List<string>()
+                        {
+                            post.Tag
+                        };
+                    }
+                   
+                }
+                setTerms(post.Terms);
                 setMetas(post.Metas);
-               
-                setConteudo(postConteudo.Trim());
+                editorPost.setConteudo(postConteudo.Trim());
+                setImagem(post.imagem_destaque);
+
+              //  Debug.WriteLine(JsonConvert.SerializeObject(post));
             
             }));
         }
 
-        private void setMetas(List<MetaGetPost> metas)
+        private void setImagem(string url)
         {
-            if (metas == null || metas.Count == 0) return;
-            metas.ForEach(met => {
-                if (met.MetaKey == "inscricao")
-                {
-                    ediInscricao.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "edital")
-                {
-                    ediEdital.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "provas")
-                {
-                    ediProvas.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "salario")
-                {
-                    ediSalario.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "vagas")
-                {
-                    ediVagas.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "questoes")
-                {
-                    ediQuestao.Text = met.MetaValue;
-                }
-                else if (met.MetaKey == "imagem")
-                {
-                    ediImg.Text = met.MetaValue;
-                }
-            });
-        }
-
-        private void SetTerms(string tgs, string cidades, string cargos)
-        {
-            if (tgs == null) return;
-            string newtags = tgs.Replace(";", ",");
-            string[] tagA = newtags.Split(",");
-            if (tagA.Length > 1)
+            if (url != null)
             {
-                foreach (string item in tagA)
-                {
-                    var tagBy = baseDados.getTagById(item);
-                    listTags.Add(tagBy.TermId);
-                
-
-                    if (string.IsNullOrEmpty(tbTags.Text))
-                    {
-                        tbTags.Text = tagBy.Name;
-                    }
-                    else
-                    {
-                        tbTags.Text += ", " + tagBy.Name;
-                    }                 
-                }
-   
+                imageContainer.PADRAO = true;
+                imageContainer.SetImageOnline(url);
             }
             else
             {
-                Debug.WriteLine(tgs);
-                var tagBy = baseDados.getTagById(tgs);
-                if (tagBy == null) return;
-                listTags.Add(tgs);
-                tbTags.Text = tagBy.Name;
-
+                if (!imageContainer.PADRAO && imageContainer.CAMPO != "")
+                {
+                    string valor = getValueCampo(imageContainer.CAMPO);
+                    imageContainer.SetImageOnline(valor);
+                }
             }
-
-            tags = string.Join(",", listTags.ToArray());
-
-            terms.Cidade = cidades;
-            tbCidades.Text = cidades;
-            terms.Cargos = cargos;
-            tbCargos.Text = cargos;
-
-           if(cidades != null) listCidades.AddRange(cidades.Split(","));
-           if(cargos != null) listCagos.AddRange(cargos.Split(","));
         }
 
         private void HideScrollbars(WebBrowser wb)
@@ -875,194 +1478,12 @@ namespace PainelPress.Paginas
             if (comboUser.SelectedItem != null)
             {
                 selecaoUsuario = comboUser.SelectedItem as Usuario;
-                config.Default.Upgrade();
-                config.Default.usuarioAtual = selecaoUsuario.Id;
-                config.Default.Save();
+                configuracoes.setUsuario(selecaoUsuario.Id);
             }
           
         }
 
-        private void ediTags_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Enter))
-            {
-                if (ediTags.IsFocused)
-                {
-                    boxTags.SelectedIndex = 0;                  
-                }
-                else if (ediCargos.IsFocused)
-                {
-                    boxCargos.SelectedIndex = 0;
-                }
-                else if (ediCidades.IsFocused)
-                {
-                    boxCidades.SelectedIndex = 0;
-                }
-               
-            }else if (e.Key == Key.Enter)
-            {
-                if (ediTags.IsFocused)
-                {
-                    selecaoTag = baseDados.getTag(ediTags.Text);
-                    if (selecaoTag != null)
-                    {
-
-                    listTags.Add(selecaoTag.TermId);
-                    tags = string.Join(",", listTags.ToArray());
-
-                    if (string.IsNullOrEmpty(tbTags.Text))
-                    {
-                        tbTags.Text = selecaoTag.Name;
-                    }
-                    else
-                    {
-                        tbTags.Text += ", " + selecaoTag.Name;
-                    }
-                    ediTags.Text = "";
-                    }
-                    else
-                    {
-                        var questao = MessageBox.Show("Essa tag não existe. Deseja cadastrar?", "Tag não existe", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                        if (questao == MessageBoxResult.Yes) {
-                            ShowHideLoading(true);
-                            CriaTag(ediTags.Text);
-                        }
-                    }
-                }
-                else if (ediCargos.IsFocused)
-                {
-                    AddTaxs(false, ediCargos.Text);
-                    tbCargos.Text = terms.Cargos;
-                    ediCargos.Text = "";
-                }
-                else if (ediCidades.IsFocused)
-                {
-                    AddTaxs(true, ediCidades.Text);
-                    tbCidades.Text = terms.Cidade;
-                    ediCidades.Text = "";
-                }
-               
-            }
-            
-        }
-
-        private async void CriaTag(string tag)
-        {
-            try
-            {
-                string json = "{\"name\":\""+ tag + "\",\"slug\":\""+Ferramentas.ToUrlSlug(tag)+"\"}";
-                Debug.WriteLine(json);
-               
-                var post = await apiRestBarear.CriarTag(json);
-                await baseDados.SalvarTag(post);
-                ShowHideLoading(false);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("CriaTag => " + ex.Message);
-                ShowHideLoading(false);
-            }
-        }
-
-        private void boxTags_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (boxTags.SelectedItem != null)
-            {
-                selecaoTag = boxTags.SelectedItem as Taxonomy;
-                listTags.Add(selecaoTag.TermId);
-                tags = string.Join(",", listTags.ToArray());
-                
-                if (string.IsNullOrEmpty(tbTags.Text))
-                {
-                    tbTags.Text = selecaoTag.Name;
-                }
-                else
-                {
-                    tbTags.Text += ", " + selecaoTag.Name;
-                }
-                ediTags.Text = "";
-                boxTags.ItemsSource = null;
-            }
-        }
-
-        private void ediTags_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (ediTags.IsFocused)
-            {
-                if (!string.IsNullOrEmpty(ediTags.Text))
-                {
-                    BuscarTax(Taxonomy.Tag, ediTags.Text.Trim());
-                }
-                else
-                {
-                    boxTags.ItemsSource = null;
-                }
-            }else if (ediCargos.IsFocused)
-            {
-                if (!string.IsNullOrEmpty(ediCargos.Text))
-                {
-                    BuscarTax(Taxonomy.Cargos, ediCargos.Text.Trim());
-                }
-                else
-                {
-                    boxCargos.ItemsSource = null;
-                }
-            }
-            else if (ediCidades.IsFocused)
-            {
-                if (!string.IsNullOrEmpty(ediCidades.Text))
-                {
-                    BuscarTax(Taxonomy.Cidade, ediCidades.Text.Trim());
-                }
-                else
-                {
-                    boxCidades.ItemsSource = null;
-                }
-            }
-
-        }
-
-        private async void BuscarTax(int tipo, string palavra)
-        {
-            if (tipo == Taxonomy.Tag)
-            {
-                boxTags.ItemsSource = await baseDados.ListaTaxnomy(palavra, tipo);
-            }
-            else if (tipo == Taxonomy.Cidade)
-            {
-                boxCidades.ItemsSource = await baseDados.ListaTaxnomy(palavra, tipo);
-            }
-            else if (tipo == Taxonomy.Cargos)
-            {
-                boxCargos.ItemsSource = await baseDados.ListaTaxnomy(palavra, tipo);
-            }
-        }
-
-        private void boxCargos_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (boxCargos.SelectedItem != null)
-            {
-                selecaoCargo = boxCargos.SelectedItem as Taxonomy;
-                AddTaxs(false, selecaoCargo.Name);
-                tbCargos.Text = terms.Cargos;
-                ediCargos.Text = "";
-                boxCargos.ItemsSource = null;
-            }
-        }
-
-        private void boxCidades_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (boxCidades.SelectedItem != null)
-            {
-                selecaoCidade = boxCidades.SelectedItem as Taxonomy;
-                AddTaxs(true, selecaoCidade.Name);
-                tbCidades.Text = terms.Cidade;
-                ediCidades.Text = "";
-                boxCidades.ItemsSource = null;
-            }
-        }
-
+        
         private void boxKeywords_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -1070,10 +1491,10 @@ namespace PainelPress.Paginas
 
         private void ediTitulo_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(ediTitulo.Text)) {
+            if (!string.IsNullOrEmpty(ediTitulo.Texto)) {
             try
             {
-                tbSlugTitle.Text = string.Format("{0}/{1}", Constants.SITE, Ferramentas.ToUrlSlug(ediTitulo.Text));
+                tbSlugTitle.Text = string.Format("{0}/{1}", Constants.SITE, Ferramentas.ToUrlSlug(ediTitulo.Texto));
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
@@ -1085,82 +1506,12 @@ namespace PainelPress.Paginas
 
         private void Mensagem(bool sucesso, string msg)
         {
-            if (sucesso)
-            {
-
-                MainWindow.lbMensagem.Content = msg;
-                MainWindow.brMensagem.Visibility = Visibility.Visible;
-                MainWindow.brMensagem.Background = CorImage.GetCor("#FFB3E237");
-            }
-            else
-            {
-                MainWindow.lbMensagem.Content = msg;
-                MainWindow.brMensagem.Visibility = Visibility.Visible;
-                MainWindow.brMensagem.Background = CorImage.GetCor("#FFF74343");
-            }
-
-            if (timer == null)
-            {
-                timer = new DispatcherTimer();
-                timer.Interval = new TimeSpan(0, 0, 1); // will 'tick' once every second
-                timer.Tick += new EventHandler(Timer_Tick);
-                timer.Start();
-            }
-            else
-            {
-                timer.Start();
-            }
-        }
-
-        private void LimparMensagem()
-        {
-            MainWindow.lbMensagem.Content = "";
-            MainWindow.brMensagem.Visibility = Visibility.Collapsed;
-        }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            DispatcherTimer timer = (DispatcherTimer)sender;
-            if (++timerTickCount == 2)
-            {
-                timer.Stop();
-                LimparMensagem();
-                timerTickCount = 0;
-            }
+            mensagemToast.HomeMensagem(sucesso, msg);
         }
 
         #endregion
 
-
-        private void browEditor_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
-        {
- 
-            if (!e.IsLoading) {
-                setTela();
-                if (Add)
-                {
-                   this.Dispatcher.Invoke(new Action(() => {
-                        loadingEditor.IsIndeterminate = false;
-                        loadingEditor.Visibility = Visibility.Collapsed;
-                        browEditor.Visibility = Visibility.Visible;
-                    }));
-                   
-                }
-                else
-                {
-                    getPost(IDPost);
-                }
-
-            }
-        }
-
-        private void setTela()
-        {
-            string script = string.Format("document.querySelector('#myeditor_ifr').style.height = '{0}'", config.Default.SizeEditor);
-            browEditor.ExecuteScriptAsync(script);
-        }
-
-      
+       
         private void btClearTags_Click(object sender, RoutedEventArgs e)
         {
             ClearTerms(1);
@@ -1183,30 +1534,30 @@ namespace PainelPress.Paginas
 
         private void ClearTerms(int id)
         {
-            if (id == 1)
-            {
-                ediTags.Text = "";
-                tbTags.Text = "";
-                tags = "";
-                listTags.Clear();
-            }
-            else if (id == 2)
-            {
-                terms.Cargos = null;
-                ediCargos.Text = "";
-                tbCargos.Text = "";
-            }
-            else if (id == 3)
-            {
-                terms.Cidade = null;
-                ediCidades.Text = "";
-                tbCidades.Text = "";
-            }
-            else if (id == 4)
-            {
+            //if (id == 1)
+            //{
+            //    ediTags.Text = "";
+            //    tbTags.Text = "";
+            //    tags = "";
+            //    listTags.Clear();
+            //}
+            //else if (id == 2)
+            //{
+            //    terms.Cargos = null;
+            //    ediCargos.Text = "";
+            //    tbCargos.Text = "";
+            //}
+            //else if (id == 3)
+            //{
+            //    terms.Cidade = null;
+            //    ediCidades.Text = "";
+            //    tbCidades.Text = "";
+            //}
+            //else if (id == 4)
+            //{
                
 
-            }
+            //}
         }
 
         private void btEditarStatus_Click(object sender, RoutedEventArgs e)
@@ -1229,11 +1580,11 @@ namespace PainelPress.Paginas
 
         private void btRestautarPost_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(config.Default.PostSalvo);
-
+       
             //return;
             try {
-                var postM = JsonConvert.DeserializeObject<PostModel>(config.Default.PostSalvo);
+                var postM = configuracoes.getSalvoPost();
+                if (postM == null) return;
                 var postV = new PostView();
                 postV.Content = postM.Content;
                 postV.Title = postM.Title;
@@ -1241,15 +1592,14 @@ namespace PainelPress.Paginas
                 postV.Resumo = postM.Excerpt;
                 postV.Categoria = postM.Categories;
                 postV.Tag = postM.Tags;
-                postV.Meta = postM.Meta;
+                postV.Meta = postM.Campos;
                 postV.Metas = postV.metasToMeta();
             
                 setMetas(postV.Metas);
-
+             
                 if (postM.Terms !=null)
                 {
                     postV.Terms = postM.Terms;
-                    postV.Terms.Tag = postV.Tag;
                 }
                       
                 setPost(postV);
@@ -1272,26 +1622,6 @@ namespace PainelPress.Paginas
         }
 
 
-        private async void SalveContente() {
-            try
-            {
-                var script = @"(function() { return getContent(); })();";
-                var task = await browEditor.EvaluateScriptAsync(script);
-                if (task.Result != null && !string.IsNullOrEmpty(task.Result.ToString()))
-                {
-                    dynamic result = task.Result;
-                    string str = result.ToString() as string;
-                    postConteudo = str;
-                    return;
-                }
-                postConteudo = "";
-            }catch(Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-
-        }
-
         private async void ediTags_LostFocus(object sender, RoutedEventArgs e)
         {
             // SalveContente();
@@ -1307,33 +1637,34 @@ namespace PainelPress.Paginas
         {
             if (e.Key == Key.F1)
             {
-                WUpload pop = new WUpload(true);
-                pop.ShowDialog();
+
+                await SalvarPost();
             }
             else if (e.Key == Key.F2)
             {
-                ediEdital.Focus();
-            }
-            else if (e.Key == Key.F3)
-            {
-              await SalvarPost(true);
-            }
-            else if (e.Key == Key.F4)
-            {
                 try
                 {
-                    btHtml.Content = btHtml.Content.ToString().Equals("HTML") ? "VISUAL" : "HTML";
+                    btHtml.Content = btHtml.Content.ToString().Equals("HTML (F2)") ? "VISUAL (F2)" : "HTML (F2)";
                     string script = @"(function() { AlteraEditor() })();";
-                    browEditor.ExecuteScriptAsync(script);
+                    editorPost.ExecuteJS(script);
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                 }
             }
-            else if (e.Key == Key.F5)
+            else if (e.Key == Key.F3)
             {
                 new WPop(4).ShowDialog();
+            }
+            else if (e.Key == Key.F4)
+            {
+                WUpload pop = new WUpload(true);
+                pop.ShowDialog();
+            }
+            else if (e.Key == Key.F5)
+            {
+                
             }
             else if (e.Key == Key.F6)
             {
@@ -1347,11 +1678,6 @@ namespace PainelPress.Paginas
             }
         }
 
-        private void browEditor_LostFocus(object sender, RoutedEventArgs e)
-        {
-            SalveContente();
-
-        }
 
         private void btBusca_Click(object sender, RoutedEventArgs e)
         {
@@ -1395,24 +1721,142 @@ namespace PainelPress.Paginas
         private void brBotoesAcao_MouseEnter(object sender, MouseEventArgs e)
         {
             brBotoesAcao.Opacity = 1;
+            stackBtsDesc.Visibility = Visibility.Visible;
         }
 
         private void brBotoesAcao_MouseLeave(object sender, MouseEventArgs e)
         {
             brBotoesAcao.Opacity = 0.2;
+            foreach(TextBlock text in stackBtsDesc.Children)
+            {
+                text.Visibility = Visibility.Hidden;
+            }
+            stackBtsDesc.Visibility = Visibility.Collapsed;
         }
 
+        #region BOTOES HIDEN
+        private void btHiden_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Button bt = sender as Button;
+            if (bt == null) return;
+            string tag = bt.Tag.ToString();
+            foreach (TextBlock text in stackBtsDesc.Children)
+            {
+                text.Visibility = Visibility.Hidden;
+            }
+            if (tag == "restaure")
+            {
+                TextBlock view = FindElemento.FindTextBlock(stackBtsDesc, "desc_restaure");
+                view.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TextBlock view = FindElemento.FindTextBlock(stackBtsDesc, "desc_view");
+                view.Visibility = Visibility.Visible;
+            }
+            Debug.WriteLine(tag);
+        }
+
+        #endregion
         #endregion
 
         private void btUpload_Click(object sender, RoutedEventArgs e)
         {
-            new WUpload(true).ShowDialog();
+           // new WUpload(true).ShowDialog();
+        }
+  
+
+        private void btStory_Click(object sender, RoutedEventArgs e)
+        {
+            if (postAtual == null) return;
+           // var post = postAtual.toView(IDPost, tbSlugTitle.Text, ediImg.Text);
+           // new WinContainer(post).Show();
         }
 
-        private void btEdital_Click(object sender, RoutedEventArgs e)
+        private async void btUpdateUsers_Click(object sender, RoutedEventArgs e)
         {
-            ediEdital.Focus();
+            comboUser.ItemsSource = null;
+            var usuarios = await apiRestBarear.getUsuarios();
+            List<Usuario> lista = new List<Usuario>();
+            foreach (var usario in usuarios)
+            {
+                lista.Add(new Usuario()
+                {
+                    Id = usario.id,
+                    Nome = usario.nome
+                });
+
+            }
+            if (lista.Count>0)
+            {
+                configuracoes.setUsuarios(lista);
+                comboUser.ItemsSource = lista;
+            }
+           
         }
+
+        private void Container_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                imageContainer.SetapImage(files[0], true);
+            }
+            else if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                string draggedFileUrl = (string)e.Data.GetData(DataFormats.Text, false);
+                imageContainer.SetapImage(draggedFileUrl, false);
+            }
+        }
+
+        #region GRID CONTROLLER
+  
+        private void GridSplitter_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            GridSplitter spliter = (GridSplitter)sender;
+            if (spliter == null) return;
+            string tag = spliter.Tag.ToString();
+            try
+            {
+                if (tag == "centro")
+                {
+                    int wd = Convert.ToInt32(colunaCentro.Width.Value);
+                    configLayout["centro"] = wd;
+                    containerSidebar.Width = wd - 5;
+                }
+                else
+                {
+                    configLayout["cats"] = Convert.ToInt32(rowCats.Height.Value);
+                    
+                }
+               
+                configuracoes.setLayout(configLayout);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }        
+        }
+
+
+        #endregion
+
+
+
+        private void edit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ediTitulo.Texto.Length > 2)
+            {
+                tbSlugTitle.Text = Ferramentas.ToUrlSlug(ediTitulo.Texto);
+            }
+            else
+            {
+                tbSlugTitle.Text = "";
+            }
+        }
+
+        
     }
 
 }

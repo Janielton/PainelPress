@@ -10,9 +10,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Xml.Linq;
 using Newtonsoft.Json;
+using PainelPress.Elementos;
 using PainelPress.Model;
 using config = PainelPress.Properties.Settings;
 
@@ -33,6 +36,8 @@ namespace PainelPress.Classes
             value = RemoveDiacritics(value);
 
             value = Regex.Replace(value, @"[/]", "-", RegexOptions.Compiled);
+
+            value = Regex.Replace(value, @"[.]", "-", RegexOptions.Compiled);
 
             //Replace spaces
             value = Regex.Replace(value, @"\s", "-", RegexOptions.Compiled);
@@ -187,9 +192,14 @@ namespace PainelPress.Classes
             else if (tipo == 2) {
                 jsonTolist = JsonConvert.DeserializeObject<List<Categoria>>(json);
             }
+            else if (tipo == 3)
+            {
+                jsonTolist = JsonConvert.DeserializeObject<List<CategoriaFull>>(json);
+            }
             return jsonTolist;
         }
 
+    
         public async Task<string> LerFeed(string url)
         {
             var request = await RestAPI(url, "GET");
@@ -316,6 +326,73 @@ namespace PainelPress.Classes
                     }
                 });
                 return list;
+            }
+
+        }
+
+        public static void OpenUrl(string url)
+        {
+            try
+            {
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                AlertMensagem.instance.Show(ex.Message);
+            }
+        }
+
+        public static string CapitalizeTexto(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return "";
+            value = value.ToLower().Trim();
+            if (value.Contains(" "))
+            {
+                var array = value.Split(" ");
+                string[] arrayConjMin = { "de", "da", "do", "em" };
+                string[] arrayConjMai = { "ii", "iii", "\"d\"", "\"a\"", "\"b\"", "psf", "cnh", "peb", "cras" };
+                int index = 0;
+                foreach (var item in array)
+                {
+                    if (arrayConjMai.Contains(item.Trim()))
+                    {
+                        array[index] = item.ToUpper();
+                    }
+                    else if (arrayConjMin.Contains(item.Trim()))
+                    {
+                        array[index] = item;
+                    }
+                    else
+                    {
+                        array[index] = char.ToUpper(item[0]) + item.Substring(1);
+                    }
+
+                    index++;
+                }
+                return string.Join(" ", array);
+            }
+            else
+            {
+                return char.ToUpper(value[0]) + value.Substring(1);
+            }
+        }
+
+
+        public static IEnumerable<T> FindElements<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindElements<T>(ithChild)) yield return childOfChild;
             }
         }
 

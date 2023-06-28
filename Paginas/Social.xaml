@@ -1,0 +1,85 @@
+﻿<ContentControl x:Class="PainelPress.Paginas.Social"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:fa="http://schemas.fontawesome.io/icons/" 
+             xmlns:local="clr-namespace:PainelPress.Paginas" xmlns:elementos="clr-namespace:PainelPress.Elementos"
+                mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="900">
+    <Grid Background="WhiteSmoke" Cursor="">
+        <Image AllowDrop="True" Drop="Grid_Drop" Source="/Imagem/noimagem.png" VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="500" MaxHeight="390" Margin="0,5,0,0" x:Name="imgUp" Cursor=""/>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Margin="10,10,10,5" >
+            <Grid HorizontalAlignment="Center" Margin="0,0,0,5">
+                <TextBox x:Name="editUrlImage" Width="400" Padding="5" Background="White" BorderBrush="#FF7C2ED8" GotFocus="editUrlImage_GotFocus"/>
+                <Button HorizontalAlignment="Right" Height="35" Width="40" Background="#FF7C2ED8" Padding="0" BorderThickness="0" x:Name="btSelectImg" Click="btSelectImg_Click" Content="..." Foreground="White" FontSize="25"  Cursor="Hand" />
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,5">
+                <RadioButton Tag="twit" Content="Twitter" FontSize="18" Margin="8,0" x:Name="radTwitter" Checked="rad_Checked"/>
+                <RadioButton Tag="face" Content="Facebook" FontSize="18" Margin="5,0" x:Name="radFacebook" Checked="rad_Checked"/>
+                <RadioButton Tag="pint" Content="Pinterest" FontSize="18" Margin="5,0" x:Name="radPinterest" Checked="rad_Checked" IsEnabled="False"/>
+            </StackPanel>
+            <Image Source="/Imagem/icon_check.png" VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="50" Margin="0,5,0,80" x:Name="imgUpOk" Visibility="Collapsed"/>
+            <Image Source="/Imagem/icon_error.png" VerticalAlignment="Bottom" HorizontalAlignment="Center" Height="50" Margin="0,5,0,80" x:Name="imgUpErro" Visibility="Collapsed"/>
+
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,2">
+                <elementos:EditText x:Name="editTitulo" Legenda="Titulo" Width="750" VerticalAlignment="Center" Margin="0,4"/>
+                <elementos:EditText ShowCount="True" QuebraLinha="True" x:Name="editMensagem" Legenda="Descrição" Width="750" VerticalAlignment="Center" Margin="0,4"/>
+                <elementos:EditText x:Name="editLink" Legenda="Link" Width="750" VerticalAlignment="Center" Margin="0,4"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Margin="5" x:Name="btUpload" VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="#FF5CD130" Click="btAcao_Click" BorderBrush="White" Padding="10">
+            <fa:ImageAwesome Height="60" Width="60"  Foreground="White" Icon="Send"/>
+        </Button>
+        <ProgressBar IsIndeterminate="True" VerticalAlignment="Bottom"  Foreground="#FF7C2ED8" Height="5" Background="Transparent" BorderThickness="0" x:Name="pLoading" Visibility="Collapsed"/>
+
+        <Border HorizontalAlignment="Right" CornerRadius="8" Background="White" Margin="10,30" x:Name="radNome" VerticalAlignment="Top">
+
+        </Border>
+        <Button Margin="2" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Padding="0" Background="Transparent" x:Name="btConfig" Click="btConfig_Click">
+            <Image Source="/Imagem/config.png" Width="35" Height="35"/>
+        </Button>
+        
+        <Grid HorizontalAlignment="Left" Visibility="Collapsed" x:Name="gridConfig">
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+            <Border Background="#FF4554A7" MinWidth="180" BorderBrush="Gray" BorderThickness="0,0,3,0" Margin="0,0,25,0" Padding="8,5">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Foreground="White" FontSize="18">Facebook</TextBlock>
+
+                    <elementos:EditText QuebraLinha="True"  x:Name="ediToken" Texto="" Legenda="Token" Width="250" VerticalAlignment="Center" Margin="0,4"/>
+                    <elementos:EditText QuebraLinha="True"  x:Name="ediPageFace" Legenda="ID página" Width="250" VerticalAlignment="Center" Margin="0,4"/>
+                    <CheckBox Visibility="Collapsed"  x:Name="hidenBrowser" Content="Esconder Navegador" IsChecked="True" Margin="0,5"/>
+                    <Button Width="200" Margin="0,8" x:Name="btSalvarConfig" Content="Salvar" Click="btSalvarFace" />
+                    <Label Margin="0,15" Height="2" Foreground="Gray" Background="Gray"/>
+                    <TextBlock FontSize="18" Foreground="White">Twitter</TextBlock>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="35" VerticalAlignment="Center">
+                            <RadioButton VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Desativado" Foreground="White" IsChecked="True" Checked="RadioButton_Checked" Tag="disable" x:Name="radDesa"/>
+                            <RadioButton x:Name="radApi" VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Api" Checked="RadioButton_Checked"  Foreground="White" Tag="api"/>
+                            <RadioButton x:Name="radWeb" VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Web" Checked="RadioButton_Checked"  Foreground="White" Tag="web"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Visibility="Collapsed" x:Name="stackApiTwi">
+                            <elementos:EditText MaxWidth="300" x:Name="consumer_key" Legenda="Consumer Key" Margin="0,5"/>
+                            <elementos:EditText QuebraLinha="True" MaxWidth="300" x:Name="consumer_secret" Legenda="Consumer Secret"/>
+                        <Button Width="200" x:Name="btSalvarApi" Click="btSalvarApi_Click" Content="Salvar"  Margin="0,10" HorizontalAlignment="Center" />
+                    </StackPanel>
+                        <StackPanel Orientation="Horizontal" Visibility="Collapsed" x:Name="stackLogado" HorizontalAlignment="Center" Background="WhiteSmoke" Height="35">
+                        <TextBlock Margin="5" VerticalAlignment="Center" Foreground="Gray" x:Name="nomeTwitter" FontSize="16">User</TextBlock>
+                            <Button Margin="5" VerticalAlignment="Center" x:Name="btSairTwitter" Click="btSairTwitter_Click" Content="Sair"  FontSize="12"/>
+                    </StackPanel>
+                    <TextBox Visibility="Collapsed" x:Name="ediUserTwi"/>
+                    <PasswordBox x:Name="ediSenhaTwi" Margin="0,7" Visibility="Collapsed"/>
+                    
+                    <Button Width="200" x:Name="btLogin" Click="btLogin_Click" Content="Login" Visibility="Collapsed" Margin="0,10" HorizontalAlignment="Center" />
+                    <Label Margin="0,15" Height="2" Foreground="Gray" Background="Gray"/>
+                   
+                </StackPanel>
+                </Border>
+            </ScrollViewer>
+            <Button x:Name="btCloseConfig" Click="btConfig_Click" VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="Hand" Width="20" Height="20" Padding="0" Background="Transparent" Margin="0,5">
+                <fa:ImageAwesome Icon="Close" Foreground="Red" Width="20" Height="20"/>
+            </Button>
+        </Grid>
+        <TextBlock Margin="5,0" VerticalAlignment="Top" HorizontalAlignment="Right" x:Name="log" FontSize="16"></TextBlock>
+    </Grid>
+</ContentControl>

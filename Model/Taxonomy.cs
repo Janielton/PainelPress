@@ -20,5 +20,8 @@ namespace PainelPress.Model
 
         [JsonPropertyName("slug")]
         public string Slug { get; set; }
+
+        [JsonPropertyName("taxonomy")]
+        public string Tipo { get; set; }
     }
 }

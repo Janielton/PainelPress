@@ -17,6 +17,8 @@ namespace PainelPress.Classes
     {
         private TwitterClient appClient;
         public static string USER = "";
+        public bool API = false;
+
         public TwitterService()
         {
             
@@ -26,7 +28,7 @@ namespace PainelPress.Classes
             try
             {
                 var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-
+                if (config.Default.credenciais == "") return "no";
                 var uc = JsonConvert.DeserializeObject<Credencial>(config.Default.credenciais, settings);
 
                 appClient = new TwitterClient(uc.ConsumerKey, uc.ConsumerSecret, uc.AccessToken, uc.AccessTokenSecret);
@@ -80,7 +82,8 @@ namespace PainelPress.Classes
         }
 
         public async Task<string> AuthTwitter()
-        {            
+        {
+
             var client = new TwitterClient(Constants.CONSUMER_KEY, Constants.CONSUMER_SECRET);
             var authenticationRequest = await client.Auth.RequestAuthenticationUrlAsync();
 

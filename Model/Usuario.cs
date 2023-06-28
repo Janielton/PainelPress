@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using PainelPress.Elementos;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using config = PainelPress.Properties.Settings;
 
 namespace PainelPress.Model
 {
@@ -10,12 +13,27 @@ namespace PainelPress.Model
         public string Nome { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        
         public Usuario()
         {
 
         }
 
         public static List<Usuario> listaUsuarios()
+        {
+            try
+            {
+
+                return JsonConvert.DeserializeObject<List<Usuario>>(config.Default.usuarios);
+            }
+            catch(Exception e)
+            {
+                AlertMensagem.instance.Show(e.Message,"Erro ao pegar usuarios");
+            }
+            return new List<Usuario>();
+        }
+
+        public static List<Usuario> listaUsuariosAnterior()
         {
             List<Usuario> lista = new List<Usuario>();
             lista.Add(new Usuario { Id = 1, Nome = "Dimas Devan", Username = "Dimas Devan", Password = "" });

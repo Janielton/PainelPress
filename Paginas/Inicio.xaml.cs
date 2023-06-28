@@ -16,6 +16,9 @@ using System.Windows.Shapes;
 using PainelPress.Classes;
 using config = PainelPress.Properties.Settings;
 using PainelPress.Model;
+using Newtonsoft.Json;
+using OpenQA.Selenium;
+using System.Linq;
 
 namespace PainelPress.Paginas
 {
@@ -45,11 +48,8 @@ namespace PainelPress.Paginas
             {
       
                 var resultado = await apiRest.GetPosts();
-                for (int i = 0; i < resultado.Count; i++)
-                {
-                   // resultado[i].DateView = resultado[i].Date.ToString("dd/MM/yyyy HH:mm:ss");
-                }
                 listPosts.ItemsSource = resultado;
+                startApp();
             }
             catch (Exception ex)
             {
@@ -59,19 +59,55 @@ namespace PainelPress.Paginas
             progressoBar.Visibility = Visibility.Collapsed;
             listPosts.Visibility = Visibility.Visible;
 
-            try
+        }
+
+        private async void startApp()
+        {
+            if (config.Default.usuarios == "")
             {
-                if (config.Default.categorias == "")
+                var usuarios = await apiRest.getUsuarios();
+                List<Usuario> lista = new List<Usuario>();
+                foreach (var usario in usuarios)
                 {
-                    var catRequest = RestService.For<InterfaceAPI>(Constants.SITE);
-                    var cats = await catRequest.getCategorias();
+                    lista.Add(new Usuario()
+                    {
+                        Id = usario.id,
+                        Nome = usario.nome
+                    });
+
+                }
+                config.Default.Upgrade();
+                config.Default.usuarios = JsonConvert.SerializeObject(lista);
+                config.Default.Save();
+            }
+
+            if (config.Default.taxonomys == "")
+            {
+                var taxs = await apiRest.getCustomTaxonomies();
+                if (taxs.Count > 0)
+                {
                     config.Default.Upgrade();
-                    config.Default.categorias = cats;
+                    config.Default.taxonomys = JsonConvert.SerializeObject(taxs);
+                    config.Default.Save();
+                }              
+            }
+
+            if (config.Default.campos == "")
+            {
+                var campos = await apiRest.getCampos();
+              
+                if (campos.Count > 0)
+                {
+                    List<string> list = campos.Select(s => s.nome).ToList();
+                    config.Default.Upgrade();
+                    config.Default.campos = JsonConvert.SerializeObject(list);
                     config.Default.Save();
                 }
-            }catch(Exception ex)
+            }
+
+            if (Constants.SITEMAP == "")
             {
-                Debug.WriteLine(ex.Message);
+                Constants.SITEMAP = Constants.SITE+"/sitemap.xml";
             }
         }
 
@@ -126,7 +162,7 @@ namespace PainelPress.Paginas
         private void mEditar_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.framePrincipal.Content = new Postar(selecaoPost);
-            MainWindow.BT_INICIO.IsEnabled = true;
+           /// MainWindow.BT_INICIO.IsEnabled = true;
             //MainWindow.BT_POSTAR.IsEnabled = false;
         }
 
@@ -149,9 +185,9 @@ namespace PainelPress.Paginas
                 AuthorizationHeaderValueGetter = () =>
                     Task.FromResult(config.Default.Token)
             });
-
-                var resultado = await posts.Delete(id);
-                if (resultado != null && resultado.Id > 0)
+                var request = await posts.Delete(id);
+                Post resultado = JsonConvert.DeserializeObject<Post>(request);
+                if (resultado != null && resultado.id > 0)
                 {
   
                     mensagem.HomeMensagem(true, "Post Apagado");
@@ -161,6 +197,12 @@ namespace PainelPress.Paginas
                 {
                     mensagem.HomeMensagem(false, "Post Não Apagado");
                 }
+               
+            }
+            catch (ApiException ex)
+            {
+                new MensagemToast().HomeMensagem(false, ex.Message);
+                Debug.WriteLine(ex.Message.ToString());
             }
             catch (Exception ex)
             {
@@ -182,6 +224,11 @@ namespace PainelPress.Paginas
         {
             stackBusca.Width = 30;
             ShowBusca = false;
+        }
+
+        private void btConfig_Click(object sender, RoutedEventArgs e)
+        {
+            new WinContainer(1).Show();
         }
     }
 }

@@ -148,8 +148,9 @@ namespace PainelPress.Classes
 
         public async Task<bool> Pings()
         {
-            string data = DateTime.Now.ToString("yyyy-MM");
-            string[] urls = {"https://pubsubhubbub.appspot.com", "https://www.google.com/webmasters/tools/ping?sitemap=https://www.confiraconcursos.com.br/sitemap-pt-post-"+data };
+ 
+            if(Constants.SITEMAP=="") return true;
+            string[] urls = {"https://pubsubhubbub.appspot.com", "https://www.google.com/webmasters/tools/ping?sitemap="+ Constants.SITEMAP };
 
             try
             {
@@ -157,8 +158,8 @@ namespace PainelPress.Classes
                 {
                     bool news = url.Contains("pubsubhubbub");
                     WebRequest request = WebRequest.Create(url);
-                    if (news) {
-                        string dados = $"hub.mode=publish&hub.url=https://www.confiraconcursos.com.br/noticias?feedgn=news";
+                    if (news && Constants.SITEMAPNEWS != "") {
+                        string dados = $"hub.mode=publish&hub.url={Constants.SITEMAPNEWS}";
                         byte[] dataStream = Encoding.UTF8.GetBytes(dados);
                         request.Method = "POST";
                         request.ContentType = "application/x-www-form-urlencoded";
@@ -214,5 +215,92 @@ namespace PainelPress.Classes
 
         }
 
+
+        #region UPLOAD PLUGIN
+
+        public async Task<RequisicaoBol> UploadImagem(string nome, string extensao, byte[] fileStream)
+        {
+            string urlUplod = $"{Constants.SITE}/wp-json/painel-api/upload-imagem";
+            var file = new StreamContent(new MemoryStream(fileStream));
+            file.Headers.ContentType = new MediaTypeHeaderValue("image/" + extensao);
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Constants.TOKEN}");
+            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Basic RWx0b246MDUwMnRhdHk=");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+
+            using (var formData = new MultipartFormDataContent())
+            {
+
+                try
+                {
+
+                    //Add the file
+                    formData.Add(file, name: "file", fileName: "arquivo." + extensao);
+
+                    //Add other fields
+                    formData.Add(new StringContent(nome), name: "nome");
+                    formData.Add(new StringContent(extensao), name: "extensao"); ;
+
+                    var response = await client.PostAsync(urlUplod, formData);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return null;
+                    }
+                    string rSson = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<RequisicaoBol>(rSson);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<RequisicaoBol> UploadMedia(string nome, string extensao, int post, byte[] fileStream)
+        {
+            string urlUplod = $"{Constants.SITE}/wp-json/painel-api/upload-media";
+            var file = new StreamContent(new MemoryStream(fileStream));
+            file.Headers.ContentType = new MediaTypeHeaderValue("image/" + extensao);
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {Constants.TOKEN}");
+            // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Basic RWx0b246MDUwMnRhdHk=");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+
+            using (var formData = new MultipartFormDataContent())
+            {
+
+                try
+                {
+
+                    //Add the file
+                    formData.Add(file, name: "file", fileName: "arquivo." + extensao);
+
+                    //Add other fields
+                    formData.Add(new StringContent(nome), name: "nome");
+                    formData.Add(new StringContent(post.ToString()), name: "id_post");
+                    formData.Add(new StringContent(extensao), name: "extensao"); ;
+
+                    var response = await client.PostAsync(urlUplod, formData);
+                    Debug.WriteLine(response.StatusCode);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return null;
+                    }
+                    string rSson = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine(rSson);
+                    return JsonConvert.DeserializeObject<RequisicaoBol>(rSson);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+
+            return null;
+        }
+
+        #endregion
     }
 }

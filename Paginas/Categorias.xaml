@@ -1,0 +1,85 @@
+﻿<ContentControl x:Class="PainelPress.Paginas.Categorias"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PainelPress.Paginas" xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:elementos="clr-namespace:PainelPress.Elementos"
+                mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="700">
+    <Grid Background="WhiteSmoke">
+
+        <Grid x:Name="gridList">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="#FFC1C1C1">
+                <elementos:EditText x:Name="editNomeCat" TextoChanged="editNomeCat_TextChanged"  Legenda="Buscar categoria" Width="402" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" x:Name="linearBotoes" VerticalAlignment="Center" IsEnabled="False">
+                    <Button x:Name="btDelete"  HorizontalAlignment="Right" VerticalAlignment="Center" Content="Delete" Margin="10,0" Click="btDelete_Click" Background="#FFDA4343"/>
+                    <Button x:Name="btEditar" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Editar" Margin="10,0" Click="btEditar_Click" Background="#FF2F2F2F"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="1" VerticalAlignment="Top">
+                <ListView x:Name="listItens" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Cursor="Hand" BorderThickness="0" Background="WhiteSmoke" SelectionChanged="listItens_SelectionChanged">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="6" Background="#FF8A8A8A" Padding="10" Margin="5" Width="240" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" >
+                                    <TextBlock MinWidth="150" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding name}" Foreground="White" FontSize="18" FontFamily="Bahnschrift" />
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding term_id}" Foreground="White" Margin="10,0" FontSize="20" FontFamily="Bahnschrift" Background="#FF90E654" Height="25"  TextAlignment="Center" Padding="15,2" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            <ProgressBar Height="5" x:Name="progresso" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Width="300" IsIndeterminate="True" Foreground="#FF90E654"/>
+        </Grid>
+        <Border Padding="10" Margin="38,0,0,0" CornerRadius="8,8,0,0" x:Name="bordEdicao" Visibility="Collapsed" Grid.Row="1" VerticalAlignment="Bottom" Width="350" HorizontalAlignment="Left" Background="#FFA9A5A5">
+            <StackPanel Orientation="Vertical">
+                <elementos:EditText x:Name="ediNome"  Legenda="Nome" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+                <elementos:EditText QuebraLinha="True" x:Name="ediDescri" Legenda="Descrição" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
+                <ComboBox DisplayMemberPath="name" FontSize="18" Margin="5" Width="300" x:Name="selectCats" SelectionChanged="selectCats_SelectionChanged"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+                    <Button Margin="5,0" Visibility="Collapsed" Name="btCancelar" Click="btCancelar_Click" Background="#FFDC6947">Cancelar</Button>
+                    <Button Width="200" Margin="5,0" Name="btSalvar" Click="btSalvar_Click">Salvar</Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <Border x:Name="bdSubs" Width="275" MaxHeight="400" Grid.Row="2" Background="#FFA9A5A5" Visibility="Collapsed" CornerRadius="8,8,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Grid>
+                <TextBlock Margin="5,5" Foreground="White">Sub-categorias</TextBlock>
+                <Button Margin="5,5" Padding="0" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Right" x:Name="btCloseSubs" Click="btCloseSubs_Click">
+                    <fa:ImageAwesome Icon="WindowClose" Foreground="White" Width="17"/>
+                </Button>
+                <ListView Margin="5,25,5,5" x:Name="listItensSubs" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Cursor="Hand" SelectionChanged="listItensSubs_SelectionChanged" HorizontalAlignment="Center" VerticalAlignment="Top">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="1"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="6" Background="#FF8A8A8A" Padding="10" Margin="5" Width="240" VerticalAlignment="Top">
+                                <StackPanel Orientation="Horizontal" >
+                                    <TextBlock MinWidth="150" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding name}" Foreground="White" FontSize="18" FontFamily="Bahnschrift" />
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding term_id}" Foreground="White" Margin="10,0" FontSize="20" FontFamily="Bahnschrift" Background="#FF90E654" Height="25"  TextAlignment="Center" Padding="15,2" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Border>
+        <Button Padding="2" Margin="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Click="btAdd_Click" Name="btAdd" Background="Transparent">
+            <fa:ImageAwesome Icon="PlusCircle" Foreground="#FF7F7B7B" Width="27"/>
+        </Button>
+    </Grid>
+</ContentControl>
