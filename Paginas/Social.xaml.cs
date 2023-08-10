@@ -59,7 +59,7 @@ namespace PainelPress.Paginas
             {
                 radTwitter.IsChecked = true;
                 API = twitterConfig.api;
-                mainShare.StartTwitter(API);
+                mainShare.InstanceTwitter();
                 if (API)
                 {
                     radApi.IsChecked = true;
@@ -190,6 +190,7 @@ namespace PainelPress.Paginas
                     else
                     {
                         mensagem.HomeMensagem(false, "Twett não enviado");
+                        log.Text = "Twett não enviado";
                     }
                 }
                 else
@@ -202,6 +203,7 @@ namespace PainelPress.Paginas
                     else
                     {
                         mensagem.HomeMensagem(false, "Twett não enviado");
+                        log.Text = "Twett não enviado";
                     }
                 }
                 pLoading.Visibility = Visibility.Collapsed;
@@ -421,7 +423,7 @@ namespace PainelPress.Paginas
             if (tag == "twit")
             {
                 radNome.Child = null;
-                mainShare.StartTwitter(API);
+               // mainShare.StartTwitter();
                 string t = await mainShare.getContaTwitter();
                 
                 if (t != null)

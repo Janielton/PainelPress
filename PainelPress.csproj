@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-	  <TargetFramework>net5.0-windows</TargetFramework>
+	  <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject>PainelPress.App</StartupObject>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
@@ -66,7 +66,8 @@
     <PackageReference Include="Google.Analytics.Data.V1Beta" Version="1.0.0-beta08" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Notification.Wpf" Version="7.0.0.2" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
@@ -76,11 +77,13 @@
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="102.0.5005.2700-beta" />
     <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
     <PackageReference Include="TweetinviAPI" Version="5.0.4" />
+    <PackageReference Include="Uno.UI" Version="4.9.45" />
     <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FtpLibrary\FtpLibrary.csproj" />
+    <ProjectReference Include="..\IA\IA.csproj" />
     <ProjectReference Include="..\ShareSocial\ShareSocial.csproj" />
     <ProjectReference Include="..\StoryLibrary\StoryLibrary.csproj" />
     <ProjectReference Include="E:\repos\DataBase\DataBase.csproj" />

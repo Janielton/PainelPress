@@ -179,7 +179,8 @@
         </Style>
     </Page.Resources>
     <Grid Background="White">
-        <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Hidden" >
+        <TextBox TextChanged="TextBox_TextChanged" Margin="0" VerticalAlignment="Top"/>
+        <ScrollViewer Margin="0,31,0,0" ScrollViewer.VerticalScrollBarVisibility="Hidden">
             <StackPanel Orientation="Vertical" x:Name="containerCats">
 
             </StackPanel>

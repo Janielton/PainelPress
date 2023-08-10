@@ -19,53 +19,57 @@ namespace PainelPress.Classes.Controller
     {
         MainBase baseData;
         public CtlDadosPagina() {
-            bool start = !File.Exists(Constants.PATHDB);
+   
             baseData = new MainBase(Constants.PATHDB);
-            if (start)
-            {
-                StartDB();
-            }
         }
 
-        public async void AdicionarPagina(string n, string u, string h, int f = 30)
+        public async Task<bool> AdicionarPagina(Pagina page)
         {
             try
             {
                 var dados = new Dictionary<string, object>
-               {
-                 {"nome", n},
-                 {"url", u},
-                 {"html", h},
-                 {"frequencia", f}
+                {
+                 {"nome", page.descricao},
+                 {"url", page.url},
+                 {"html", page.html},
+                 {"request", page.request},
+                 {"parametro", page.parametro}
                 };
-                string qr = "INSERT INTO paginas (descricao,url,html, frequencia) VALUES (:nome,:url,:html,:frequencia);";
+                string qr = "INSERT INTO paginas (descricao, url, html, request, parametro) VALUES (:nome,:url,:html,:request, :parametro);";
                 await baseData.execQuery(qr, dados);
+                return true;
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message, "Erro");
             }
+            return false;
         }
 
-        public async void UpdatePagina(int id, string n, string u, int f = 30)
+        public async Task<bool> UpdatePagina(Pagina page)
         {
 
             try
             {
                 var dados = new Dictionary<string, object>
                 {
-                 {"id", id},
-                 {"nome", n},
-                 {"url", u},
-                 {"frequencia", f}
+                 {"id", page.id_pagina},
+                 {"nome", page.descricao},
+                 {"url", page.url},
+                 {"html", page.html},
+                 {"request", page.request},
+                 {"parametro", page.parametro}
                 };
-                string qr = "UPDATE paginas SET descricao = :nome, url = :url, frequencia = :frequencia WHERE id_pagina = :id;";
-                await baseData.execQuery(qr, dados); ;
+                string qr = "UPDATE paginas SET descricao = :nome, url = :url, request = :request, parametro = :parametro WHERE id_pagina = :id;";
+                await baseData.execQuery(qr, dados);
+                return true;
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Erro");
             }
+            return false;
         }
 
         public bool VerificaPagina(string html, int id)
@@ -75,7 +79,7 @@ namespace PainelPress.Classes.Controller
             {
                 var dados = new Dictionary<string, object>
                 {
-                 {":id", id}
+                 {"id", id}
                 };
                 string qr = "SELECT html FROM paginas WHERE id_pagina = :id LIMIT 1";
                 var htmlAtual = baseData.execQueryResult(qr, dados);
@@ -181,17 +185,13 @@ namespace PainelPress.Classes.Controller
                     descricao = item["descricao"].ToString(),
                     url = item["url"].ToString(),
                     html = item["html"].ToString(),
-                    frequencia = Convert.ToInt32(item["frequencia"]),
+                    request = item["request"].ToString(),
+                    parametro = item["parametro"].ToString(),
                 });
             }
             return listData;
         }
 
-        private async void StartDB()
-        {
-            string sites = "CREATE TABLE IF NOT EXISTS paginas (id_pagina INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, url TEXT, html TEXT, frequencia INTEGER, UNIQUE(url))";
-            await baseData.execQuery(sites);
-        }
 
     }
 
@@ -200,8 +200,9 @@ namespace PainelPress.Classes.Controller
         public int id_pagina { get; set; }
         public string descricao { get; set; }
         public string url { get; set; }
-        public int frequencia { get; set; }
+        public string request { get; set; }
         public string html { get; set; }
+        public string parametro { get; set; }
     }
 
 }

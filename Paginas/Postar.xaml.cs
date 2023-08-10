@@ -46,7 +46,6 @@ namespace PainelPress.Paginas
         List<string> listKeyTax = new List<string>();
         List<string> listKeyCampo = new List<string>();
         Dictionary<string, List<string>> taxanomyList = new Dictionary<string, List<string>>();
-        BaseDados baseDados = new BaseDados();
         Taxonomy selecaoTag;
         InterfaceAPI apiRestBasic;
         InterfaceAPI apiRestBarear;
@@ -139,11 +138,19 @@ namespace PainelPress.Paginas
 
             ////EDITOR
             editorPost = new Editor(2, Add);
-            if (configLayout.ContainsKey("editor_tamanho"))
-            {
-                editorPost.setTela(configLayout["editor_tamanho"]);
-            }
             editor.Content = editorPost;
+
+            if (editorPost.TIPO == 1)
+            {
+                if (configLayout.ContainsKey("editor_tamanho"))
+                {
+                    editorPost.setTela(configLayout["editor_tamanho"]);
+                }
+            }
+            else
+            {
+                btHtml.Content = "VISUAL (F2)";
+            }
 
             postConteudo = "";
             
@@ -153,8 +160,8 @@ namespace PainelPress.Paginas
             var confT = mainShare.getTwitterConfig;
             if (confT != null)
             {
-                mainShare.StartTwitter(confT.api);
-                twitter = true;
+              //  mainShare.StartTwitter(confT.api);
+               // twitter = true;
                 // var userTw = await mainShare.getContaTwitter();
                 // if (userTw != "no") twitter = true;
             }
@@ -958,16 +965,7 @@ namespace PainelPress.Paginas
         #region Notificaçao Push
         private async Task getTopicos()
         {
-          //  var lista = await apiRest.GetInscritosALL();
-           // await baseDados.SalvarTopicos(lista);
- 
-            if (string.IsNullOrEmpty(CategoriasCheck.CatList)) return;
-            // var request = await apiRest.GetInscritos(CategoriasCheck.CatList.Replace("7841,", ""));
-            var request = await baseDados.ListaInscritos(CategoriasCheck.CatList.Replace("7841,", ""));
-            if (request.Count>0) {
-                brBotoesNotificacao.Visibility = Visibility.Visible;
-                CriarBTnoticao(request);
-            } 
+         
         }
 
         private void CriarBTnoticao(List<Inscritos> list)
@@ -1201,7 +1199,7 @@ namespace PainelPress.Paginas
      
                     postAtual = postMotado(true);
                     configuracoes.setSalvoPost(postAtual);
-                    if (sTela)
+                    if (sTela && editorPost.TIPO==1)
                     {
                         string tela = await editorPost.getTela();
                         if (tela != "")
@@ -1237,9 +1235,9 @@ namespace PainelPress.Paginas
         {
             try
             {
-                btHtml.Content = btHtml.Content.ToString().Equals("HTML (F2)") ? "VISUAL (F2)" : "HTML (F2)";
-                string script = @"(function() { AlteraEditor() })();";
-                editorPost.ExecuteJS(script);
+                bool html = btHtml.Content.ToString().Equals("HTML (F2)");
+                btHtml.Content = html ? "VISUAL (F2)" : "HTML (F2)";
+                editorPost.AlteraViewEditor(html);
             }
             catch (Exception ex)
             {
@@ -1423,7 +1421,7 @@ namespace PainelPress.Paginas
                 }
                 setTerms(post.Terms);
                 setMetas(post.Metas);
-                editorPost.setConteudo(postConteudo.Trim());
+               if(postConteudo !=null) editorPost.setConteudo(postConteudo.Trim());
                 setImagem(post.imagem_destaque);
 
               //  Debug.WriteLine(JsonConvert.SerializeObject(post));
@@ -1642,25 +1640,16 @@ namespace PainelPress.Paginas
             }
             else if (e.Key == Key.F2)
             {
-                try
-                {
-                    btHtml.Content = btHtml.Content.ToString().Equals("HTML (F2)") ? "VISUAL (F2)" : "HTML (F2)";
-                    string script = @"(function() { AlteraEditor() })();";
-                    editorPost.ExecuteJS(script);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
+                btHtml_Click(btHtml, null);
             }
             else if (e.Key == Key.F3)
             {
-                new WPop(4).ShowDialog();
+                btBusca_Click(btBusca, null);
             }
             else if (e.Key == Key.F4)
             {
                 WUpload pop = new WUpload(true);
-                pop.ShowDialog();
+              //  pop.ShowDialog();
             }
             else if (e.Key == Key.F5)
             {
@@ -1681,7 +1670,7 @@ namespace PainelPress.Paginas
 
         private void btBusca_Click(object sender, RoutedEventArgs e)
         {
-            WPop pop = new WPop(4);
+            WinContainer pop = new WinContainer(new BuscaPosts());
             pop.ShowDialog();
         }
 
@@ -1754,7 +1743,6 @@ namespace PainelPress.Paginas
                 TextBlock view = FindElemento.FindTextBlock(stackBtsDesc, "desc_view");
                 view.Visibility = Visibility.Visible;
             }
-            Debug.WriteLine(tag);
         }
 
         #endregion

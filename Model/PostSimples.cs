@@ -19,7 +19,7 @@ namespace PainelPress.Model
         [JsonProperty("date")]
         public DateTime? Date { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        [JsonIgnore]
         public string getData
         {
             get

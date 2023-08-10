@@ -56,7 +56,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="35" VerticalAlignment="Center">
                             <RadioButton VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Desativado" Foreground="White" IsChecked="True" Checked="RadioButton_Checked" Tag="disable" x:Name="radDesa"/>
                             <RadioButton x:Name="radApi" VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Api" Checked="RadioButton_Checked"  Foreground="White" Tag="api"/>
-                            <RadioButton x:Name="radWeb" VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Web" Checked="RadioButton_Checked"  Foreground="White" Tag="web"/>
+                            <RadioButton IsEnabled="False" x:Name="radWeb" VerticalAlignment="Center" Margin="5,0" FontSize="16" Content="Web" Checked="RadioButton_Checked"  Foreground="White" Tag="web"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Visibility="Collapsed" x:Name="stackApiTwi">
                             <elementos:EditText MaxWidth="300" x:Name="consumer_key" Legenda="Consumer Key" Margin="0,5"/>

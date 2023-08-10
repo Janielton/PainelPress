@@ -19,6 +19,7 @@ using PainelPress.Model;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System.Linq;
+using System.Threading;
 
 namespace PainelPress.Paginas
 {
@@ -153,7 +154,7 @@ namespace PainelPress.Paginas
 
        
 
-        private void mVisualizar_Click(object sender, RoutedEventArgs e)
+        private void mVisualizar_Post()
         {
             WNavegador navegador = new WNavegador(selecaoPost.Link, true);
             navegador.ShowDialog();
@@ -166,7 +167,7 @@ namespace PainelPress.Paginas
             //MainWindow.BT_POSTAR.IsEnabled = false;
         }
 
-        private void mApagar_Click(object sender, RoutedEventArgs e)
+        private void mApagar_Click()
         {
             if (MessageBox.Show("Tem certeza que deseja apagar o post '" + selecaoPost.Title+"'", "Apagar post", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
@@ -216,7 +217,7 @@ namespace PainelPress.Paginas
             if (listPosts.SelectedItem != null)
             {
                 selecaoPost = listPosts.SelectedItem as PostSimples;
-                Debug.WriteLine(selecaoPost.Id);
+                stackEditPost.Visibility = Visibility.Visible;
             }
         }
 
@@ -229,6 +230,25 @@ namespace PainelPress.Paginas
         private void btConfig_Click(object sender, RoutedEventArgs e)
         {
             new WinContainer(1).Show();
+        }
+
+        private void btBotaoLateral_Click(object sender, RoutedEventArgs e)
+        {
+            Button bt = (Button)sender;
+            if (bt == null || selecaoPost == null) return;
+            string tag = bt.Tag.ToString();
+            if (tag == "view")
+            {
+                mVisualizar_Post();
+            }
+            else if (tag == "edit")
+            {
+                MainWindow.framePrincipal.Content = new Postar(selecaoPost);
+            }
+            else if (tag == "del")
+            {
+                mApagar_Click();
+            }
         }
     }
 }

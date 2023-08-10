@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:PainelPress" 
         xmlns:shell1="http://schemas.microsoft.com/netfx/2009/xaml/presentation" xmlns:elementos="clr-namespace:PainelPress.Elementos"
         mc:Ignorable="d" Icon="/favicon.ico" AllowsTransparency="True"
-        Title="Upload de imagem" Height="500" Width="700">
+        Title="Upload de imagem" Height="800" Width="1300">
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -191,7 +191,7 @@
         <shell1:WindowChrome
             ResizeBorderThickness="6"
             CaptionHeight="50"
-            CornerRadius="5"
+            CornerRadius="7"
             GlassFrameThickness="0">
         </shell1:WindowChrome>
     </shell1:WindowChrome.WindowChrome>
@@ -199,7 +199,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="55"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.Background>
@@ -213,22 +213,36 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <TextBlock Foreground="White" VerticalAlignment="Top" Margin="16,13,0,0" FontSize="22" HorizontalAlignment="Left" FontFamily="Cooper Std Black">Upload de imagem</TextBlock>
+            <TextBlock MaxWidth="500" TextWrapping="Wrap" FontSize="18" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="status" Foreground="White"/>
             <Button WindowChrome.IsHitTestVisibleInChrome="True" HorizontalAlignment="Right" Name="btCloseWin" Click="btCloseWin_Click" VerticalAlignment="Center" Margin="10,0" Background="Transparent">
                 <fa:ImageAwesome Icon="Close" Foreground="Red" Width="20"/>
             </Button>
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Vertical" DragEnter="StackPanel_DragEnter"  Background="Gray">
-            <Image Drop="Grid_Drop" AllowDrop="true" Source="Imagem/noimagem.png" VerticalAlignment="Top" HorizontalAlignment="Center" MaxHeight="300" MinHeight="200" Margin="0,15,0,0" x:Name="imgUp"/>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,15,0,0">
-                <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="editUrlImage" Width="400" Padding="5" Background="WhiteSmoke" BorderBrush="#FF7C2ED8" GotFocus="editUrlImage_GotFocus"/>
-                <Button Width="30" Background="#FF7C2ED8" BorderThickness="0" x:Name="btSelectImg" Click="btSelectImg_Click" Content="..." Foreground="White" FontSize="20" VerticalAlignment="Center" Style="{DynamicResource ButtonStyle1}" />
-            </StackPanel>
 
+        <Grid Grid.Row="1" Visibility="Visible" Background="#FFA3B1B1" x:Name="imagemFull" Width="1200" Height="670" AllowDrop="True" Drop="imagemFull_Drop" DragEnter="imagemFull_DragEnter">
+            <TextBlock FontSize="30" FontFamily="Cooper Std Black" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White">Arraste imagem e solte aqui</TextBlock>
+        </Grid>
+        <Grid x:Name="imagemContainer" Visibility="Collapsed" Width="1200" Height="670" Grid.Row="1" Background="#FF9AB2C7">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="400"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        </StackPanel>
-
+            <Grid x:Name="imagemFundo" Grid.RowSpan="2" AllowDrop="True" Drop="imagemContainer_Drop">
+                <Grid.Background>
+                    <ImageBrush ImageSource="/Imagem/noimagem.png"/>
+                </Grid.Background>
+            </Grid>
+            <Border Grid.Row="0" MouseDown="imgPerfil_MouseDown" Mouse.MouseWheel="imgPerfil_MouseWheel" PreviewMouseLeftButtonDown="imgPerfil_PreviewMouseLeftButtonDown" Drop="Perfil_Drop" DragEnter="Perfil_DragEnter" AllowDrop="True" x:Name="imgPerfil" HorizontalAlignment="Center" VerticalAlignment="Top" CornerRadius="200" Margin="0,20,0,0" BorderBrush="#84CD53" BorderThickness="5" Height="350" Width="350">
+                <Border.Background>
+                    <ImageBrush Stretch="Fill" ImageSource="/Imagem/noimagem.png"/>
+                </Border.Background>
+            </Border>
+       
+        </Grid>
+       
+        
         <ProgressBar IsIndeterminate="True" VerticalAlignment="Bottom"  Foreground="#FF7C2ED8" Height="5" Background="Transparent" BorderThickness="0" x:Name="pLoading" Visibility="Collapsed"/>
-
 
         <Grid Grid.Row="2">
             <Grid.Background>
@@ -241,12 +255,18 @@
                     <GradientStop Color="#FF4554A7" Offset="0.23"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <Grid Width="300" Height="50" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0">
-                <TextBox Width="300" BorderBrush="#FFBDBDBD" BorderThickness="0" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource TextBoxStyle1}" x:Name="editNome" FontSize="20" Padding="4,14,0,0"/>
+         
+            <Grid Width="300" Height="55" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0">
+                <TextBox Width="300" BorderBrush="#FFBDBDBD" BorderThickness="0" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"  Style="{DynamicResource TextBoxStyle1}" x:Name="editNome" FontSize="25" Padding="4,14,0,0"/>
                 <TextBlock Margin="5,5" Padding="5,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Gray">Nome</TextBlock>
-                <TextBlock Visibility="Collapsed" Background="#FF5CD130" Margin="0,5" Padding="5,0,5,0" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Right" >785</TextBlock>
+ 
             </Grid>
-            <Button Margin="10,0" Width="200" HorizontalAlignment="Right" x:Name="btUpload" Content="Enviar" VerticalAlignment="Center" Background="#FF5CD130" BorderThickness="0" FontSize="30" Padding="0,0,0,5" Foreground="White" Click="btUpload_Click" BorderBrush="White"/>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center" Margin="8">
+                <RadioButton Height="25" Tag="normal" Foreground="White" Content="Normal" Padding="3" Margin="7,0" IsChecked="True" Checked="radCheker_Checked"/>
+                <RadioButton Height="25" Tag="com-imagem" Foreground="White" Content="Duas imagens"  Padding="3" Margin="7,0" Checked="radCheker_Checked"/>
+                <RadioButton Height="25" Tag="full-imagem" Visibility="Collapsed" Content="Imagem Full"  Padding="3" Margin="7,0" Checked="radCheker_Checked"/>
+            </StackPanel>
+            <Button Margin="10,0" Width="250" HorizontalAlignment="Right" x:Name="btUpload" Content="Enviar" VerticalAlignment="Center" Background="#FF5CD130" BorderThickness="0" FontSize="30" Padding="0,0,0,5" Foreground="White" Click="btUpload_Click" BorderBrush="White"/>
         </Grid>
         <Grid x:Name="gridUrl" Visibility="Collapsed" Grid.Row="1" Grid.RowSpan="2" Background="#7F000000">
             <Border VerticalAlignment="Bottom" Padding="10" Background="#FF376EBF">

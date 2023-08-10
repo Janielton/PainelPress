@@ -21,15 +21,15 @@ using PainelPress.ViewModel;
 using config = PainelPress.Properties.Settings;
 using Microsoft.Win32;
 
-namespace PainelPress
+namespace PainelPress.Paginas
 {
     /// <summary>
-    /// Lógica interna para WRelatorios.xaml
+    /// Lógica interna para Relatorios.xaml
     /// </summary>
-    public partial class WRelatorios : Window
+    public partial class Relatorios : ContentControl
     {
         Button tabAtual;
-        public WRelatorios()
+        public Relatorios()
         {
             InitializeComponent();
             if (string.IsNullOrEmpty(config.Default.pathJson)

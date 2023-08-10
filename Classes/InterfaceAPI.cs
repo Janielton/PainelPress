@@ -73,12 +73,12 @@ namespace PainelPress.Classes
 
         #region POST
         //GET
-        [Get("/wp-json/wp/v2/posts")]
+        [Get("/wp-json/painel-api/posts")]
        // [Headers("Authorization: Basic cGFpbmVscHJlc3M6ODU0NTQ1ODhzJDMzNDQ=")]
         [Headers("Authorization: Bearer")]
         Task<List<PostSimples>> GetPosts();
 
-        [Get("/wp-json/wp/v2/search?search={palavra}&per_page=15&subtype=post")]
+        [Get("/wp-json/painel-api/busca-posts?key={palavra}")]
         [Headers("Authorization: Bearer")]
         Task<List<PostSimples>> GetPosts(string palavra);
 

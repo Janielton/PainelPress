@@ -8,12 +8,32 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Navegador:ChromiumWebBrowser ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="0" Visibility="Hidden" x:Name="browEditor" LoadingStateChanged="browEditor_LoadingStateChanged" LostFocus="browEditor_LostFocus" Grid.ColumnSpan="3"/>
-        <Grid x:Name="sharpEditor"  Visibility="Visible"/>
-        <Border Margin="0,0,3,0" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <Grid Background="White" x:Name="sharpEditor"  Visibility="Visible"/>
+        <StackPanel VerticalAlignment="Top" Orientation="Vertical" HorizontalAlignment="Right" Margin="0,5,40,0" Visibility="Collapsed">
+            <Button FontWeight="Bold" Padding="0" Width="30" Height="30"  Margin="0,2" Background="#FF7CA4F3" Foreground="White"  FontFamily="Tahoma" >
+                H1
+            </Button>
+            <Button FontWeight="Bold" Padding="0" Width="30" Height="30"  Margin="0,2" Background="#FF7CA4F3" Foreground="White" FontFamily="Tahoma" >
+                H2
+            </Button>
+            <Button FontWeight="Bold" Padding="0" Width="30" Height="30"  Margin="0,2" Background="#FF7CA4F3" Foreground="White" FontFamily="Tahoma" >
+                H3
+            </Button>
+        </StackPanel>
+        <Border Margin="0,5,4,0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
             <StackPanel Orientation="Vertical">
-                <Button FontWeight="Bold" Margin="0,2">B</Button>
-                <Button FontWeight="Bold" Margin="0,2" FontStyle="Italic">
-                    <fa:ImageAwesome Icon="Italic" Foreground="#FF565859"/>
+                <Button FontWeight="Bold" Padding="0" Width="30" Height="30"  Margin="0,2" Background="#FFD2D2D2" Foreground="#FF7D7D7D" FontFamily="Tahoma">
+                    B
+                </Button>
+                <Button FontWeight="Bold" Padding="0" Width="30" Height="30"  Margin="0,2" FontStyle="Italic" Background="#FFF3F3F3" Foreground="#FF7D7D7D" FontFamily="Tahoma">
+                    I
+                </Button>
+                <Button Padding="0,8" Width="30" Height="30" FontWeight="Bold" Margin="0,2" FontStyle="Italic" Background="WhiteSmoke" Foreground="#FF7D7D7D" FontFamily="Arial Black">“ ”</Button>
+                <Button Padding="0" Width="30" Height="30" FontWeight="Bold" Margin="0,2" FontStyle="Italic" Background="WhiteSmoke" Foreground="#FF7D7D7D" FontFamily="Arial Black">
+                    <fa:ImageAwesome Icon="Link" Height="19" Foreground="#FF565859"/>
+                </Button>
+                <Button Padding="0" Width="30" Height="30" FontWeight="Bold" Margin="0,2" FontStyle="Italic" Background="WhiteSmoke" Foreground="#FF7D7D7D" FontFamily="Arial Black">
+                    <fa:ImageAwesome Icon="ListUl" Height="18" Foreground="#FF565859"/>
                 </Button>
             </StackPanel>
         </Border>

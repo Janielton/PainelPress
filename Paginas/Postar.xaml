@@ -153,7 +153,7 @@
 
     <Grid Background="#FFD2D2D2">
         <Grid.RowDefinitions>
-            <RowDefinition Height="75"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="90"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="350*"/>
@@ -197,7 +197,7 @@
                 <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btHtml" Click="btHtml_Click" Cursor="Hand">HTML (F2)</Button>
                 <Button Style="{DynamicResource ButtonStyle1}" x:Name="btBusca" Click="btBusca_Click" Cursor="Hand" Margin="0,0,10,0">Buscar (F3)</Button>
 
-                <Button Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btUpload" Click="btUpload_Click" Cursor="Hand">Upload (F4)</Button>
+                <Button Visibility="Collapsed" Style="{DynamicResource ButtonStyle1}" Margin="0,0,10,0" x:Name="btUpload" Click="btUpload_Click" Cursor="Hand">Upload (F4)</Button>
             </StackPanel>
 
         </Border>
@@ -273,7 +273,7 @@ ScrollViewer.VerticalScrollBarVisibility="Hidden" Grid.Row="1">
             <Button x:Name="btUpdateUsers" Background="Transparent" VerticalAlignment="Center" Margin="10,2" Width="20" Height="20" Padding="0" Click="btUpdateUsers_Click" Cursor="Hand">
                 <fa:ImageAwesome Icon="Refresh" Foreground="#FF565859"/>
             </Button>
-            <ComboBox Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" DisplayMemberPath="Nome" x:Name="comboUser" SelectionChanged="comboUser_SelectionChanged" FontSize="16" MinWidth="170" Foreground="#FF3E3D3D"/>
+            <ComboBox Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right" Width="120" DisplayMemberPath="Nome" x:Name="comboUser" SelectionChanged="comboUser_SelectionChanged" FontSize="16" MinWidth="170" Foreground="#FF3E3D3D"/>
         </StackPanel>
         <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="4"
               HorizontalAlignment="Left"

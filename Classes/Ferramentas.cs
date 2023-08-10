@@ -383,6 +383,37 @@ namespace PainelPress.Classes
             }
         }
 
+        public static string HumanTime(DateTime dateTime)
+        {
+            TimeSpan timeSpan = DateTime.Now.Subtract(dateTime);
+
+            return timeSpan.TotalSeconds switch
+            {
+                <= 60 => $"{timeSpan.Seconds} segundos atrás",
+
+                _ => timeSpan.TotalMinutes switch
+                {
+                    <= 1 => "1 minuto atrás",
+                    < 60 => $"{timeSpan.Minutes} minutos atrás",
+                    _ => timeSpan.TotalHours switch
+                    {
+                        <= 1 => "1 hora atrás",
+                        < 24 => $"{timeSpan.Hours} houras atrás",
+                        _ => timeSpan.TotalDays switch
+                        {
+                            <= 1 => "hoje",
+                            <= 30 => $"{timeSpan.Days} dias atrás",
+
+                            <= 60 => "1 mês atrás",
+                            < 365 => $"{timeSpan.Days / 30} meses atrás",
+
+                            <= 365 * 2 => "1 ano atrás",
+                            _ => $"{timeSpan.Days / 365} anos atrás"
+                        }
+                    }
+                }
+            };
+        }
 
         public static IEnumerable<T> FindElements<T>(DependencyObject depObj) where T : DependencyObject
         {

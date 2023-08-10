@@ -63,8 +63,8 @@ namespace PainelPress
                 try
                 {
                    if(!Directory.Exists(Constants.PASTA)) Directory.CreateDirectory(Constants.PASTA);
-                    BaseDados startDB = new BaseDados();
-                    startDB.CriaTabela();
+                   new BaseDados();
+
                 }
                 catch (Exception ex)
                 {

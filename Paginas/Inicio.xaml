@@ -7,68 +7,83 @@
              xmlns:local="clr-namespace:PainelPress.Paginas"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-
     <Grid>
-        <ListView x:Name="listPosts" Visibility="Hidden" BorderThickness="0" SelectionChanged="listPosts_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Visualizar" Name="mVisualizar" Click="mVisualizar_Click"/>
-                    <MenuItem Header="Editar" Name="mEditar" Click="mEditar_Click"/>
-                    <MenuItem Header="Apagar" Name="mApagar" Click="mApagar_Click"/>
-                </ContextMenu>
-            </ListView.ContextMenu>
+        <ListView Margin="0,0,60,0" x:Name="listPosts" Visibility="Visible" SelectionChanged="listPosts_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Hidden" BorderThickness="0,0,2,0">
         <ListView.View>
-                <GridView>
-                    <GridViewColumn Width="90">
-                        <GridViewColumn.Header>
-                            <TextBlock FontSize="20" Text="ID post"/>
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock Margin="10,0" FontSize="20" TextAlignment="Left" Text="{Binding Id}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn>
-                        <GridViewColumn.Header>
-                            <TextBlock Text="Titulo" FontSize="20" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid Margin="15,0">
-                                    <TextBlock FontSize="18" Text="{Binding Title}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Width="190">
-                        <GridViewColumn.Header>
-                            <TextBlock Text="Data" FontSize="20" />
-                        </GridViewColumn.Header>
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="10,0">
-                                    <TextBlock FontSize="16" Text="{Binding getData}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Border Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#B2A9A9A9" Margin="0" Padding="5" CornerRadius="10,0,0,0">
-            <StackPanel Orientation="Horizontal" x:Name="stackBusca" Width="35" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Width="35" BorderThickness="0" Height="35" Cursor="Hand" Padding="0" x:Name="btBusca" Click="btBusca_Click" Background="Transparent">
-                    <fa:ImageAwesome Icon="Search" Foreground="Gray" Width="28"/>
+            <GridView>
+                <GridViewColumn Width="90">
+                    <GridViewColumn.Header>
+                        <TextBlock FontSize="20" Text="ID post"/>
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Margin="10,0" FontSize="20" TextAlignment="Left" Text="{Binding Id}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn>
+                    <GridViewColumn.Header>
+                        <TextBlock Text="Titulo" FontSize="20" />
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Margin="15,0">
+                                <TextBlock FontSize="18" Text="{Binding Title}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Width="190">
+                    <GridViewColumn.Header>
+                        <TextBlock Text="Data" FontSize="20" />
+                    </GridViewColumn.Header>
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="10,0">
+                                <TextBlock FontSize="16" Text="{Binding getData}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+    </ListView>
+
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" Width="60" HorizontalAlignment="Right" Background="WhiteSmoke">
+        <StackPanel Margin="0,0,5,0" x:Name="stackEditPost" Visibility="Hidden" Background="WhiteSmoke"  Orientation="Vertical" >
+            <Button Padding="8" Background="Gray" Width="40" Height="40" Margin="5,15,0,5" Click="btBotaoLateral_Click" Tag="view" Cursor="Hand">
+                <fa:ImageAwesome Icon="Eye" Foreground="#FFDEE5FF"/>
+            </Button>
+
+            <Button Padding="8" Width="40" Height="40" Margin="5,5,0,5" x:Name="btEditPost" Click="btBotaoLateral_Click" Tag="edit">
+                <fa:ImageAwesome Icon="Edit" Foreground="#FFDEE5FF"/>
+            </Button>
+
+            <Button Padding="8" Background="#FFF75D2F" Width="40" Height="40" Margin="5,5,0,5" Tag="cacher" Click="btBotaoLateral_Click">
+                <fa:ImageAwesome Icon="Refresh" Foreground="#FFDEE5FF"/>
+            </Button>
+            <Button Padding="8" Background="#FF7FB541" Width="40" Height="40" Margin="5,5,0,5" Tag="link" Click="btBotaoLateral_Click">
+                <fa:ImageAwesome Icon="Link" Foreground="#FFDEE5FF"/>
+            </Button>
+                <Button Padding="8" Background="Red" Width="40" Height="40" Margin="5,5,0,5" Tag="del" Click="btBotaoLateral_Click">
+                    <fa:ImageAwesome Icon="Close" Foreground="#FFDEE5FF"/>
                 </Button>
-                <TextBox LostFocus="ediBusca_LostFocus" PreviewKeyDown="ediBusca_PreviewKeyDown" FontSize="16" Padding="4,5" MinWidth="170" x:Name="ediBusca" Cursor=""/>
             </StackPanel>
-        </Border>
-        <ProgressBar Grid.Row="0" x:Name="progressoBar" IsIndeterminate="True" Height="5" Margin="50,0" Foreground="#FF007DC3" BorderBrush="White"/>
-        <Button Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" HorizontalAlignment="Left" x:Name="btConfig" Click="btConfig_Click" Padding="5">
-            <fa:ImageAwesome Height="30" Width="30" Icon="Gear" Foreground="#FF5D5A5A"/>
-        </Button>
+    </ScrollViewer>
+
+    <Border Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#B2A9A9A9" Margin="0,0,60,0" Padding="5" CornerRadius="10,0,0,0">
+        <StackPanel Orientation="Horizontal" x:Name="stackBusca" Width="35" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Width="35" BorderThickness="0" Height="35" Cursor="Hand" Padding="0" x:Name="btBusca" Click="btBusca_Click" Background="Transparent">
+                <fa:ImageAwesome Icon="Search" Foreground="Gray" Width="28"/>
+            </Button>
+            <TextBox LostFocus="ediBusca_LostFocus" PreviewKeyDown="ediBusca_PreviewKeyDown" FontSize="16" Padding="4,5" MinWidth="170" x:Name="ediBusca" Cursor=""/>
+        </StackPanel>
+    </Border>
+    <ProgressBar Grid.Row="0" x:Name="progressoBar" IsIndeterminate="True" Height="5" Margin="50,0,110,0" Foreground="#FF007DC3" BorderBrush="White"/>
+    <Button Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" HorizontalAlignment="Left" x:Name="btConfig" Click="btConfig_Click" Padding="5">
+        <fa:ImageAwesome Height="30" Width="30" Icon="Gear" Foreground="#FF5D5A5A"/>
+    </Button>
     </Grid>
 </ContentControl>

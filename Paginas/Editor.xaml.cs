@@ -31,6 +31,7 @@ namespace PainelPress.Paginas
         private string postConteudo = "";
         private bool carregado = false;
         static int sizeTela = 0;
+        MyEditor myeditor = new MyEditor();
         public Editor(int t = 1, bool ad = true)
         {
             InitializeComponent();
@@ -45,8 +46,8 @@ namespace PainelPress.Paginas
             else
             {
                 sharpEditor.Visibility = Visibility.Visible;
-                MyEditor myeditor = new MyEditor();
                 sharpEditor.Children.Add(myeditor);
+            
             }
         }
 
@@ -55,36 +56,57 @@ namespace PainelPress.Paginas
             sizeTela = sz;
         }
 
-        #region BROWSER EDITOR
+  
         public async Task<string> getConteudo()
         {
-            var script = @"(function() { return getContent(); })();";
-            var task = await browEditor.EvaluateScriptAsync(script);
-            dynamic result = task.Result;
-            string str = result.ToString() as string;
-            return str;
+            if (TIPO == 1)
+            {
+                var script = @"(function() { return getContent(); })();";
+                var task = await browEditor.EvaluateScriptAsync(script);
+                dynamic result = task.Result;
+                string str = result.ToString() as string;
+                return str;
+            }
+            else
+            {
+                return myeditor.GetTextEditor();
+            }
+
         }
 
-        public async Task<string> getTela()
-        {
-           string script = @"(function() { return document.querySelector('#myeditor_ifr').style.height; })();";
-            var task = await ExecuteJSReturn(script);
-            dynamic result = task.Result;
-            string str = result.ToString();
-            return Convert.ToString(str).Replace("px", "");
-        }
-
+      
         public void setConteudo(string valor)
         {
-            // Debug.WriteLine("setConteudo => " + valor);
             postConteudo = valor;
-            var script = @"(function() { setContent('" + valor.Replace("\n", " ").Replace("\r", " ") + "') })();";
-            ExecuteJS(script);
-            if (!string.IsNullOrEmpty(valor))
+            if (TIPO == 1)
             {
-                // verificaConteudo();
+                var script = @"(function() { setContent('" + valor.Replace("\n", " ").Replace("\r", " ") + "') })();";
+                ExecuteJS(script);
+                if (!string.IsNullOrEmpty(valor))
+                {
+                    // verificaConteudo();
+                }
+            }
+            else
+            {
+               myeditor.SetTextEditor(valor);
+            }        
+        }
+
+        public void AlteraViewEditor(bool html)
+        {
+            if (TIPO == 1)
+            {
+                string script = @"(function() { AlteraEditor() })();";
+                ExecuteJS(script);
+            }
+            else
+            {
+                myeditor.AlteraView(!html);
             }
         }
+
+        #region BROWSER EDITOR
 
         public async void verificaConteudo()
         {
@@ -95,10 +117,19 @@ namespace PainelPress.Paginas
 
             if (string.IsNullOrEmpty(str))
             {
-               // setConteudo(postConteudo);
+                // setConteudo(postConteudo);
             }
         }
 
+        public async Task<string> getTela()
+        {
+
+            string script = @"(function() { return document.querySelector('#myeditor_ifr').style.height; })();";
+            var task = await ExecuteJSReturn(script);
+            dynamic result = task.Result;
+            string str = result.ToString();
+            return Convert.ToString(str).Replace("px", "");
+        }
 
         private void browEditor_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
         {

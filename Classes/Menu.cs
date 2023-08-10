@@ -66,15 +66,21 @@ namespace PainelPress.Classes
             },
             new Menu()
             {
-                nome = "Taxonomies",
-                tipo= 1,
-                tag = "taxonomies"
-            },
-            new Menu()
-            {
                 nome = "Categorias",
                 tipo= 1,
                 tag = "categorias"
+            },
+            new Menu()
+            {
+                nome = "Leitor Feed",
+                tipo= 1,
+                tag = "feed"
+            },
+            new Menu()
+            {
+                nome = "ChatGPT",
+                tipo= 1,
+                tag = "gpt"
             },
 
         };

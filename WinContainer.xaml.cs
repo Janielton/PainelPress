@@ -28,6 +28,55 @@ namespace PainelPress
             InitializeComponent();
         }
 
+        public WinContainer(ChatPage pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "ChatGPT";
+            this.Tag = "gpt";
+            this.Width = 850;
+            this.Height = 650;
+            contentContainer.Content = pagina;
+        }
+        public WinContainer(Relatorios pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "Analytics";
+            this.Tag = "telatorios";
+            this.Width = 850;
+            this.Height = 650;
+            contentContainer.Content = pagina;
+        }
+        public WinContainer(PaginasSites pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "Acompanhamento de paginas";
+            this.Tag = "acompanhapaginas";
+            this.Width = 850;
+            this.Height = 650;
+            contentContainer.Content = pagina;
+        }
+
+        public WinContainer(LeitorFeed pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "Leitor Feed";
+            this.Tag = "leitorfeed";
+            this.Width = 850;
+            this.Height = 650;
+            contentContainer.Content = pagina;
+        }
+
+        public WinContainer(BuscaPosts pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "Buscar posts";
+            this.Tag = "busca-posts";
+            this.Height = 350;
+            this.Width = 700;
+            btMaximizar.Visibility = Visibility.Collapsed; 
+            btMinimizar.Visibility = Visibility.Collapsed;
+            contentContainer.Content = pagina;
+        }
         public WinContainer(Categorias pagina)
         {
             InitializeComponent();
@@ -37,7 +86,7 @@ namespace PainelPress
             this.Height = 580;
             contentContainer.Content = pagina;
         }
-
+        
         public WinContainer(PostView post)
         {
             InitializeComponent();

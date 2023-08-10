@@ -85,10 +85,10 @@ namespace PainelPress
 
         private void btClearDB_Click(object sender, RoutedEventArgs e)
         {
-            if (baseDados.ClearTabela(Referencia))
-            {
-                tbItemCarregados.Text = "Tabela limpa";
-            }
+            //if (baseDados.ClearTabela(Referencia))
+            //{
+            //    tbItemCarregados.Text = "Tabela limpa";
+            //}
         }
     }
 }

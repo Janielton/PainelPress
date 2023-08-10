@@ -236,7 +236,7 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <Border x:Name="janelaBusca" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Collapsed">
+        <Border x:Name="janelaBusca" Background="White" CornerRadius="8" BorderBrush="WhiteSmoke" BorderThickness="2" Visibility="Visible">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>

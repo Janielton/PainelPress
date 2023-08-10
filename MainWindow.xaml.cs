@@ -24,6 +24,11 @@ using FtpLibrary;
 using config = PainelPress.Properties.Settings;
 using FontAwesome.WPF;
 using PainelPress.Elementos;
+using System.Timers;
+using System.Xml;
+using System.Net.Http;
+using Notification.Wpf;
+
 
 namespace PainelPress
 {
@@ -37,13 +42,15 @@ namespace PainelPress
         public static Button BT_POSTAR;
         public static Label lbMensagem;
         public static Border brMensagem;
+        public Timer painelTimer { get; set; }
+        TarefasProgramadas tarefas;
 
         MensagemToast mensagem = new MensagemToast();
 
         public MainWindow()
         {
             InitializeComponent();
-        
+            tarefas = new TarefasProgramadas(this);
             if (!config.Default.Logado)
             {
                 Login login = new Login(1);
@@ -63,6 +70,8 @@ namespace PainelPress
             }
         }
 
+
+
         private void Setap()
         {
             contentPagina.Content = new Inicio();
@@ -73,6 +82,7 @@ namespace PainelPress
             brMensagem = borderMensagem;
             textUser.Text = config.Default.Usuario;
             SetMenu(Classes.Menu.ListaItems());
+            StartTarefas();
         }
         private async void IsValidToken()
         {
@@ -245,6 +255,7 @@ namespace PainelPress
 
         private void btCloseWin_Click(object sender, RoutedEventArgs e)
         {
+           if(painelTimer!=null) painelTimer.Stop();
             CefSharp.Cef.Shutdown();
             Application.Current.Shutdown();
         }
@@ -333,7 +344,7 @@ namespace PainelPress
                 }
                 else if (tag == "paginas")
                 {
-                   
+                    new WinContainer(new PaginasSites()).Show();
                 }
                 else if (tag == "social")
                 {
@@ -354,6 +365,18 @@ namespace PainelPress
                 else if (tag == "categorias")
                 {
                     new WinContainer(new Categorias()).Show();
+                }
+                else if (tag == "feed")
+                {
+                    new WinContainer(new LeitorFeed()).Show();
+                }
+                else if (tag == "gpt")
+                {
+                    new WinContainer(new ChatPage()).Show();
+                }
+                else if (tag == "")
+                {
+                 
                 }
             }
         }
@@ -382,9 +405,10 @@ namespace PainelPress
             WUpload upload = new WUpload();
             upload.Show();
         }
+
         private void btRelatorios_Click()
         {
-            WRelatorios relatorios = new WRelatorios();
+            WinContainer relatorios = new WinContainer(new Relatorios());
             relatorios.Show();
         }
 
@@ -412,6 +436,39 @@ namespace PainelPress
             var janela = new Stories();
             new WinContainer(janela).Show();
         }
+        #endregion
+
+        #region TAREFAS
+
+        private void StartTarefas()
+        {
+            try
+            { 
+                int tempo = 600000;
+                painelTimer = new Timer();
+                painelTimer.Interval = tempo;
+                painelTimer.Elapsed += Tarefas;
+                painelTimer.Start();
+            }catch(Exception ex) { Debug.WriteLine(ex.Message); }
+        }
+
+        private async void Tarefas(object sender, EventArgs e)
+        {
+            try
+            {
+                bool acao1 = await tarefas.getPostsFeeds();
+                bool acao2 = await tarefas.getPaginasUpdate();
+               // painelTimer.Stop();
+          
+                if (!acao1 && !acao2)
+                {
+                    painelTimer.Stop();
+                }
+
+            }
+            catch (Exception ex) { Debug.WriteLine("Tarefas: " + ex.Message); }
+        }
+
         #endregion
     }
 }

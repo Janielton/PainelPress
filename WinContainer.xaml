@@ -26,9 +26,9 @@
             <Grid.Background>
                 <LinearGradientBrush EndPoint="1,0" StartPoint="0,1">
                     <GradientStop Color="#FF4554A7" Offset="0.992"/>
-                    <GradientStop Color="#FF08A4F5" Offset="0"/>
-                    <GradientStop Color="#FF18A9F5" Offset="0.636"/>
-                    <GradientStop Color="#FF328ECE" Offset="0.883"/>
+                    <GradientStop Color="#FF057DBD" Offset="0"/>
+                    <GradientStop Color="#FF162B37" Offset="0.636"/>
+                    <GradientStop Color="#FF0E4C77" Offset="0.883"/>
                     <GradientStop Color="#FF4554A7" Offset="0.444"/>
                     <GradientStop Color="#FF2E7FCA" Offset="0.28"/>
                 </LinearGradientBrush>
