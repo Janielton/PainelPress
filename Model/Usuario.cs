@@ -2,6 +2,7 @@
 using PainelPress.Elementos;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using config = PainelPress.Properties.Settings;
 
@@ -23,7 +24,6 @@ namespace PainelPress.Model
         {
             try
             {
-
                 return JsonConvert.DeserializeObject<List<Usuario>>(config.Default.usuarios);
             }
             catch(Exception e)

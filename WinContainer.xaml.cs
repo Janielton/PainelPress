@@ -28,6 +28,16 @@ namespace PainelPress
             InitializeComponent();
         }
 
+        public WinContainer(Postar pagina)
+        {
+            InitializeComponent();
+            Titulo.Text = "Postar";
+            this.Tag = "postar";
+            this.Width = 900;
+            this.Height = 700;
+            contentContainer.Content = pagina;
+        }
+
         public WinContainer(ChatPage pagina)
         {
             InitializeComponent();

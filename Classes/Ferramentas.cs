@@ -383,6 +383,22 @@ namespace PainelPress.Classes
             }
         }
 
+        public static string invertData(string value)
+        {
+            try
+            {
+                var arrayd = value.Split('/');
+                string data = $"{arrayd[2]}-{arrayd[1]}-{arrayd[0]}";
+                return data;
+            }
+            catch
+            {
+                Debug.WriteLine("invertData error");
+            }
+            return DateTime.Now.ToString("yyyy-MM-dd");
+        }
+       
+        
         public static string HumanTime(DateTime dateTime)
         {
             TimeSpan timeSpan = DateTime.Now.Subtract(dateTime);

@@ -42,6 +42,7 @@ namespace PainelPress
         public static Button BT_POSTAR;
         public static Label lbMensagem;
         public static Border brMensagem;
+        List<Classes.Menu> listaMenu;
         public Timer painelTimer { get; set; }
         TarefasProgramadas tarefas;
 
@@ -301,6 +302,7 @@ namespace PainelPress
         private void SetMenu(List<Classes.Menu> lista)
         {
             stackScrol.Children.Clear();
+            listaMenu = lista;
             if (lista.Count == 0)
             {
                 stackScrol.Children.Add(new Button()
@@ -470,5 +472,16 @@ namespace PainelPress
         }
 
         #endregion
+
+        private void buscaFunc_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                if (listaMenu.Count == 1)
+                {
+                    btMenu_Click(new Button() { Tag = listaMenu[0].tag }, null);
+                }
+            }
+        }
     }
 }

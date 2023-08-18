@@ -74,7 +74,7 @@ namespace PainelPress.Paginas
 
         public Postar(Post post)
         {
-            InitializeComponent();
+            InitializeComponent();Título: 
             apiRestBasic = RestService.For<InterfaceAPI>(Constants.SITE);
             apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
             {
@@ -82,6 +82,29 @@ namespace PainelPress.Paginas
                     Task.FromResult(configuracoes.getToken())
             });
             SetUpdate(post);
+        }
+
+        public Postar(string conteudo)
+        {
+            InitializeComponent();
+            apiRestBasic = RestService.For<InterfaceAPI>(Constants.SITE);
+            apiRestBarear = RestService.For<InterfaceAPI>(Constants.SITE, new RefitSettings()
+            {
+                AuthorizationHeaderValueGetter = () =>
+                    Task.FromResult(configuracoes.getToken())
+            });
+            Setap();
+            if (conteudo.StartsWith("Título:"))
+            {
+                var array = conteudo.Split('\n');
+                ediTitulo.Texto = array[0].Replace("Título:","").Trim();
+                editorPost.setConteudo(conteudo.Replace(array[0],"").Trim());
+            }
+            else
+            {
+                editorPost.setConteudo(conteudo);
+            }
+         
         }
 
         public Postar(PostSimples post)
@@ -120,7 +143,6 @@ namespace PainelPress.Paginas
             //USUARIOS
             List<Usuario> lista = Usuario.listaUsuarios();
             comboUser.ItemsSource = lista;
-            
             int i = 0;
             foreach (var user in lista)
             {
@@ -856,7 +878,7 @@ namespace PainelPress.Paginas
         }
 
         private async void TarefasAposPost(bool post) {
-            if (statusPost.Equals("future")) return;
+            if (statusPost.Equals("future") || statusPost.Equals("draft")) return;
             if(Constants.SITE.Contains(".appmania.com")) return;
             if (Constants.SITE.Contains(".test")) return;
             bdStatusTask.Visibility = Visibility.Visible;
@@ -1082,8 +1104,10 @@ namespace PainelPress.Paginas
                     MainWindow.BT_POSTAR.Content = "Novo Post";
                     stackVer.Visibility = Visibility.Visible;
                     btStory.Visibility = Visibility.Visible;
+                    btSelectPublicar.Visibility = Visibility.Collapsed;
                     stackStatus.Visibility = Visibility.Collapsed;
                     postConteudo = "";
+                    dataPost = "";
                     TarefasAposPost(true);
                 }
                 else
@@ -1372,7 +1396,8 @@ namespace PainelPress.Paginas
              this.Dispatcher.Invoke(new Action(() => {
                     btStory.Visibility = Visibility.Visible;
                     stackVer.Visibility = Visibility.Visible;
-                    stackStatus.Visibility = Visibility.Collapsed;
+                   btSelectPublicar.Visibility = Visibility.Collapsed;
+                   stackStatus.Visibility = Visibility.Collapsed;
                     tbSlugTitle.Text = string.Format("{0}/{1}", Constants.SITE, post.Slug);
              }));
                
@@ -1560,19 +1585,7 @@ namespace PainelPress.Paginas
 
         private void btEditarStatus_Click(object sender, RoutedEventArgs e)
         {
-            if (btEditarStatus.Content.ToString().Equals("OK"))
-            {
-                ediStatusPost.IsEnabled = false;
-                statusPost = "future";
-                dataPost = ediStatusPost.Text;
-                btEditarStatus.Content = "Editar";
-            }
-            else
-            {
-                ediStatusPost.IsEnabled = true;
-                ediStatusPost.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-                btEditarStatus.Content = "OK";
-            }
+           
  
         }
 
@@ -1771,7 +1784,7 @@ namespace PainelPress.Paginas
                 lista.Add(new Usuario()
                 {
                     Id = usario.id,
-                    Nome = usario.nome
+                    Nome = usario.name
                 });
 
             }
@@ -1844,7 +1857,53 @@ namespace PainelPress.Paginas
             }
         }
 
-        
+
+        #region STATUS POST
+        private void btSelectPublicar_Click(object sender, RoutedEventArgs e)
+        {
+            gridStatus.Visibility = Visibility.Visible;
+        }
+
+        private void btStatus_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as Button;
+            if (item == null) return;
+            string tag = item.Tag.ToString();
+            if(tag== "programar")
+            {
+                if (stackDataPost.IsVisible)
+                {
+                    if (ediDataPost.Text == "") return;
+                    gridStatus.Visibility = Visibility.Collapsed;
+                    stackDataPost.Visibility = Visibility.Collapsed;
+                    statusPost = "future";
+                    dataPost = Ferramentas.invertData(ediDataPost.Text)+"T"+ediHoraPost.Text;
+                    PublicarAtualizar();
+
+                }
+                else
+                {
+                    if (ediDataPost.Text == "")
+                    {
+                        DateTime dt = DateTime.Now.AddHours(1);
+                        ediDataPost.Text = dt.ToString("dd/MM/yyyy");
+                        ediHoraPost.Text = dt.ToString("HH:mm:ss");
+                    }
+                    stackDataPost.Visibility = Visibility.Visible;
+                }
+            }
+            else if (tag == "salvar")
+            {
+                gridStatus.Visibility = Visibility.Collapsed;
+                statusPost = "draft";
+                PublicarAtualizar();
+            }
+            else if (tag == "cancelar")
+            {
+                gridStatus.Visibility = Visibility.Collapsed;
+            }
+        }
+        #endregion
     }
 
 }

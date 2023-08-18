@@ -78,7 +78,8 @@
                 </LinearGradientBrush>
             </Grid.Background>
                 <Border HorizontalAlignment="Left" Grid.Column="0" Background="#FF1795E4" BorderBrush="#FFA0A0A0" BorderThickness="0,0,2,0" MinWidth="200">
-                <elementos:EditText  x:Name="buscaFunc" TextoChanged="edit_TextChanged"  Legenda="Filtrar menu" Width="180" VerticalAlignment="Center" Margin="5,0"/>
+                <elementos:EditText KeyDown="buscaFunc_KeyDown"
+                                    x:Name="buscaFunc" TextoChanged="edit_TextChanged" Legenda="Filtrar menu" Width="180" VerticalAlignment="Center" Margin="5,0"/>
             </Border>
 
             <Border HorizontalAlignment="Left" Grid.Column="2" BorderThickness="2,0,0,0"  BorderBrush="#FFA0A0A0" >

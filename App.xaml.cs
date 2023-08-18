@@ -30,6 +30,7 @@ namespace PainelPress
 
             try
             {
+               // new BaseDados();
                 IBrowserProcessHandler browserProcessHandler;
 
                 if (multiThreadedMessageLoop)

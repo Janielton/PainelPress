@@ -77,7 +77,6 @@
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="102.0.5005.2700-beta" />
     <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
     <PackageReference Include="TweetinviAPI" Version="5.0.4" />
-    <PackageReference Include="Uno.UI" Version="4.9.45" />
     <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
   </ItemGroup>
 

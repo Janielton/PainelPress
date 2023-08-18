@@ -73,9 +73,8 @@ namespace PainelPress.Paginas
                     lista.Add(new Usuario()
                     {
                         Id = usario.id,
-                        Nome = usario.nome
+                        Nome = usario.name
                     });
-
                 }
                 config.Default.Upgrade();
                 config.Default.usuarios = JsonConvert.SerializeObject(lista);

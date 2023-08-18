@@ -20,7 +20,7 @@ namespace PainelPress.Classes
 
         public BaseDados()
         {
-            bool start = !File.Exists(Constants.PATHDB);
+            bool start = true;/// !File.Exists(Constants.PATHDB);
             if (start)
             {
                 StartDB();
@@ -34,6 +34,12 @@ namespace PainelPress.Classes
             await db.execQuery(sites);
             string paginas = "CREATE TABLE IF NOT EXISTS paginas (id_pagina INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, url TEXT, html TEXT, request TEXT, parametro TEXT, UNIQUE(url))";
             await db.execQuery(paginas);
+
+            string chats = "CREATE TABLE IF NOT EXISTS chats (id_chat INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, data TEXT, tipo INTEGER, UNIQUE(titulo))";
+            await db.execQuery(chats);
+
+            string chats_items = "CREATE TABLE IF NOT EXISTS chats_items (id INTEGER PRIMARY KEY AUTOINCREMENT, titulo TEXT, data TEXT, tipo INTEGER, id_chat INTEGER)";
+            await db.execQuery(chats_items);
         }
 
 
